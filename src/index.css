@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* input autofill background color */
+input:-webkit-autofill, input:-webkit-autofill:focus {
+  box-shadow: 0 0 0 30px #ebf4e6 inset !important;
+}

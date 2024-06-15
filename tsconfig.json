@@ -22,8 +22,9 @@
      /* Path aliases */
     "paths": {
       "@/*": ["./src/*"],
+      "test/*": ["./test/*"],
     },
   },
-  "include": ["src"],
+  "exclude": ["public"],
   "references": [{ "path": "./tsconfig.node.json" }],
 }

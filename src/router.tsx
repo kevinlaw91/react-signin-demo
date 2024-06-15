@@ -1,9 +1,24 @@
 import { createBrowserRouter } from 'react-router-dom';
-import IndexPage from '@/routes/root.tsx';
+import IndexPage from '@/routes/index.tsx';
+import SignInPage from '@/routes/SignInPage.tsx';
 
-export default createBrowserRouter([
+export default createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: <IndexPage />,
+    },
+    {
+      path: '/signin',
+      element: <SignInPage />,
+    },
+  ],
   {
-    path: '/',
-    element: <IndexPage />,
+    future: {
+      v7_relativeSplatPath: true,
+      v7_fetcherPersist: true,
+      v7_normalizeFormMethod: true,
+      v7_partialHydration: true,
+    },
   },
-]);
+);
