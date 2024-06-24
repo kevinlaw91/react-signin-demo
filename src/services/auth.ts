@@ -1,4 +1,5 @@
 import { APP_API_URL } from '@/config.ts';
+import { SignInResponse } from '@/components/AuthSignInForm.tsx';
 
 // Error codes
 export const ERR_INVALID_CREDENTIALS = 'ERR_INVALID_CREDENTIALS';
@@ -18,5 +19,5 @@ export default async function signIn({ email, password }: { email: string; passw
     throw new Error(ERR_UNEXPECTED_ERROR);
   }
 
-  return await response.json();
+  return await response.json() as SignInResponse;
 }

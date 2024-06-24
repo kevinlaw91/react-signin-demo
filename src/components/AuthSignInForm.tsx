@@ -4,7 +4,7 @@ import fetchMock from 'fetch-mock';
 import { z } from 'zod';
 import { Icon } from '@iconify-icon/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import signIn, { ERR_INVALID_CREDENTIALS } from '@/services/auth.ts';
+import signIn, { ERR_INVALID_CREDENTIALS, ERR_UNEXPECTED_ERROR } from '@/services/auth.ts';
 import { AuthenticatedUser } from '@/context/AuthContext.tsx';
 import FormErrorMessage from '@/components/FormErrorMessage.tsx';
 
@@ -25,6 +25,8 @@ export interface SignInFailureResponse {
   success: false;
   message?: string;
 }
+
+export type SignInResponse = SignInSuccessResponse | SignInFailureResponse;
 
 /* ===== Constants ===== */
 const MSG_ERR_SIGN_IN = 'Sign in error. Please try again later';
@@ -90,17 +92,26 @@ export default function AuthSignInForm(props: {
       }
 
       signIn(data)
-        .then(({ data }) => {
-          // Success, tell the parent component login success
-          onSuccessCallback({
-            id: data.id,
-          });
+        .then((res: SignInResponse) => {
+          if (res.success) {
+            // Success, tell the parent component login success
+            onSuccessCallback({ id: res.data.id });
+            return;
+          }
+
+          // Malformed response?
+          throw new Error(ERR_UNEXPECTED_ERROR);
         })
         .catch((err) => {
-          // Failure, tell the parent component login failed
-          if (err.message && err.message === ERR_INVALID_CREDENTIALS) {
-            setError('password', { type: 'api', message: MSG_ERR_INVALID_CREDENTIALS }, { shouldFocus: true });
-            onErrorCallback(MSG_ERR_INVALID_CREDENTIALS);
+          if (err instanceof Error) {
+            // Failure, tell the parent component login failed
+            if (err.message && err.message === ERR_INVALID_CREDENTIALS) {
+              setError('password', { type: 'api', message: MSG_ERR_INVALID_CREDENTIALS }, { shouldFocus: true });
+              onErrorCallback(MSG_ERR_INVALID_CREDENTIALS);
+            } else {
+              setError('root', { type: 'api', message: MSG_ERR_SIGN_IN });
+              onErrorCallback(MSG_ERR_SIGN_IN);
+            }
           } else {
             setError('root', { type: 'api', message: MSG_ERR_SIGN_IN });
             onErrorCallback(MSG_ERR_SIGN_IN);
