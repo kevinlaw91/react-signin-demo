@@ -177,24 +177,6 @@ export default function AuthSignInForm(props: {
           </FormErrorMessage>
         )}
       </div>
-      <div className="mt-6 flex text-sm font-medium text-center place-content-between flex-col sm:flex-row">
-        <div className="py-2">
-          <a
-            href="/recovery"
-            className="text-neutral-800 hover:text-primary-500 outline-0 focus:ring-2 ring-offset-2 ring-primary transition duration-150"
-          >
-            Forgot Password?
-          </a>
-        </div>
-        <div className="py-2">
-          <a
-            href="/signup"
-            className="text-neutral-800 hover:text-primary-500 outline-0 focus:ring-2 ring-offset-2 ring-primary transition duration-150"
-          >
-            Sign Up
-          </a>
-        </div>
-      </div>
     </form>
   );
 }

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Icon } from '@iconify-icon/react';
 import { Helmet } from 'react-helmet-async';
@@ -92,6 +92,24 @@ export default function SignInPage() {
               onSuccess={onFormLoginSuccess}
               onError={onFormLoginError}
             />
+            <div className="mt-6 flex text-sm font-medium text-center place-content-between flex-col sm:flex-row">
+              <div className="py-2">
+                <Link
+                  to="/recovery"
+                  className="text-neutral-800 hover:text-primary-500 outline-0 focus:ring-2 ring-offset-2 ring-primary transition duration-150"
+                >
+                  Forgot Password?
+                </Link>
+              </div>
+              <div className="py-2">
+                <Link
+                  to="/signup"
+                  className="text-neutral-800 hover:text-primary-500 outline-0 focus:ring-2 ring-offset-2 ring-primary transition duration-150"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
         <div className="hidden lg:block lg:flex-1 lg:relative sm:contents">
