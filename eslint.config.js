@@ -9,6 +9,7 @@ import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import stylistic from '@stylistic/eslint-plugin';
 import promise from 'eslint-plugin-promise';
+import reactRefresh from "eslint-plugin-react-refresh";
 import { fixupPluginRules } from '@eslint/compat';
 import eslintPluginReactHooks from 'eslint-plugin-react-hooks';
 import reactRecommended from 'eslint-plugin-react/configs/recommended.js';
@@ -38,6 +39,14 @@ export default tseslint.config(
       promise,
     },
     rules: promise.configs.recommended.rules,
+  },
+  {
+    plugins: {
+      'react-refresh': reactRefresh,
+    },
+    rules: {
+      'react-refresh/only-export-components': 'warn',
+    },
   },
   {
     name: 'Rules',
