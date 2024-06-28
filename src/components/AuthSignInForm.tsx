@@ -33,8 +33,8 @@ const MSG_ERR_SIGN_IN = 'Sign in error. Please try again later';
 const MSG_ERR_INVALID_CREDENTIALS = 'Incorrect email or password';
 
 /* ===== Mock data ===== */
-export const responseSuccess: SignInSuccessResponse = { success: true, data: { id: '1234' } };
-export const responseErrorUnauthorized: SignInFailureResponse = { success: false, message: 'INVALID_CREDENTIALS' };
+const responseSuccess: SignInSuccessResponse = { success: true, data: { id: '1234' } };
+const responseErrorUnauthorized: SignInFailureResponse = { success: false, message: 'INVALID_CREDENTIALS' };
 
 export default function AuthSignInForm(props: {
   onSubmit: () => void;
