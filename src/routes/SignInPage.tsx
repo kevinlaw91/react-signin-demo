@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Icon } from '@iconify-icon/react';
@@ -28,7 +28,7 @@ export default function SignInPage() {
     setIsSubmitting(true);
   };
 
-  const onFormLoginSuccess = (user: AuthenticatedUser) => {
+  const onFormLoginSuccess = useCallback((user: AuthenticatedUser) => {
     setIsModalOpen(false);
     setIsSubmitting(false);
 
@@ -37,7 +37,7 @@ export default function SignInPage() {
 
     // Go to home page
     navigate('/', { replace: true });
-  };
+  }, [setActiveUser, navigate]);
 
   const onFormLoginError = (err?: string) => {
     setIsModalOpen(true);
