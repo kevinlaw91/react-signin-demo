@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import IndexPage from '@/routes/index.tsx';
 import SignInPage from '@/routes/SignInPage.tsx';
+import SignUpPage from '@/routes/SignUpPage.tsx';
 
 export default createBrowserRouter(
   [
@@ -11,6 +12,10 @@ export default createBrowserRouter(
     {
       path: '/signin',
       element: <SignInPage />,
+    },
+    {
+      path: '/signup',
+      element: <SignUpPage />,
     },
   ],
   {
