@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Icon } from '@iconify-icon/react';
@@ -17,18 +17,18 @@ export default function SignInPage() {
   const [alertModalMessage, setAlertModalMessage] = useState<string | undefined>();
 
   useEffect(() => {
-    // If already signed in, skip login screen and redirect to home
+    // If already signed in, skip sign in screen and redirect to home
     if (activeUser) {
       navigate('/', { replace: true });
     }
   }, [activeUser, navigate]);
 
-  const onFormLoginSubmit = () => {
+  const onFormSignInSubmit = () => {
     setIsModalOpen(true);
     setIsSubmitting(true);
   };
 
-  const onFormLoginSuccess = (user: AuthenticatedUser) => {
+  const onFormSignInSuccess = useCallback((user: AuthenticatedUser) => {
     setIsModalOpen(false);
     setIsSubmitting(false);
 
@@ -37,9 +37,9 @@ export default function SignInPage() {
 
     // Go to home page
     navigate('/', { replace: true });
-  };
+  }, [setActiveUser, navigate]);
 
-  const onFormLoginError = (err?: string) => {
+  const onFormSignInError = (err?: string) => {
     setIsModalOpen(true);
     setIsSubmitting(false);
     setIsAlertModalOpen(true);
@@ -88,9 +88,9 @@ export default function SignInPage() {
               </div>
             </div>
             <AuthSignInForm
-              onSubmit={onFormLoginSubmit}
-              onSuccess={onFormLoginSuccess}
-              onError={onFormLoginError}
+              onSubmit={onFormSignInSubmit}
+              onSuccess={onFormSignInSuccess}
+              onError={onFormSignInError}
             />
             <div className="mt-6 flex text-sm font-medium text-center place-content-between flex-col sm:flex-row">
               <div className="py-2">

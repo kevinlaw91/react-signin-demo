@@ -4,7 +4,12 @@ export type AuthenticatedUser = {
   id: string;
 };
 
-const AuthContext = createContext<{ activeUser: null | AuthenticatedUser; setActiveUser: React.Dispatch<React.SetStateAction<null | AuthenticatedUser>> }>({
+interface IAuthContext {
+  activeUser: null | AuthenticatedUser;
+  setActiveUser: React.Dispatch<React.SetStateAction<null | AuthenticatedUser>>;
+}
+
+const AuthContext = createContext<IAuthContext>({
   activeUser: null,
   setActiveUser: () => {},
 });

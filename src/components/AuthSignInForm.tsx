@@ -4,17 +4,17 @@ import fetchMock from 'fetch-mock';
 import { z } from 'zod';
 import { Icon } from '@iconify-icon/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import signIn, { ERR_INVALID_CREDENTIALS, ERR_UNEXPECTED_ERROR } from '@/services/auth.ts';
+import { signIn as performSignIn, ERR_INVALID_CREDENTIALS, ERR_UNEXPECTED_ERROR } from '@/services/auth.ts';
 import { AuthenticatedUser } from '@/context/AuthContext.tsx';
 import FormErrorMessage from '@/components/FormErrorMessage.tsx';
 
 /* ===== Types/Schemas ===== */
-const loginSchema = z.object({
+const signInSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }),
   password: z.string().min(1, { message: 'Please enter your password' }),
 });
 
-type SignInFormData = z.infer<typeof loginSchema>;
+type SignInFormData = z.infer<typeof signInSchema>;
 
 export interface SignInSuccessResponse {
   success: true;
@@ -48,12 +48,12 @@ export default function AuthSignInForm(props: {
     setError,
     formState: { errors },
   } = useForm<SignInFormData>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(signInSchema),
   });
 
   const { onSubmit: onSubmitCallback, onSuccess: onSuccessCallback, onError: onErrorCallback } = props;
 
-  const onSubmit: SubmitHandler<SignInFormData> = useCallback(
+  const formSignInSubmitHandler: SubmitHandler<SignInFormData> = useCallback(
     (data: SignInFormData) => {
       // Clear password field for safety
       setValue('password', '', { shouldValidate: false });
@@ -91,10 +91,10 @@ export default function AuthSignInForm(props: {
         );
       }
 
-      signIn(data)
+      performSignIn(data)
         .then((res: SignInResponse) => {
           if (res.success) {
-            // Success, tell the parent component login success
+            // Success, tell the parent component sign in success
             onSuccessCallback({ id: res.data.id });
             return;
           }
@@ -104,7 +104,7 @@ export default function AuthSignInForm(props: {
         })
         .catch((err) => {
           if (err instanceof Error) {
-            // Failure, tell the parent component login failed
+            // Failure, tell the parent component sign in failed
             if (err.message && err.message === ERR_INVALID_CREDENTIALS) {
               setError('password', { type: 'api', message: MSG_ERR_INVALID_CREDENTIALS }, { shouldFocus: true });
               onErrorCallback(MSG_ERR_INVALID_CREDENTIALS);
@@ -125,7 +125,7 @@ export default function AuthSignInForm(props: {
   );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(formSignInSubmitHandler)}>
       <div className="space-y-3">
         <div>
           <label
