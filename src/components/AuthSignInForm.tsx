@@ -4,7 +4,7 @@ import fetchMock from 'fetch-mock';
 import { z } from 'zod';
 import { Icon } from '@iconify-icon/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signIn as performSignIn, ERR_INVALID_CREDENTIALS, ERR_UNEXPECTED_ERROR } from '@/services/auth.ts';
+import { authenticateUser, ERR_INVALID_CREDENTIALS, ERR_UNEXPECTED_ERROR } from '@/services/auth.ts';
 import { AuthenticatedUser } from '@/context/AuthContext.tsx';
 import FormErrorMessage from '@/components/FormErrorMessage.tsx';
 
@@ -91,7 +91,7 @@ export default function AuthSignInForm(props: {
         );
       }
 
-      performSignIn(data)
+      authenticateUser(data)
         .then((res: SignInResponse) => {
           if (res.success) {
             // Success, tell the parent component sign in success
@@ -137,7 +137,8 @@ export default function AuthSignInForm(props: {
           <input
             id="email"
             type="email"
-            placeholder="Your name"
+            maxLength={254}
+            placeholder="Your email"
             className="block w-full h-12 px-4 py-2 text-neutral-800 border rounded-lg appearance-none bg-chalk border-zinc-300 placeholder-zinc-300 focus:border-primary-200 outline-none ring-primary-300 sm:text-sm transition duration-150"
             {...register('email')}
           />
@@ -156,6 +157,7 @@ export default function AuthSignInForm(props: {
             className="block w-full h-12 px-4 py-2 text-neutral-800 border rounded-lg appearance-none bg-chalk border-zinc-300 placeholder-zinc-300 focus:border-primary-200 outline-none ring-primary-300 sm:text-sm transition duration-150"
             placeholder="Your password"
             id="password"
+            maxLength={255}
             type="password"
             {...register('password')}
           />

@@ -6,7 +6,7 @@ export const ERR_INVALID_CREDENTIALS = 'ERR_INVALID_CREDENTIALS';
 export const ERR_UNEXPECTED_ERROR = 'ERR_UNEXPECTED_ERROR';
 export const ERR_ACCOUNT_CREATE_REJECTED = 'ERR_ACCOUNT_CREATE_REJECTED';
 
-export async function signIn({ email, password }: { email: string; password: string }) {
+export async function authenticateUser({ email, password }: { email: string; password: string }) {
   const response = await fetch(new URL('/api/signin', APP_API_URL).href, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
