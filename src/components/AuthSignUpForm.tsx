@@ -6,7 +6,7 @@ import fetchMock from 'fetch-mock';
 import { z } from 'zod';
 import { Icon } from '@iconify-icon/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signUp as performSignUp, ERR_INVALID_CREDENTIALS, ERR_UNEXPECTED_ERROR } from '@/services/auth.ts';
+import { createUser, ERR_UNEXPECTED_ERROR, ERR_SIGNUP_REJECTED } from '@/services/auth.ts';
 import { AuthenticatedUser } from '@/context/AuthContext.tsx';
 import FormErrorMessage from '@/components/FormErrorMessage.tsx';
 
@@ -33,11 +33,12 @@ export interface SignUpFailureResponse {
 export type SignUpResponse = SignUpSuccessResponse | SignUpFailureResponse;
 
 /* ===== Constants ===== */
-const MSG_ERR_SIGN_UP = 'Unable to create account. Please try again later';
+const MSG_ERR_GENERIC = 'Unable to create account. Please try again later';
+const MSG_ERR_REJECTED = 'This email and password combination cannot be used for new account';
 
 /* ===== Mock data ===== */
 const responseSuccess: SignUpSuccessResponse = { success: true, data: { id: '1234' } };
-const responseErrorAccountExist: SignUpFailureResponse = { success: false, message: 'ERR_ACCOUNT_EXIST' };
+const responseErrorSignUpRejected: SignUpFailureResponse = { success: false, message: ERR_SIGNUP_REJECTED };
 
 export default function AuthSignUpForm(props: {
   onSubmit: () => void;
@@ -49,7 +50,6 @@ export default function AuthSignUpForm(props: {
     register,
     handleSubmit,
     trigger,
-    setValue,
     setError,
     getFieldState,
     formState: { errors },
@@ -100,21 +100,14 @@ export default function AuthSignUpForm(props: {
 
   const formSignUpSubmitHandler: SubmitHandler<SignUpFormData> = useCallback(
     (data: SignUpFormData) => {
-      // Hide the password field
+      // Mask the password field during form submission
       setIsPasswordVisible(false);
-      // Clear password field for safety
-      setValue('password', '', { shouldValidate: false });
       // Tell the parent page form is submitting
       onSubmitCallback();
 
       // Mock API
-
-      // Email: Use any valid email
-      // Success: password = 'success'
-      // Fail: password = 'error'
-
-      if (data.password === 'success') {
-        fetchMock.post('path:/api/signup',
+      if (data.email !== 'registered@example.com') {
+        fetchMock.post('path:/api/account/create',
           {
             status: 200,
             body: responseSuccess,
@@ -125,10 +118,10 @@ export default function AuthSignUpForm(props: {
           { delay: 1000 },
         );
       } else {
-        fetchMock.post('path:/api/signup',
+        fetchMock.post('path:/api/account/create',
           {
             status: 401,
-            body: responseErrorUnauthorized,
+            body: responseErrorSignUpRejected,
             headers: {
               'Content-Type': 'application/json',
             },
@@ -137,37 +130,36 @@ export default function AuthSignUpForm(props: {
         );
       }
 
-      performSignUp(data)
+      createUser(data)
         .then((res: SignUpResponse) => {
           if (res.success) {
             // Success, tell the parent component login success
             onSuccessCallback({ id: res.data.id });
             return;
           }
-
           // Malformed response?
           throw new Error(ERR_UNEXPECTED_ERROR);
         })
         .catch((err) => {
+          // Error: Unable to create user account
           if (err instanceof Error) {
-            // Failure, tell the parent component login failed
-            if (err.message && err.message === ERR_INVALID_CREDENTIALS) {
-              setError('password', { type: 'api', message: MSG_ERR_INVALID_CREDENTIALS }, { shouldFocus: true });
-              onErrorCallback(MSG_ERR_INVALID_CREDENTIALS);
+            if (err.message && err.message === ERR_SIGNUP_REJECTED) {
+              setError('root', { type: 'api', message: MSG_ERR_REJECTED });
+              onErrorCallback(MSG_ERR_REJECTED);
             } else {
-              setError('root', { type: 'api', message: MSG_ERR_SIGN_IN });
-              onErrorCallback(MSG_ERR_SIGN_IN);
+              setError('root', { type: 'api', message: MSG_ERR_GENERIC });
+              onErrorCallback(MSG_ERR_GENERIC);
             }
           } else {
-            setError('root', { type: 'api', message: MSG_ERR_SIGN_IN });
-            onErrorCallback(MSG_ERR_SIGN_IN);
+            setError('root', { type: 'api', message: MSG_ERR_GENERIC });
+            onErrorCallback(MSG_ERR_GENERIC);
           }
         });
 
       // Restore fetch mock
       fetchMock.restore();
     },
-    [onSubmitCallback, onSuccessCallback, onErrorCallback, setValue, setError],
+    [onSubmitCallback, onSuccessCallback, onErrorCallback, setError],
   );
 
   return (
