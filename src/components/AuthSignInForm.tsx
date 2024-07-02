@@ -4,7 +4,7 @@ import fetchMock from 'fetch-mock';
 import { z } from 'zod';
 import { Icon } from '@iconify-icon/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signIn as performSignIn, ERR_INVALID_CREDENTIALS, ERR_UNEXPECTED_ERROR } from '@/services/auth.ts';
+import { authenticateUser, ERR_INVALID_CREDENTIALS, ERR_UNEXPECTED_ERROR } from '@/services/auth.ts';
 import { AuthenticatedUser } from '@/context/AuthContext.tsx';
 import FormErrorMessage from '@/components/FormErrorMessage.tsx';
 
@@ -91,7 +91,7 @@ export default function AuthSignInForm(props: {
         );
       }
 
-      performSignIn(data)
+      authenticateUser(data)
         .then((res: SignInResponse) => {
           if (res.success) {
             // Success, tell the parent component sign in success

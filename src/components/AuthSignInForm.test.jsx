@@ -2,7 +2,7 @@ import { screen, act } from '@testing-library/react';
 import renderWithTestUserEvent from 'test/utils/renderWithTestUserEvent.js';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import AuthSignInForm from './AuthSignInForm';
-import * as signIn from '@/services/auth.ts';
+import * as Auth from '@/services/auth.ts';
 
 describe('AuthSignInForm', () => {
   describe('User submitted a valid user credential', () => {
@@ -22,7 +22,7 @@ describe('AuthSignInForm', () => {
     });
 
     it('calls onSuccessCallback on successful sign in', async () => {
-      const apiCall = vi.spyOn(signIn, 'default');
+      const apiCall = vi.spyOn(Auth, 'default');
 
       const { user } = renderWithTestUserEvent(
         <AuthSignInForm
@@ -66,7 +66,7 @@ describe('AuthSignInForm', () => {
     });
 
     it('calls onErrorCallback on unsuccessful sign in', async () => {
-      const apiCall = vi.spyOn(signIn, 'default');
+      const apiCall = vi.spyOn(Auth, 'default');
 
       const { user } = renderWithTestUserEvent(
         <AuthSignInForm
