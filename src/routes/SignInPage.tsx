@@ -7,6 +7,7 @@ import AuthSignInForm from '@/components/AuthSignInForm.tsx';
 import BusyScreen from '@/components/BusyScreen.tsx';
 import AuthContext, { AuthenticatedUser } from '@/context/AuthContext.tsx';
 import AlertModal from '@/components/AlertModal.tsx';
+import GoogleSignInButton from '@/components/GoogleSignInButton.tsx';
 
 export default function SignInPage() {
   const navigate = useNavigate();
@@ -67,14 +68,7 @@ export default function SignInPage() {
               />
             </div>
             <div className="mt-8">
-              <button
-                type="button"
-                className="inline-flex items-center justify-center w-full h-12 gap-3 px-5 py-3 font-medium text-neutral-600 outline-0 bg-gray-100 rounded-xl hover:bg-gray-200 focus:ring-2 ring-primary ring-offset-2 duration-150"
-                aria-label="Sign in with Google"
-              >
-                <img src="/assets/svg/logo-google.svg" height="24" width="24" alt="Google logo" />
-                <span>Sign in with Google</span>
-              </button>
+              <GoogleSignInButton />
               <div className="relative py-3">
                 <div
                   className="absolute inset-0 flex items-center"

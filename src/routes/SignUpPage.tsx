@@ -7,6 +7,7 @@ import AuthSignUpForm from '@/components/AuthSignUpForm.tsx';
 import BusyScreen from '@/components/BusyScreen.tsx';
 import AuthContext, { AuthenticatedUser } from '@/context/AuthContext.tsx';
 import AlertModal from '@/components/AlertModal.tsx';
+import GoogleSignInButton from '@/components/GoogleSignInButton.tsx';
 
 export default function SignUpPage() {
   const navigate = useNavigate();
@@ -90,14 +91,7 @@ export default function SignUpPage() {
                   <span className="px-2 text-sm text-neutral-400 bg-white">or</span>
                 </div>
               </div>
-              <button
-                type="button"
-                className="inline-flex items-center justify-center w-full h-12 gap-3 px-5 py-3 font-medium text-neutral-600 outline-0 bg-gray-100 rounded-xl hover:bg-gray-200 focus:ring-2 ring-primary ring-offset-2 duration-150"
-                aria-label="Sign in with Google"
-              >
-                <img src="/assets/svg/logo-google.svg" height="24" width="24" alt="Google logo" />
-                <span>Sign up with Google</span>
-              </button>
+              <GoogleSignInButton />
             </div>
           </div>
         </div>
