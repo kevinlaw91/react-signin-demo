@@ -3,7 +3,7 @@ import IndexPage from '@/routes/index.tsx';
 import SignInPage from '@/routes/SignInPage.tsx';
 import SignUpPage from '@/routes/SignUpPage.tsx';
 
-export default createBrowserRouter(
+const router = createBrowserRouter(
   [
     {
       path: '/',
@@ -27,3 +27,5 @@ export default createBrowserRouter(
     },
   },
 );
+
+export default router;
