@@ -18,7 +18,15 @@ export default function AlertModal({ icon, message, dismiss }: IAlertModal) {
       <section className="bg-white/20 shadow-lg min-w-[400px] flex flex-col gap-3 justify-center items-center rounded-3xl p-6" style={{ backdropFilter: 'saturate(200%) blur(30px)' }}>
         {icon}
         {message && (
-          <h2 className="text-md text-white/90 font-medium">{message}</h2>
+          <h2 className="text-md text-white/90 font-medium text-center">
+            {
+              message
+                .split('\n')
+                .map(
+                  (i, key) => <div key={key}>{i}</div>,
+                )
+            }
+          </h2>
         )}
         <div>
           <button onClick={dismiss} className="bg-white/20 hover:bg-primary-300/80 text-white text-sm px-4 py-2 mt-4 rounded-lg">
