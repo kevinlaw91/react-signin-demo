@@ -219,9 +219,10 @@ export default function AuthSignUpForm(props: {
                         )
                   }
                   <section className="mt-2 pt-2 opacity-50 border-t border-neutral-600">
-                    <h3 className="font-bold">(Optional) Strong password:</h3>
+                    <div className="font-bold">(Optional)</div>
+                    <h3>Strong password:</h3>
                     <p>Use a mix of uppercase, lowercase, numbers, and symbols.</p>
-                    <p>The longer the better.</p>
+                    <p>Use a longer password.</p>
                   </section>
                 </div>
                 <FloatingArrow
