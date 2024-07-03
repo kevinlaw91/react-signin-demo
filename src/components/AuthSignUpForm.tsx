@@ -186,7 +186,7 @@ export default function AuthSignUpForm(props: {
             maxLength={254}
             placeholder="Your name"
             className="block w-full h-12 px-4 py-2 text-neutral-800 border rounded-lg appearance-none bg-chalk border-zinc-300 placeholder-zinc-300 focus:border-primary-200 outline-none ring-primary-300 sm:text-sm transition duration-150"
-            {...register('email')}
+            {...register('email', { setValueAs: (value: string) => value.trim() })}
           />
           {errors?.email && (
             <FormErrorMessage>{errors?.email?.message}</FormErrorMessage>
