@@ -23,12 +23,12 @@ export default function SignUpPage() {
     }
   }, [activeUser, navigate]);
 
-  const onFormLoginSubmit = () => {
+  const onFormSignUpSubmit = () => {
     setIsModalOpen(true);
     setIsSubmitting(true);
   };
 
-  const onFormLoginSuccess = useCallback((user: AuthenticatedUser) => {
+  const onFormSignUpSuccess = useCallback((user: AuthenticatedUser) => {
     setIsModalOpen(false);
     setIsSubmitting(false);
 
@@ -39,11 +39,11 @@ export default function SignUpPage() {
     navigate('/', { replace: true });
   }, [setActiveUser, navigate]);
 
-  const onFormLoginError = (err?: string) => {
+  const onFormSignUpError = (err?: string) => {
     setIsModalOpen(true);
     setIsSubmitting(false);
     setIsAlertModalOpen(true);
-    setAlertModalMessage(err || 'An error occurred during sign in');
+    setAlertModalMessage(err || 'Sign up failed');
   };
 
   const handleAlertModalDismiss = () => {
@@ -74,9 +74,9 @@ export default function SignUpPage() {
               </div>
             </div>
             <AuthSignUpForm
-              onSubmit={onFormLoginSubmit}
-              onSuccess={onFormLoginSuccess}
-              onError={onFormLoginError}
+              onSubmit={onFormSignUpSubmit}
+              onSuccess={onFormSignUpSuccess}
+              onError={onFormSignUpError}
             />
             <div>
               <div className="relative py-3">
