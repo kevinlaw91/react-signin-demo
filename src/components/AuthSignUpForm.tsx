@@ -167,7 +167,7 @@ export default function AuthSignUpForm(props: {
       // Restore fetch mock
       fetchMock.restore();
     },
-    [onSubmitCallback, onSuccessCallback, onErrorCallback, setError],
+    [userWarnedUntrimmedPassword, onSubmitCallback, onErrorCallback, onSuccessCallback, setError],
   );
 
   return (
