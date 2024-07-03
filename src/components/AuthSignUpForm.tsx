@@ -15,7 +15,7 @@ const signUpSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }),
   password: z.string()
     .min(8, { message: 'Password must be at least 8 characters long' })
-    .regex(/^[a-zA-Z0-9!@#$%^&*()\-_+=[\]{}|\\;:'",.<>/?]*$/, { message: 'Can only contains letters, numbers, and symbols' }),
+    .regex(/^[a-zA-Z0-9 !@#$%^&*()\-_+=[\]{}|\\;:'",.<>/?]*$/, { message: 'Can only contains letters, numbers, spaces and symbols' }),
 });
 
 type SignUpFormData = z.infer<typeof signUpSchema>;
@@ -56,7 +56,7 @@ export default function AuthSignUpForm(props: {
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
   });
-
+  const [userWarnedUntrimmedPassword, setUserWarnedUntrimmedPassword] = useState(false);
   const passwordFieldState = getFieldState('password');
 
   /* ===== Password tooltip controller ===== */
@@ -102,6 +102,14 @@ export default function AuthSignUpForm(props: {
     (data: SignUpFormData) => {
       // Mask the password field during form submission
       setIsPasswordVisible(false);
+
+      // Warn once if password field has leading or trailing spaces
+      if (!userWarnedUntrimmedPassword && data.password !== data.password.trim()) {
+        setUserWarnedUntrimmedPassword(true);
+        onErrorCallback('Your password may contain leading or trailing spaces\nResubmit if you\'re certain you want to proceed');
+        return;
+      }
+
       // Tell the parent page form is submitting
       onSubmitCallback();
 
