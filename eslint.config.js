@@ -7,42 +7,36 @@
 import globals from 'globals';
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
-import stylistic from '@stylistic/eslint-plugin';
-import promise from 'eslint-plugin-promise';
-import reactRefresh from 'eslint-plugin-react-refresh';
 import { fixupPluginRules } from '@eslint/compat';
-import eslintPluginReactHooks from 'eslint-plugin-react-hooks';
-import reactRecommended from 'eslint-plugin-react/configs/recommended.js';
-import reactJsxRuntime from 'eslint-plugin-react/configs/jsx-runtime.js';
+import pluginStylistic from '@stylistic/eslint-plugin';
+import pluginPromise from 'eslint-plugin-promise';
+import pluginReactRefresh from 'eslint-plugin-react-refresh';
+import pluginReactHooks from 'eslint-plugin-react-hooks';
+import configReactRecommended from 'eslint-plugin-react/configs/recommended.js';
+import configReactJSXRuntime from 'eslint-plugin-react/configs/jsx-runtime.js';
 
 export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
-  stylistic.configs.customize({
+  pluginStylistic.configs.customize({
     semi: true,
     braceStyle: '1tbs',
   }),
-  reactRecommended,
-  reactJsxRuntime,
+  configReactRecommended,
+  configReactJSXRuntime,
   {
     name: 'react-hook/recommended',
     plugins: {
-      'react-hooks': fixupPluginRules(eslintPluginReactHooks),
+      'react-hooks': fixupPluginRules(pluginReactHooks),
     },
     rules: {
-      ...eslintPluginReactHooks.configs.recommended.rules,
+      ...pluginReactHooks.configs.recommended.rules,
     },
   },
-  {
-    name: 'promise/recommended',
-    plugins: {
-      promise,
-    },
-    rules: promise.configs.recommended.rules,
-  },
+  pluginPromise.configs['flat/recommended'],
   {
     plugins: {
-      'react-refresh': reactRefresh,
+      'react-refresh': pluginReactRefresh,
     },
     rules: {
       'react-refresh/only-export-components': 'warn',
