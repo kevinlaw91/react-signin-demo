@@ -140,7 +140,7 @@ export default function AuthSignInForm(props: {
             maxLength={254}
             placeholder="Your email"
             className="block w-full h-12 px-4 py-2 text-neutral-800 border rounded-lg appearance-none bg-chalk border-zinc-300 placeholder-zinc-300 focus:border-primary-200 outline-none ring-primary-300 sm:text-sm transition duration-150"
-            {...register('email')}
+            {...register('email', { setValueAs: (value: string) => value.trim() })}
           />
           {errors?.email && (
             <FormErrorMessage>{errors?.email?.message}</FormErrorMessage>
@@ -155,7 +155,7 @@ export default function AuthSignInForm(props: {
           </label>
           <input
             className="block w-full h-12 px-4 py-2 text-neutral-800 border rounded-lg appearance-none bg-chalk border-zinc-300 placeholder-zinc-300 focus:border-primary-200 outline-none ring-primary-300 sm:text-sm transition duration-150"
-            placeholder="Your password"
+            placeholder="Try &quot;success&quot;"
             id="password"
             maxLength={255}
             type="password"
