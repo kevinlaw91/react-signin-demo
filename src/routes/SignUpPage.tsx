@@ -128,7 +128,7 @@ export default function SignUpPage() {
       <AnimatePresence>
         {isAlertModalOpen && (
           <AlertModal
-            icon={<Icon icon="ion:warning" height={36} style={{ color: '#de5f3a' }} />}
+            icon={<Icon icon="ion:warning" height={36} style={{ color: '#ffa58a' }} />}
             message={alertModalMessage}
             dismiss={handleAlertModalDismiss}
           />
