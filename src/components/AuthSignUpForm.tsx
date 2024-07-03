@@ -34,7 +34,7 @@ export type SignUpResponse = SignUpSuccessResponse | SignUpFailureResponse;
 
 /* ===== Constants ===== */
 const MSG_ERR_GENERIC = 'Unable to create account. Please try again later';
-const MSG_ERR_REJECTED = 'This email and password combination cannot be used for new account';
+const MSG_ERR_REJECTED = 'This email and password combination cannot be used';
 
 /* ===== Mock data ===== */
 const responseSuccess: SignUpSuccessResponse = { success: true, data: { id: '1234' } };
@@ -128,7 +128,7 @@ export default function AuthSignUpForm(props: {
       } else {
         fetchMock.post('path:/api/account/create',
           {
-            status: 401,
+            status: 403,
             body: responseErrorSignUpRejected,
             headers: {
               'Content-Type': 'application/json',
