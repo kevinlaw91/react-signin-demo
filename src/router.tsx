@@ -3,6 +3,7 @@ import IndexPage from '@/routes/index.tsx';
 import SignInPage from '@/routes/SignInPage.tsx';
 import SignUpPage from '@/routes/SignUpPage.tsx';
 import NotFoundPage from '@/routes/NotFoundPage.tsx';
+import ProfileSetupPage from '@/routes/ProfileSetupPage.tsx';
 
 const router = createBrowserRouter(
   [
@@ -17,6 +18,10 @@ const router = createBrowserRouter(
     {
       path: '/signup',
       element: <SignUpPage />,
+    },
+    {
+      path: '/signup/setup',
+      element: <ProfileSetupPage />,
     },
     {
       // 404 page
