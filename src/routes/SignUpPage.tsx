@@ -62,7 +62,7 @@ export default function SignUpPage() {
           <div className="w-full max-w-md mx-auto md:max-w-sm md:px-0 md:w-96 sm:px-4">
             <div className="flex flex-col">
               <img
-                src="assets/svg/logo.svg"
+                src="/assets/svg/logo.svg"
                 alt="Logo"
                 className="w-32 h-32 mx-auto my-6"
               />
