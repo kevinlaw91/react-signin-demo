@@ -15,10 +15,16 @@ export default function AlertModal({ icon, message, dismiss }: IAlertModal) {
       transition={{ duration: 0.1 }}
       className="fixed inset-0 flex justify-center items-center"
     >
-      <section className="bg-white/20 shadow-lg min-w-[400px] flex flex-col gap-3 justify-center items-center rounded-3xl p-6" style={{ backdropFilter: 'saturate(200%) blur(30px)' }}>
+      <section
+        id="alert-modal"
+        role="alertdialog"
+        aria-labelledby="alert-modal-title"
+        className="bg-white/20 shadow-lg min-w-[400px] flex flex-col gap-3 justify-center items-center rounded-3xl p-6"
+        style={{ backdropFilter: 'saturate(200%) blur(30px)' }}
+      >
         {icon}
         {message && (
-          <h2 className="text-md text-white/90 font-medium text-center">
+          <h2 className="text-md text-white/90 font-medium text-center" id="alert-modal-title">
             {
               message
                 .split('\n')
