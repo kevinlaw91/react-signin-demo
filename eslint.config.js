@@ -59,6 +59,14 @@ export default tseslint.config(
           attributes: false,
         },
       }],
+      '@typescript-eslint/no-unused-vars': ['error',
+        {
+          argsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
     },
     settings: {
       react: {
