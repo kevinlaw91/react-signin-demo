@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import fetchMock from 'fetch-mock';
 import { z } from 'zod';
-import { Icon } from '@iconify-icon/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { authenticateUser, ERR_INVALID_CREDENTIALS, ERR_UNEXPECTED_ERROR } from '@/services/auth.ts';
 import { AuthenticatedUser } from '@/context/AuthContext.tsx';
@@ -174,7 +173,7 @@ export default function AuthSignInForm(props: {
           </button>
         </div>
         {errors?.root && (
-          <FormErrorMessage icon={<Icon icon="ion:warning" inline width="24" className="align-bottom mr-1" />}>
+          <FormErrorMessage>
             {errors?.root?.message}
           </FormErrorMessage>
         )}

@@ -1,7 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Icon } from '@iconify-icon/react';
 import { Helmet } from 'react-helmet-async';
 import AuthSignInForm from '@/components/AuthSignInForm.tsx';
 import BusyScreen from '@/components/BusyScreen.tsx';
@@ -133,7 +132,6 @@ export default function SignInPage() {
       <AnimatePresence>
         {isAlertModalOpen && (
           <AlertModal
-            icon={<Icon icon="ion:warning" height={36} style={{ color: '#ffa58a' }} />}
             message={alertModalMessage}
             dismiss={handleAlertModalDismiss}
           />

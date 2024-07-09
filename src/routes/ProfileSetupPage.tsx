@@ -8,7 +8,6 @@ import { useForm, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Spinner from '@/components/Spinner.tsx';
 import AlertModal from '@/components/AlertModal.tsx';
-import { Icon } from '@iconify-icon/react';
 
 const userNameSchema = z.object({
   username: z.string()
@@ -267,7 +266,6 @@ export default function ProfileSetupPage() {
       <AnimatePresence>
         {isAlertModalOpen && (
           <AlertModal
-            icon={<Icon icon="ion:warning" height={36} style={{ color: '#ffa58a' }} />}
             message={alertModalMessage}
             dismiss={handleAlertModalDismiss}
           />

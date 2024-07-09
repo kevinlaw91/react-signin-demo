@@ -1,10 +1,19 @@
 import { motion } from 'framer-motion';
+import { Icon } from '@iconify-icon/react';
 
 interface IAlertModal {
   icon?: React.ReactNode;
   message?: string;
   dismiss?: () => void;
 }
+
+const defaultIcon = (
+  <Icon
+    icon="ion:warning"
+    width="36"
+    className="text-[#ff4545]"
+  />
+);
 
 export default function AlertModal({ icon, message, dismiss }: IAlertModal) {
   return (
@@ -19,12 +28,12 @@ export default function AlertModal({ icon, message, dismiss }: IAlertModal) {
         id="alert-modal"
         role="alertdialog"
         aria-labelledby="alert-modal-title"
-        className="bg-white/20 shadow-lg min-w-[400px] flex flex-col gap-3 justify-center items-center rounded-3xl p-6"
+        className="bg-white/80 shadow-lg min-w-[400px] flex flex-col gap-3 justify-center items-center rounded-3xl p-6"
         style={{ backdropFilter: 'saturate(200%) blur(30px)' }}
       >
-        {icon}
+        {icon || defaultIcon}
         {message && (
-          <h2 className="text-md text-white/90 font-medium text-center" id="alert-modal-title">
+          <h2 className="text-md text-neutral-700 font-medium text-center" id="alert-modal-title">
             {
               message
                 .split('\n')
@@ -35,7 +44,7 @@ export default function AlertModal({ icon, message, dismiss }: IAlertModal) {
           </h2>
         )}
         <div>
-          <button onClick={dismiss} className="bg-white/20 hover:bg-primary-300/80 text-white text-sm px-4 py-2 mt-4 rounded-lg">
+          <button onClick={dismiss} className="bg-neutral-300 hover:bg-neutral-400/50 text-neutral-700 text-sm font-medium px-4 py-2 mt-4 rounded-lg">
             Close
           </button>
         </div>
