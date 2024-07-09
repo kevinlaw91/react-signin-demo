@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
+import fetchMock from 'fetch-mock';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { IMaskInput } from 'react-imask';
@@ -8,6 +9,7 @@ import { useForm, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Spinner from '@/components/Spinner.tsx';
 import AlertModal from '@/components/AlertModal.tsx';
+import { setUsername, ERR_UNEXPECTED_ERROR, ERR_USERNAME_TAKEN } from '@/services/profile.ts';
 
 const userNameSchema = z.object({
   username: z.string()
@@ -17,10 +19,12 @@ const userNameSchema = z.object({
     .regex(/^[a-z0-9_]*$/, { message: 'Username can only contain letters (a-z), numbers (0-9), and underscores (_)' }),
 });
 
-type UserNameFormData = z.infer<typeof userNameSchema>;
+type UsernameFormData = z.infer<typeof userNameSchema>;
 
 const MSG_USERNAME_AVAILABLE = 'Username is available';
-const MSG_USERNAME_TAKEN = 'Username is taken';
+const MSG_USERNAME_ALREADY_TAKEN = 'Username is already taken';
+const MSG_USERNAME_CLAIM_FAILED = 'This username is unavailable. Try a different one.';
+const MSG_UNEXPECTED_ERROR = 'Unable to claim username. Please try again later';
 
 const animatedTick = (
   <svg viewBox="0 0 24 24" className="text-lime-600 size-6">
@@ -86,6 +90,10 @@ const animatedError = (
   </svg>
 );
 
+function mockIsAvailable(username: string) {
+  return username.length % 2 === 0;
+}
+
 export default function ProfileSetupPage() {
   const {
     register,
@@ -94,7 +102,7 @@ export default function ProfileSetupPage() {
     setFocus,
     watch,
     handleSubmit,
-  } = useForm<UserNameFormData>({
+  } = useForm<UsernameFormData>({
     resolver: zodResolver(userNameSchema),
   });
 
@@ -105,11 +113,57 @@ export default function ProfileSetupPage() {
   const [isValidating, setIsValidating] = useState(false);
   const pendingCheck = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const submitHandler: SubmitHandler<UserNameFormData> = useCallback((data: UserNameFormData) => {
-    // Check if username is available
+  const submitHandler: SubmitHandler<UsernameFormData> = useCallback((data: UsernameFormData) => {
+    const profileId = '1234';
+    const _isAvailable = mockIsAvailable(data.username);
+
+    // Make sure username availability check is passed before claiming it
     if (isAvailable) {
-      // Register the username
-      void data.username;
+      // Mock request response
+      fetchMock.patch(`path:/api/profile/${profileId}`,
+        {
+          status: _isAvailable ? 200 : 409,
+          body: _isAvailable
+            ? {
+                success: true,
+                data: {
+                  id: profileId,
+                  username: data.username,
+                },
+              }
+            : {
+                success: false,
+              },
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+        { delay: 1000 },
+      );
+
+      // Claim the username
+      setUsername({ profileId, ...data })
+        .then((res) => {
+          if (res.success) {
+            alert('ok');
+            return;
+          }
+          throw new Error(ERR_UNEXPECTED_ERROR);
+        })
+        .catch((err) => {
+          if (err instanceof Error) {
+            if (err.message === ERR_USERNAME_TAKEN) {
+              setAlertModalMessage(MSG_USERNAME_CLAIM_FAILED);
+            } else {
+              setAlertModalMessage(MSG_UNEXPECTED_ERROR);
+            }
+            setIsModalOpen(true);
+            setIsAlertModalOpen(true);
+          }
+        });
+
+      // Restore fetch mock
+      fetchMock.restore();
       return;
     }
 
@@ -130,7 +184,7 @@ export default function ProfileSetupPage() {
       setIsValidating(false);
 
       // Mock availability check using username str length
-      const _isAvailable = username.length % 2 === 0;
+      const _isAvailable = mockIsAvailable(username);
       setIsAvailable(_isAvailable);
 
       // Reselect input field if username is not available
@@ -140,7 +194,7 @@ export default function ProfileSetupPage() {
     }, 300);
   }, [getValues, isAvailable, setFocus]);
 
-  const validationFailedHandler: SubmitErrorHandler<UserNameFormData> = useCallback((errors) => {
+  const validationFailedHandler: SubmitErrorHandler<UsernameFormData> = useCallback((errors) => {
     // Show error dialog if field is blank
     if (errors.username) {
       setAlertModalMessage(errors?.username?.message || '');
@@ -150,7 +204,7 @@ export default function ProfileSetupPage() {
   }, []);
 
   const {
-    ref: setUserNameInputRef, // Needed by setFocus()
+    ref: setUsernameInputRef, // Needed by setFocus()
     onChange: _, // Not used by IMaskInput
     ...otherFieldProps
   } = register('username');
@@ -180,7 +234,7 @@ export default function ProfileSetupPage() {
           </div>
           <div className="mt-6">
             <IMaskInput
-              inputRef={setUserNameInputRef}
+              inputRef={setUsernameInputRef}
               mask={/^[a-zA-Z0-9_]*$/}
               className="block w-full h-12 px-4 py-2 text-neutral-800 text-center rounded-3xl appearance-none bg-neutral-200 placeholder-neutral-50 focus:border-neutral-300 outline-none sm:text-sm transition duration-150"
               maxLength={32}
@@ -215,7 +269,7 @@ export default function ProfileSetupPage() {
                   {isAvailable ? animatedTick : animatedError }
                 </div>
                 <div className={clsx('text-xs font-medium', isAvailable ? 'text-lime-600' : 'text-red-500')}>
-                  {isAvailable ? MSG_USERNAME_AVAILABLE : MSG_USERNAME_TAKEN}
+                  {isAvailable ? MSG_USERNAME_AVAILABLE : MSG_USERNAME_ALREADY_TAKEN}
                 </div>
               </div>
             )
