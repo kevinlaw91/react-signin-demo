@@ -7,8 +7,8 @@ import clsx from 'clsx';
 import { z } from 'zod';
 import { useForm, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Spinner from '@/components/Spinner.tsx';
-import DotsLoader from '@/components/DotsLoader.tsx';
+import Spinner from '@/components/loaders/Spinner.tsx';
+import DotsLoader from '@/components/loaders/DotsLoader.tsx';
 import AlertModal from '@/components/AlertModal.tsx';
 import {
   setUsername,
