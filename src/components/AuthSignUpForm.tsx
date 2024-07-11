@@ -56,7 +56,7 @@ export default function AuthSignUpForm(props: {
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
   });
-  const [userWarnedUntrimmedPassword, setUserWarnedUntrimmedPassword] = useState(false);
+  const alertedAboutLeadingTrailingSpace = useRef(false);
   const passwordFieldState = getFieldState('password');
 
   /* ===== Password tooltip controller ===== */
@@ -104,8 +104,8 @@ export default function AuthSignUpForm(props: {
       setIsPasswordVisible(false);
 
       // Warn once if password field has leading or trailing spaces
-      if (!userWarnedUntrimmedPassword && data.password !== data.password.trim()) {
-        setUserWarnedUntrimmedPassword(true);
+      if (!alertedAboutLeadingTrailingSpace.current && data.password !== data.password.trim()) {
+        alertedAboutLeadingTrailingSpace.current = true;
         onErrorCallback('Your password may contain leading or trailing spaces\nResubmit if you\'re certain you want to proceed');
         return;
       }
@@ -167,7 +167,7 @@ export default function AuthSignUpForm(props: {
       // Restore fetch mock
       fetchMock.restore();
     },
-    [userWarnedUntrimmedPassword, onSubmitCallback, onErrorCallback, onSuccessCallback, setError],
+    [onSubmitCallback, onErrorCallback, onSuccessCallback, setError],
   );
 
   return (
