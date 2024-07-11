@@ -14,6 +14,13 @@ interface ClaimUsernameFailureResponse {
 
 type ClaimUsernameResponse = ClaimUsernameSuccessResponse | ClaimUsernameFailureResponse;
 
+interface CheckUsernameResponse {
+  data: {
+    username: string;
+    isAvailable: boolean;
+  };
+}
+
 // Error codes
 export const ERR_UNEXPECTED_ERROR = 'ERR_UNEXPECTED_ERROR';
 export const ERR_USERNAME_TAKEN = 'ERR_USERNAME_TAKEN';
@@ -33,4 +40,18 @@ export async function setUsername({ profileId, username }: { profileId: string; 
   }
 
   return await response.json() as ClaimUsernameResponse;
+}
+
+export async function checkUsernameAvailability(username: string, signal?: AbortSignal) {
+  const q = new URLSearchParams({
+    action: 'check-username',
+    username: username,
+  });
+
+  const response = await fetch(new URL(`/api/profile?${q.toString()}`, APP_API_URL).href, {
+    signal,
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  return await response.json() as CheckUsernameResponse;
 }

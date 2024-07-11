@@ -9,7 +9,12 @@ import { useForm, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Spinner from '@/components/Spinner.tsx';
 import AlertModal from '@/components/AlertModal.tsx';
-import { setUsername, ERR_UNEXPECTED_ERROR, ERR_USERNAME_TAKEN } from '@/services/profile.ts';
+import {
+  setUsername,
+  checkUsernameAvailability,
+  ERR_UNEXPECTED_ERROR,
+  ERR_USERNAME_TAKEN,
+} from '@/services/profile.ts';
 
 const userNameSchema = z.object({
   username: z.string()
@@ -24,7 +29,7 @@ type UsernameFormData = z.infer<typeof userNameSchema>;
 const MSG_USERNAME_AVAILABLE = 'Username is available';
 const MSG_USERNAME_ALREADY_TAKEN = 'Username is already taken';
 const MSG_USERNAME_CLAIM_FAILED = 'This username is unavailable. Try a different one.';
-const MSG_UNEXPECTED_ERROR = 'Unable to claim username. Please try again later';
+const MSG_UNEXPECTED_ERROR = 'An error occurred. Please try again later';
 
 const animatedTick = (
   <svg viewBox="0 0 24 24" className="text-lime-600 size-6">
@@ -98,7 +103,6 @@ export default function ProfileSetupPage() {
   const {
     register,
     setValue,
-    getValues,
     setFocus,
     watch,
     handleSubmit,
@@ -111,88 +115,133 @@ export default function ProfileSetupPage() {
   const [alertModalMessage, setAlertModalMessage] = useState<string>('');
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const [isValidating, setIsValidating] = useState(false);
-  const pendingCheck = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const runningCheck = useRef<AbortController | null>(null);
 
-  const submitHandler: SubmitHandler<UsernameFormData> = useCallback((data: UsernameFormData) => {
-    const profileId = '1234';
-    const _isAvailable = mockIsAvailable(data.username);
+  const claimUsername = useCallback((profileId: string, username: string) => {
+    const _isAvailable = mockIsAvailable(username);
 
-    // Make sure username availability check is passed before claiming it
-    if (isAvailable) {
-      // Mock request response
-      fetchMock.patch(`path:/api/profile/${profileId}`,
-        {
-          status: _isAvailable ? 200 : 409,
-          body: _isAvailable
-            ? {
-                success: true,
-                data: {
-                  id: profileId,
-                  username: data.username,
-                },
-              }
-            : {
-                success: false,
+    // Mock request response
+    fetchMock.patch(`path:/api/profile/${profileId}`,
+      {
+        status: _isAvailable ? 200 : 409,
+        body: _isAvailable
+          ? {
+              success: true,
+              data: {
+                id: profileId,
+                username: username,
               },
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-        { delay: 1000 },
-      );
-
-      // Claim the username
-      setUsername({ profileId, ...data })
-        .then((res) => {
-          if (res.success) {
-            alert('ok');
-            return;
-          }
-          throw new Error(ERR_UNEXPECTED_ERROR);
-        })
-        .catch((err) => {
-          if (err instanceof Error) {
-            if (err.message === ERR_USERNAME_TAKEN) {
-              setAlertModalMessage(MSG_USERNAME_CLAIM_FAILED);
-            } else {
-              setAlertModalMessage(MSG_UNEXPECTED_ERROR);
             }
-            setIsModalOpen(true);
-            setIsAlertModalOpen(true);
+          : {
+              success: false,
+            },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+      { delay: 1000 },
+    );
+
+    // Claim the username
+    setUsername({ profileId, username })
+      .then((res) => {
+        if (res.success) {
+          alert('ok');
+          return;
+        }
+        throw new Error(ERR_UNEXPECTED_ERROR);
+      })
+      .catch((err) => {
+        if (err instanceof Error) {
+          if (err.message === ERR_USERNAME_TAKEN) {
+            setAlertModalMessage(MSG_USERNAME_CLAIM_FAILED);
+          } else {
+            setAlertModalMessage(MSG_UNEXPECTED_ERROR);
           }
-        });
+          setIsModalOpen(true);
+          setIsAlertModalOpen(true);
+        }
+      });
 
-      // Restore fetch mock
-      fetchMock.restore();
-      return;
-    }
+    // Restore fetch mock
+    fetchMock.restore();
+  }, []);
 
-    // Hasn't confirmed availability yet, so we do that now
-    // Clear any pending check
-    if (pendingCheck.current) {
-      clearTimeout(pendingCheck.current);
-      pendingCheck.current = null;
-    }
+  const checkUsername = useCallback((username: string) => {
+    // Discard any unfinished checks
+    runningCheck.current?.abort?.();
+    runningCheck.current = new AbortController();
 
-    const username = getValues('username').trim();
     // Hide errors and display loading spinner
     setIsAvailable(null);
     setIsValidating(true);
 
-    pendingCheck.current = setTimeout(() => {
-      // Hide spinner
-      setIsValidating(false);
+    // Mock request response
+    fetchMock.get(
+      {
+        url: `path:/api/profile`,
+        query: {
+          action: 'check-username',
+        },
+      },
+      {
+        status: 200,
+        body: {
+          data: {
+            username: username,
+            isAvailable: mockIsAvailable(username),
+          },
+        },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+      { delay: 1000 },
+    );
 
-      // Mock availability check using username str length
-      const _isAvailable = mockIsAvailable(username);
-      setIsAvailable(_isAvailable);
+    checkUsernameAvailability(username, runningCheck.current.signal)
+      .then((res) => {
+        const _isAvailable = res?.data?.isAvailable;
+        setIsAvailable(_isAvailable);
 
-      // Reselect input field if username is not available
-      if (!_isAvailable) {
-        setFocus('username');
-      }
-    }, 300);
-  }, [getValues, isAvailable, setFocus]);
+        // Reselect input field if username is not available
+        if (!_isAvailable) {
+          setFocus('username');
+        }
+
+        return _isAvailable;
+      })
+      .catch((err) => {
+        if (err instanceof Error && err.name === 'AbortError') {
+          // Request is cancelled intentionally, no error here
+          return;
+        }
+
+        setAlertModalMessage(MSG_UNEXPECTED_ERROR);
+        setIsModalOpen(true);
+        setIsAlertModalOpen(true);
+      })
+      .finally(() => {
+        // Hide spinner
+        setIsValidating(false);
+      });
+
+    // Restore fetch mock
+    fetchMock.restore();
+  }, [setFocus]);
+
+  const submitHandler: SubmitHandler<UsernameFormData> = useCallback((data: UsernameFormData) => {
+    const profileId = '1234';
+
+    // Make sure username availability check is passed before claiming it
+    if (isAvailable) {
+      claimUsername(profileId, data.username);
+      return;
+    }
+
+    // Hasn't confirmed availability yet, so we do that now
+    checkUsername(data.username);
+  }, [isAvailable, checkUsername, claimUsername]);
 
   const validationFailedHandler: SubmitErrorHandler<UsernameFormData> = useCallback((errors) => {
     // Show error dialog if field is blank

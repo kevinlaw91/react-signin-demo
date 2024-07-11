@@ -67,6 +67,11 @@ export default tseslint.config(
           varsIgnorePattern: '^_',
         },
       ],
+      'promise/catch-or-return': ['error',
+        {
+          allowFinally: true,
+        },
+      ],
     },
     settings: {
       react: {
