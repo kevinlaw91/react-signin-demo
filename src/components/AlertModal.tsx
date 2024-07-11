@@ -29,7 +29,7 @@ export default function AlertModal({ icon, message, dismiss }: IAlertModal) {
         role="alertdialog"
         aria-labelledby="alert-modal-title"
         className="bg-white/80 shadow-lg flex flex-col gap-3 justify-center items-center rounded-3xl p-6"
-        style={{ backdropFilter: 'saturate(200%) blur(30px)', width: 'min(400px, 100%)' }}
+        style={{ backdropFilter: 'saturate(200%) blur(30px)', minWidth: 'min(400px, 100%)' }}
       >
         {icon || defaultIcon}
         {message && (
