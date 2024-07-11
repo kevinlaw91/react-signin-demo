@@ -1,0 +1,35 @@
+.loader {
+  display: flex;
+  gap: 6%;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader > span {
+  width: 20%;
+}
+
+.loader > span::after {
+  content: '';
+  display: inline-block;
+  border-radius: 50%;
+  background-color: currentColor;
+  width: 100%;
+  aspect-ratio: 1;
+  animation: pulse 1.2s infinite ease-in-out both;
+  animation-delay: -0.16s;
+}
+
+.loader > span:first-child::after {
+  animation-delay: -0.32s;
+}
+
+.loader > span:last-child::after {
+  animation-delay: 0s;
+}
+
+@keyframes pulse {
+  0%, 80%, 100% { scale: 0; }
+  40% { scale: 1; }
+}
+

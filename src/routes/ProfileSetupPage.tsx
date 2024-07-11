@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { useForm, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Spinner from '@/components/Spinner.tsx';
+import DotsLoader from '@/components/DotsLoader.tsx';
 import AlertModal from '@/components/AlertModal.tsx';
 import {
   setUsername,
@@ -325,8 +326,18 @@ export default function ProfileSetupPage() {
           }
           <div className="pt-3">
             {
-              (isAvailable === null || !isAvailable) && (
-
+              isValidating && (
+                <button
+                  type="button"
+                  className="w-full h-12 px-5 py-3 text-center font-medium text-neutral-50 bg-neutral-200 outline-none rounded-xl"
+                  disabled
+                >
+                  <DotsLoader className="w-[48px] h-full text-white inline-block" />
+                </button>
+              )
+            }
+            {
+              !isValidating && (isAvailable === null || !isAvailable) && (
                 <button
                   type="submit"
                   className="w-full h-12 px-5 py-3 font-medium text-neutral-50 bg-primary-600 hover:bg-primary-500 outline-none rounded-xl focus:ring-2 ring-offset-2 ring-primary-300 transition duration-150"
