@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import LoaderPulsingDots from '@/components/loaders/LoaderPulsingDots.tsx';
+import { LoaderPulsingDotsLinear } from '@/components/loaders/LoaderPulsingDots.tsx';
 
 interface IButton {
   children?: React.ReactNode;
@@ -26,7 +26,7 @@ export function ButtonBusy({ className, ...otherProps }: IButton) {
       disabled
       {...otherProps}
     >
-      <LoaderPulsingDots className="w-[48px] h-full inline-block" />
+      <LoaderPulsingDotsLinear className="w-[48px] h-full inline-block" />
     </Button>
   );
 };

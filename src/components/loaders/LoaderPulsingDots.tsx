@@ -1,15 +1,14 @@
-import style from './LoaderPulsingDots.module.css';
+import clsx from 'clsx';
+import style from '@/components/loaders/LoaderPulsingDots.module.css';
 
-interface IDotsLoaderProps {
+interface ILoaderPulsingDotsLinearProps {
   className?: string;
 }
 
-export default function LoaderPulsingDots(props: IDotsLoaderProps) {
-  const { className } = props;
-
+export function LoaderPulsingDotsLinear(props: ILoaderPulsingDotsLinearProps) {
   return (
-    <div className={className || ''}>
-      <div className={style.loader}>
+    <div {...props}>
+      <div className={style.linear}>
         <span></span>
         <span></span>
         <span></span>
@@ -18,4 +17,27 @@ export default function LoaderPulsingDots(props: IDotsLoaderProps) {
   );
 }
 
-export { LoaderPulsingDots };
+interface ILoaderPulsingDotsCircularProps {
+  className?: string;
+}
+
+export function LoaderPulsingDotsCircular(props: ILoaderPulsingDotsCircularProps) {
+  const { className } = props;
+
+  return (
+    <div className={clsx(style.circular, className)}>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  );
+}

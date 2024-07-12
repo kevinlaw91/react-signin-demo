@@ -7,9 +7,9 @@ import clsx from 'clsx';
 import { z } from 'zod';
 import { useForm, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Spinner from '@/components/loaders/Spinner.tsx';
 import AlertModal from '@/components/AlertModal.tsx';
 import { ButtonPrimary, ButtonBusy } from '@/components/Button.tsx';
+import { LoaderPulsingDotsCircular } from '@/components/loaders/LoaderPulsingDots.tsx';
 import {
   setUsername,
   checkUsernameAvailability,
@@ -305,7 +305,7 @@ export default function ProfileSetupPage() {
               isValidating && (
                 <div className="flex gap-2 my-2 items-center">
                   <div className="flex justify-center ">
-                    <Spinner className="text-lime-600 size-6" />
+                    <LoaderPulsingDotsCircular className="text-lime-600 size-6" />
                   </div>
                   <div className="text-neutral-500 text-xs">
                     Checking availability...
