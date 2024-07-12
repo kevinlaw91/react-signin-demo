@@ -29,7 +29,7 @@ export function ButtonBusy({ className, ...otherProps }: IButton) {
       <LoaderPulsingDotsLinear className="w-[48px] h-full inline-block" />
     </Button>
   );
-};
+}
 
 /**
  * Factory to create custom buttons
