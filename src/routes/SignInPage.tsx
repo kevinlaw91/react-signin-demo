@@ -89,7 +89,7 @@ export default function SignInPage() {
               <div className="py-2">
                 <Link
                   to="/recovery"
-                  className="text-neutral-800 hover:text-primary-500 outline-0 focus:ring-2 ring-offset-2 ring-primary transition duration-150"
+                  className="text-neutral-800 hover:text-primary-500 px-1 py-0.5 outline-none focus:ring-2 ring-primary ring-offset-0 rounded transition duration-150"
                 >
                   Forgot Password?
                 </Link>
@@ -97,7 +97,7 @@ export default function SignInPage() {
               <div className="py-2">
                 <Link
                   to="/signup"
-                  className="text-neutral-800 hover:text-primary-500 outline-0 focus:ring-2 ring-offset-2 ring-primary transition duration-150"
+                  className="text-neutral-800 hover:text-primary-500 px-1 py-0.5 outline-none focus:ring-2 ring-primary ring-offset-0 rounded transition duration-150"
                 >
                   Sign Up
                 </Link>

@@ -138,7 +138,7 @@ export default function AuthSignInForm(props: {
             type="email"
             maxLength={254}
             placeholder="Your email"
-            className="block w-full h-12 px-4 py-2 text-neutral-800 border rounded-lg appearance-none bg-chalk border-zinc-300 placeholder-zinc-300 focus:border-primary-200 outline-none ring-primary-300 sm:text-sm transition duration-150"
+            className="block w-full h-12 px-4 py-2 text-neutral-800 rounded-lg appearance-none bg-neutral-200 placeholder-neutral-400 outline-none focus:ring-1 focus:ring-neutral-400/50 ring-offset-0 sm:text-sm transition duration-150"
             {...register('email', { setValueAs: (value: string) => value.trim() })}
           />
           {errors?.email && (
@@ -153,7 +153,7 @@ export default function AuthSignInForm(props: {
             Password
           </label>
           <input
-            className="block w-full h-12 px-4 py-2 text-neutral-800 border rounded-lg appearance-none bg-chalk border-zinc-300 placeholder-zinc-300 focus:border-primary-200 outline-none ring-primary-300 sm:text-sm transition duration-150"
+            className="block w-full h-12 px-4 py-2 text-neutral-800 rounded-lg appearance-none bg-neutral-200 placeholder-neutral-400 outline-none focus:ring-1 focus:ring-neutral-400/50 ring-offset-0 sm:text-sm transition duration-150"
             placeholder="Try &quot;success&quot;"
             id="password"
             maxLength={255}
@@ -167,7 +167,7 @@ export default function AuthSignInForm(props: {
         <div className="col-span-full">
           <button
             type="submit"
-            className="w-full h-12 gap-3 px-5 py-3 font-medium text-white bg-primary hover:bg-primary-500 outline-none rounded-xl focus:ring-2 ring-offset-2 ring-primary transition duration-150"
+            className="w-full h-12 gap-3 px-5 py-3 font-medium text-white bg-primary hover:bg-primary-500 rounded-xl outline-none focus:ring-2 ring-primary ring-offset-1 transition duration-150"
           >
             Sign in
           </button>

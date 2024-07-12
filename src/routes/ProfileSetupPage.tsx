@@ -269,102 +269,104 @@ export default function ProfileSetupPage() {
       <Helmet>
         <title>Create Profile</title>
       </Helmet>
-      <section className="w-full mx-auto px-4 py-12 max-w-md md:max-w-sm md:px-0 md:w-96 sm:px-4">
-        <form onSubmit={handleSubmit(submitHandler, validationFailedHandler)}>
-          <div className="py-6">
-            <img
-              src="/assets/svg/logo.svg"
-              alt="Logo"
-              className="w-24 h-24 mx-auto"
-            />
-          </div>
-          <h1 className="text-xl md:text-2xl font-bold text-center my-4 text-neutral-700">Let&apos;s pick your username</h1>
-          <div className="text-neutral-400 text-xs text-center my-2" role="note">
-            You can use letters (a-z), numbers (0-9), and underscores (_)
-          </div>
-          <div className="mt-6">
-            <IMaskInput
-              inputRef={setUsernameInputRef}
-              mask={/^[a-zA-Z0-9_]*$/}
-              className="block w-full h-12 px-4 py-2 text-neutral-800 text-center rounded-3xl appearance-none bg-neutral-200 placeholder-neutral-50 focus:border-neutral-300 outline-none sm:text-sm transition duration-150"
-              maxLength={32}
-              prepareChar={str => str.trim().toLowerCase()}
-              onAccept={(value) => {
-                setIsAvailable(null);
-                setValue('username', value);
-              }}
-              defaultValue=""
-              autoFocus
-              placeholder="Try different length to pass"
-              value={watch('username')}
-              {...otherFieldProps}
-            />
-          </div>
-          {
-            isValidating && (
-              <div className="flex gap-2 my-2 items-center">
-                <div className="flex justify-center ">
-                  <Spinner className="text-lime-600 size-6" />
-                </div>
-                <div className="text-neutral-500 text-xs">
-                  Checking availability...
-                </div>
-              </div>
-            )
-          }
-          {
-            isAvailable !== null && (
-              <div className="flex gap-2 my-2 items-center">
-                <div className="flex justify-center ">
-                  {isAvailable ? animatedTick : animatedError }
-                </div>
-                <div className={clsx('text-xs font-medium', isAvailable ? 'text-lime-600' : 'text-red-500')}>
-                  {isAvailable ? MSG_USERNAME_AVAILABLE : MSG_USERNAME_ALREADY_TAKEN}
-                </div>
-              </div>
-            )
-          }
-          <div className="pt-3">
+      <section className="min-h-svh min-w-svw bg-neutral-100">
+        <div className="bg-neutral-100 mx-auto px-4 py-12 max-w-md md:max-w-sm md:px-0 md:w-96 sm:px-4">
+          <form onSubmit={handleSubmit(submitHandler, validationFailedHandler)}>
+            <div className="py-6">
+              <img
+                src="/assets/svg/logo.svg"
+                alt="Logo"
+                className="w-24 h-24 mx-auto"
+              />
+            </div>
+            <h1 className="text-xl md:text-2xl font-bold text-center my-4 text-neutral-700">Let&apos;s pick your username</h1>
+            <div className="text-neutral-400 text-xs text-center my-2" role="note">
+              You can use letters (a-z), numbers (0-9), and underscores (_)
+            </div>
+            <div className="mt-6">
+              <IMaskInput
+                inputRef={setUsernameInputRef}
+                mask={/^[a-zA-Z0-9_]*$/}
+                className="block w-full h-12 px-4 py-2 text-neutral-800 text-center rounded-lg appearance-none bg-neutral-200 placeholder-neutral-400 outline-none focus:ring-1 focus:ring-neutral-400 ring-offset-0 sm:text-sm transition duration-150"
+                maxLength={32}
+                prepareChar={str => str.trim().toLowerCase()}
+                onAccept={(value) => {
+                  setIsAvailable(null);
+                  setValue('username', value);
+                }}
+                defaultValue=""
+                autoFocus
+                placeholder="Enter a username..."
+                value={watch('username')}
+                {...otherFieldProps}
+              />
+            </div>
             {
               isValidating && (
-                <button
-                  type="button"
-                  className="w-full h-12 px-5 py-3 text-center font-medium text-neutral-50 bg-neutral-200 outline-none rounded-xl"
-                  disabled
-                >
-                  <DotsLoader className="w-[48px] h-full text-white inline-block" />
-                </button>
+                <div className="flex gap-2 my-2 items-center">
+                  <div className="flex justify-center ">
+                    <Spinner className="text-lime-600 size-6" />
+                  </div>
+                  <div className="text-neutral-500 text-xs">
+                    Checking availability...
+                  </div>
+                </div>
               )
             }
             {
-              !isValidating && (isAvailable === null || !isAvailable) && (
-                <button
-                  type="submit"
-                  className="w-full h-12 px-5 py-3 font-medium text-neutral-50 bg-primary-600 hover:bg-primary-500 outline-none rounded-xl focus:ring-2 ring-offset-2 ring-primary-300 transition duration-150"
-                >
-                  Check Availability
-                </button>
+              isAvailable !== null && (
+                <div className="flex gap-2 my-2 items-center">
+                  <div className="flex justify-center ">
+                    {isAvailable ? animatedTick : animatedError}
+                  </div>
+                  <div className={clsx('text-xs font-medium', isAvailable ? 'text-lime-600' : 'text-red-500')}>
+                    {isAvailable ? MSG_USERNAME_AVAILABLE : MSG_USERNAME_ALREADY_TAKEN}
+                  </div>
+                </div>
               )
             }
-            <AnimatePresence>
+            <div className="pt-3">
               {
-                isAvailable && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
+                isValidating && (
+                  <button
+                    type="button"
+                    className="w-full h-12 px-5 py-3 text-center font-medium text-neutral-50 bg-neutral-200 outline-none rounded-xl"
+                    disabled
                   >
-                    <button
-                      type="submit"
-                      className="w-full h-12 px-5 py-3 font-medium text-white bg-primary hover:bg-primary-500 outline-none rounded-xl focus:ring-2 ring-offset-2 ring-primary-300 transition duration-150"
-                    >
-                      Confirm
-                    </button>
-                  </motion.div>
+                    <DotsLoader className="w-[48px] h-full text-white inline-block" />
+                  </button>
                 )
               }
-            </AnimatePresence>
-          </div>
-        </form>
+              {
+                !isValidating && (isAvailable === null || !isAvailable) && (
+                  <button
+                    type="submit"
+                    className="w-full h-12 px-5 py-3 font-medium text-white bg-primary hover:bg-primary-500 rounded-xl outline-none focus:ring-2 ring-primary ring-offset-1 transition duration-150"
+                  >
+                    Check Availability
+                  </button>
+                )
+              }
+              <AnimatePresence>
+                {
+                  isAvailable && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 50 }}
+                      animate={{ opacity: 1, y: 0 }}
+                    >
+                      <button
+                        type="submit"
+                        className="w-full h-12 px-5 py-3 font-medium text-white bg-primary hover:bg-primary-500 rounded-xl outline-none focus:ring-2 ring-primary ring-offset-1 transition duration-150"
+                      >
+                        Confirm
+                      </button>
+                    </motion.div>
+                  )
+                }
+              </AnimatePresence>
+            </div>
+          </form>
+        </div>
       </section>
       <AnimatePresence>
         {isModalOpen && (
