@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { authenticateUser, ERR_INVALID_CREDENTIALS, ERR_UNEXPECTED_ERROR } from '@/services/auth.ts';
 import { AuthenticatedUser } from '@/context/AuthContext.tsx';
 import FormErrorMessage from '@/components/FormErrorMessage.tsx';
+import { ButtonPrimary } from '@/components/Button.tsx';
 
 /* ===== Types/Schemas ===== */
 const signInSchema = z.object({
@@ -165,12 +166,7 @@ export default function AuthSignInForm(props: {
           )}
         </div>
         <div className="col-span-full">
-          <button
-            type="submit"
-            className="w-full h-12 gap-3 px-5 py-3 font-medium text-white bg-primary hover:bg-primary-500 rounded-xl outline-none focus:ring-2 ring-primary ring-offset-1 transition duration-150"
-          >
-            Sign in
-          </button>
+          <ButtonPrimary type="submit" className="w-full">Sign In</ButtonPrimary>
         </div>
         {errors?.root && (
           <FormErrorMessage>

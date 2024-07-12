@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { createUser, ERR_UNEXPECTED_ERROR, ERR_SIGNUP_REJECTED } from '@/services/auth.ts';
 import { AuthenticatedUser } from '@/context/AuthContext.tsx';
 import FormErrorMessage from '@/components/FormErrorMessage.tsx';
+import { ButtonPrimary } from '@/components/Button.tsx';
 
 /* ===== Types/Schemas ===== */
 const signUpSchema = z.object({
@@ -275,12 +276,7 @@ export default function AuthSignUpForm(props: {
           </div>
         </div>
         <div className="col-span-full">
-          <button
-            type="submit"
-            className="w-full h-12 gap-3 px-5 py-3 font-medium text-white bg-primary hover:bg-primary-500 rounded-xl outline-none focus:ring-2 ring-primary ring-offset-1 transition duration-150"
-          >
-            Create Account
-          </button>
+          <ButtonPrimary type="submit" className="w-full">Create Account</ButtonPrimary>
         </div>
         {errors?.root && (
           <FormErrorMessage icon={<Icon icon="ion:warning" inline width="24" className="align-bottom mr-1" />}>

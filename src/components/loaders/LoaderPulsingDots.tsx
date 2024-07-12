@@ -1,10 +1,10 @@
-import style from './DotsLoader.module.css';
+import style from './LoaderPulsingDots.module.css';
 
 interface IDotsLoaderProps {
   className?: string;
 }
 
-export default function DotsLoader(props: IDotsLoaderProps) {
+export default function LoaderPulsingDots(props: IDotsLoaderProps) {
   const { className } = props;
 
   return (
@@ -17,3 +17,5 @@ export default function DotsLoader(props: IDotsLoaderProps) {
     </div>
   );
 }
+
+export { LoaderPulsingDots };
