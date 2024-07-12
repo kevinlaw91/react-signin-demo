@@ -8,6 +8,10 @@ body {
 }
 
 /* input autofill background color */
-input:autofill, input:-webkit-autofill {
+input:-webkit-autofill {
+  box-shadow: 0 0 0 30px #ece5e3 inset !important;
+}
+
+input:autofill {
   box-shadow: 0 0 0 30px #ece5e3 inset !important;
 }
