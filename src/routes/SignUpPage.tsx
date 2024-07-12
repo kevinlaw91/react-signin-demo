@@ -57,7 +57,7 @@ export default function SignUpPage() {
         <title>Sign Up</title>
       </Helmet>
       <div className="flex justify-center min-h-svh min-w-full lg:px-0 md:px-12 isolate">
-        <div className="relative z-10 flex flex-col flex-1 px-4 py-6 bg-white lg:border-r lg:py-12 md:flex-none md:px-28 sm:justify-center">
+        <div className="relative z-10 flex flex-col flex-1 px-4 py-6 bg-neutral-100 lg:border-r lg:py-12 md:flex-none md:px-28 sm:justify-center">
           <div className="w-full max-w-md mx-auto md:max-w-sm md:px-0 md:w-96 sm:px-4">
             <div className="flex flex-col">
               <img
@@ -87,7 +87,7 @@ export default function SignUpPage() {
                   <div className="w-full border-t border-gray-300" />
                 </div>
                 <div className="relative flex justify-center">
-                  <span className="px-2 text-sm text-neutral-400 bg-white">or</span>
+                  <span className="px-2 text-sm text-neutral-400 bg-neutral-100">or</span>
                 </div>
               </div>
               <GoogleSignInButton />
