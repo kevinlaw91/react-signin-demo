@@ -144,7 +144,7 @@ export default function ProfileSetupPage() {
     );
 
     // Claim the username
-    setUsername({ profileId, username })
+    return setUsername({ profileId, username })
       .then((res) => {
         if (res.success) {
           alert('ok');
@@ -162,10 +162,12 @@ export default function ProfileSetupPage() {
           setIsModalOpen(true);
           setIsAlertModalOpen(true);
         }
+        throw err;
+      })
+      .finally(() => {
+        // Restore fetch mock
+        fetchMock.restore();
       });
-
-    // Restore fetch mock
-    fetchMock.restore();
   }, []);
 
   const checkUsername = useCallback((username: string) => {
@@ -214,21 +216,20 @@ export default function ProfileSetupPage() {
       })
       .catch((err) => {
         if (err instanceof Error && err.name === 'AbortError') {
-          // Request is cancelled intentionally, no error here
-          return;
+          // Request is cancelled intentionally
+        } else {
+          setAlertModalMessage(MSG_UNEXPECTED_ERROR);
+          setIsModalOpen(true);
+          setIsAlertModalOpen(true);
         }
-
-        setAlertModalMessage(MSG_UNEXPECTED_ERROR);
-        setIsModalOpen(true);
-        setIsAlertModalOpen(true);
+        throw err;
       })
       .finally(() => {
         // Hide spinner
         setIsValidating(false);
+        // Restore fetch mock
+        fetchMock.restore();
       });
-
-    // Restore fetch mock
-    fetchMock.restore();
   }, [setFocus]);
 
   const submitHandler: SubmitHandler<UsernameFormData> = useCallback((data: UsernameFormData) => {

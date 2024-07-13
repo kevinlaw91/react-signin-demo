@@ -91,7 +91,7 @@ export default function AuthSignInForm(props: {
         );
       }
 
-      authenticateUser(data)
+      return authenticateUser(data)
         .then((res: SignInResponse) => {
           if (res.success) {
             // Success, tell the parent component sign in success
@@ -116,10 +116,12 @@ export default function AuthSignInForm(props: {
             setError('root', { type: 'api', message: MSG_ERR_SIGN_IN });
             onErrorCallback(MSG_ERR_SIGN_IN);
           }
+          throw err;
+        })
+        .finally(() => {
+          // Restore fetch mock
+          fetchMock.restore();
         });
-
-      // Restore fetch mock
-      fetchMock.restore();
     },
     [onSubmitCallback, onSuccessCallback, onErrorCallback, setValue, setError],
   );

@@ -139,7 +139,7 @@ export default function AuthSignUpForm(props: {
         );
       }
 
-      createUser(data)
+      return createUser(data)
         .then((res: SignUpResponse) => {
           if (res.success) {
             // Success, tell the parent component login success
@@ -163,10 +163,12 @@ export default function AuthSignUpForm(props: {
             setError('root', { type: 'api', message: MSG_ERR_GENERIC });
             onErrorCallback(MSG_ERR_GENERIC);
           }
+          throw err;
+        })
+        .finally(() => {
+          // Restore fetch mock
+          fetchMock.restore();
         });
-
-      // Restore fetch mock
-      fetchMock.restore();
     },
     [onSubmitCallback, onErrorCallback, onSuccessCallback, setError],
   );
