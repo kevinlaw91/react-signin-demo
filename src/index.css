@@ -9,9 +9,11 @@ body {
 
 /* input autofill background color */
 input:-webkit-autofill {
-  box-shadow: 0 0 0 30px #ece5e3 inset !important;
+  box-shadow: 0 0 0 30px #efeedd inset !important;
+  font-size: revert;
 }
 
 input:autofill {
-  box-shadow: 0 0 0 30px #ece5e3 inset !important;
+  box-shadow: 0 0 0 30px #efeedd inset !important;
+  font-size: revert;
 }
