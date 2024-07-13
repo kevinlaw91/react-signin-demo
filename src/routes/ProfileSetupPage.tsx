@@ -104,9 +104,14 @@ export default function ProfileSetupPage() {
   const {
     register,
     setValue,
+    getValues,
     setFocus,
     watch,
     handleSubmit,
+    formState: {
+      isSubmitSuccessful,
+      isSubmitting,
+    },
   } = useForm<UsernameFormData>({
     resolver: zodResolver(userNameSchema),
   });
@@ -170,7 +175,7 @@ export default function ProfileSetupPage() {
       });
   }, []);
 
-  const checkUsername = useCallback((username: string) => {
+  const checkUsername = useCallback(() => {
     // Discard any unfinished checks
     runningCheck.current?.abort?.();
     runningCheck.current = new AbortController();
@@ -178,6 +183,8 @@ export default function ProfileSetupPage() {
     // Hide errors and display loading spinner
     setIsAvailable(null);
     setIsValidating(true);
+
+    const username = getValues('username');
 
     // Mock request response
     fetchMock.get(
@@ -202,7 +209,7 @@ export default function ProfileSetupPage() {
       { delay: 1000 },
     );
 
-    checkUsernameAvailability(username, runningCheck.current.signal)
+    return checkUsernameAvailability(username, runningCheck.current.signal)
       .then((res) => {
         const _isAvailable = res?.data?.isAvailable;
         setIsAvailable(_isAvailable);
@@ -230,20 +237,18 @@ export default function ProfileSetupPage() {
         // Restore fetch mock
         fetchMock.restore();
       });
-  }, [setFocus]);
+  }, [getValues, setFocus]);
 
   const submitHandler: SubmitHandler<UsernameFormData> = useCallback((data: UsernameFormData) => {
     const profileId = '1234';
 
     // Make sure username availability check is passed before claiming it
     if (isAvailable) {
-      claimUsername(profileId, data.username);
-      return;
+      return claimUsername(profileId, data.username);
     }
 
-    // Hasn't confirmed availability yet, so we do that now
-    checkUsername(data.username);
-  }, [isAvailable, checkUsername, claimUsername]);
+    throw new Error(ERR_USERNAME_TAKEN);
+  }, [isAvailable, claimUsername]);
 
   const validationFailedHandler: SubmitErrorHandler<UsernameFormData> = useCallback((errors) => {
     // Show error dialog if field is blank
@@ -327,15 +332,15 @@ export default function ProfileSetupPage() {
               )
             }
             <div className="pt-3">
-              { isValidating && <ButtonBusy className="w-full" /> }
+              { (isValidating || isSubmitting) && <ButtonBusy className="w-full" /> }
               {
                 !isValidating && (isAvailable === null || !isAvailable) && (
-                  <ButtonPrimary type="submit" className="w-full">Check Availability</ButtonPrimary>
+                  <ButtonPrimary type="button" className="w-full" onClick={checkUsername}>Check Availability</ButtonPrimary>
                 )
               }
               <AnimatePresence>
                 {
-                  isAvailable && (
+                  isAvailable && (!isSubmitting && !isSubmitSuccessful) && (
                     <motion.div
                       initial={{ opacity: 0, y: 50 }}
                       animate={{ opacity: 1, y: 0 }}
