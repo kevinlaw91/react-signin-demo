@@ -186,7 +186,7 @@ export default function AuthSignUpForm(props: {
             type="email"
             maxLength={254}
             placeholder="Your name"
-            className="block w-full h-12 px-4 py-2 text-neutral-800 rounded-lg appearance-none bg-neutral-200 placeholder-neutral-400 outline-none focus:ring-1 focus:ring-neutral-400 ring-offset-0 sm:text-sm transition duration-150"
+            className="block w-full h-12 px-4 py-2 text-neutral-700 rounded-lg appearance-none bg-neutral-200 placeholder-neutral-400 outline-none focus:ring-1 focus:ring-neutral-400 ring-offset-0 sm:text-sm transition duration-150"
             {...register('email', { setValueAs: (value: string) => value.trim() })}
           />
           {errors?.email && (
@@ -245,7 +245,7 @@ export default function AuthSignUpForm(props: {
           </FloatingPortal>
           <div className="relative flex items-center">
             <input
-              className="block w-full h-12 px-4 py-2 pr-12 text-neutral-800 rounded-lg appearance-none bg-chalk bg-neutral-200 placeholder-neutral-400 outline-none focus:ring-1 focus:ring-neutral-400 ring-offset-0 sm:text-sm transition duration-150"
+              className="block w-full h-12 px-4 py-2 pr-12 text-neutral-700 rounded-lg appearance-none bg-chalk bg-neutral-200 placeholder-neutral-400 outline-none focus:ring-1 focus:ring-neutral-400 ring-offset-0 sm:text-sm transition duration-150"
               placeholder="At least 8 characters"
               id="password"
               maxLength={255}
