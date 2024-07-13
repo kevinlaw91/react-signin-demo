@@ -269,8 +269,8 @@ export default function ProfileSetupPage() {
       <Helmet>
         <title>Create Profile</title>
       </Helmet>
-      <section className="min-h-svh min-w-svw bg-neutral-100">
-        <div className="bg-neutral-100 mx-auto px-4 py-12 max-w-md md:max-w-sm md:px-0 md:w-96 sm:px-4">
+      <section className="min-h-svh min-w-svw bg-neutral-100 bg-[url('/assets/images/bg-gradient-subtle-light.jpg')] bg-cover bg-no-repeat">
+        <div className="flex justify-center items-center min-h-svh mx-auto px-4 py-12 max-w-md md:max-w-sm md:px-0 md:w-96 sm:px-4">
           <form onSubmit={handleSubmit(submitHandler, validationFailedHandler)}>
             <div className="py-6">
               <img
