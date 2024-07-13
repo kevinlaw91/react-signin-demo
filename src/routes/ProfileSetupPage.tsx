@@ -319,7 +319,7 @@ export default function ProfileSetupPage() {
                   <div className="flex justify-center ">
                     {isAvailable ? animatedTick : animatedError}
                   </div>
-                  <div className={clsx('text-xs font-medium', isAvailable ? 'text-lime-600' : 'text-red-500')}>
+                  <div className={clsx('text-xs font-semibold', isAvailable ? 'text-lime-600' : 'text-red-500')}>
                     {isAvailable ? MSG_USERNAME_AVAILABLE : MSG_USERNAME_ALREADY_TAKEN}
                   </div>
                 </div>

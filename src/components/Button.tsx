@@ -11,7 +11,7 @@ export function Button({ children, className, ...otherProps }: IButton) {
   return (
     <button
       type="button"
-      className={clsx('px-5 py-3 font-medium rounded-xl outline-none focus:ring-2 ring-offset-1 transition duration-150', className)}
+      className={clsx('px-5 py-3 font-semibold rounded-xl outline-none focus:ring-2 ring-offset-1 transition duration-150', className)}
       {...otherProps}
     >
       {children}

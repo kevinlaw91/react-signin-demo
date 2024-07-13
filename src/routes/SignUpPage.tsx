@@ -70,7 +70,7 @@ export default function SignUpPage() {
               <h1 className="text-2xl font-bold">Sign Up</h1>
               <div className="mt-4">
                 <span>Already have an account? </span>
-                <Link to="/signin" className="text-primary font-medium hover:underline px-1 py-0.5 outline-none focus:ring-1 ring-primary ring-offset-0 rounded">Sign in</Link>
+                <Link to="/signin" className="text-primary font-semibold hover:underline px-1 py-0.5 outline-none focus:ring-1 ring-primary ring-offset-0 rounded">Sign in</Link>
               </div>
             </div>
             <AuthSignUpForm

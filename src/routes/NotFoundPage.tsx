@@ -26,7 +26,7 @@ export default function NotFoundPage() {
             {
               window.history.length > 1 && (
                 <div>
-                  <button className="inline-flex gap-1 bg-white border border-neutral-500 hover:border-neutral-400 focus:ring-4 focus:outline-none focus:ring-neutral-300 font-medium rounded-lg text-sm text-neutral-500 hover:text-neutral-400 px-5 py-2.5 text-center" onClick={handleClick}>
+                  <button className="inline-flex gap-1 bg-white border border-neutral-500 hover:border-neutral-400 focus:ring-4 focus:outline-none focus:ring-neutral-300 font-semibold rounded-lg text-sm text-neutral-500 hover:text-neutral-400 px-5 py-2.5 text-center" onClick={handleClick}>
                     <svg fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
                     </svg>
@@ -36,7 +36,7 @@ export default function NotFoundPage() {
               )
             }
             <div>
-              <Link to="/" className="inline-flex text-white bg-neutral-500 hover:bg-neutral-400 focus:ring-4 focus:outline-none focus:ring-neutral-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Back to Home</Link>
+              <Link to="/" className="inline-flex text-white bg-neutral-500 hover:bg-neutral-400 focus:ring-4 focus:outline-none focus:ring-neutral-300 font-semibold rounded-lg text-sm px-5 py-2.5 text-center">Back to Home</Link>
             </div>
           </div>
         </div>

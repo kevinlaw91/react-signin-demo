@@ -85,11 +85,11 @@ export default function SignInPage() {
               onSuccess={onFormSignInSuccess}
               onError={onFormSignInError}
             />
-            <div className="mt-6 flex text-sm font-medium text-center place-content-between flex-col sm:flex-row">
+            <div className="mt-6 flex text-sm text-center place-content-between flex-col sm:flex-row">
               <div className="py-2">
                 <Link
                   to="/recovery"
-                  className="text-neutral-800 hover:text-primary-500 px-1 py-0.5 outline-none focus:ring-2 ring-primary ring-offset-0 rounded transition duration-150"
+                  className="text-neutral-800 font-semibold hover:text-primary-500 px-1 py-0.5 outline-none focus:ring-2 ring-primary ring-offset-0 rounded transition duration-150"
                 >
                   Forgot Password?
                 </Link>
@@ -97,7 +97,7 @@ export default function SignInPage() {
               <div className="py-2">
                 <Link
                   to="/signup"
-                  className="text-neutral-800 hover:text-primary-500 px-1 py-0.5 outline-none focus:ring-2 ring-primary ring-offset-0 rounded transition duration-150"
+                  className="text-neutral-800 font-semibold hover:text-primary-500 px-1 py-0.5 outline-none focus:ring-2 ring-primary ring-offset-0 rounded transition duration-150"
                 >
                   Sign Up
                 </Link>

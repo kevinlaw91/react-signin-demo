@@ -130,7 +130,7 @@ export default function AuthSignInForm(props: {
         <div>
           <label
             htmlFor="email"
-            className="block mb-3 text-sm font-medium text-neutral-600"
+            className="block mb-3 text-sm font-semibold text-neutral-600"
           >
             Email
           </label>
@@ -149,7 +149,7 @@ export default function AuthSignInForm(props: {
         <div className="col-span-full">
           <label
             htmlFor="password"
-            className="block mb-3 text-sm font-medium text-neutral-600"
+            className="block mb-3 text-sm font-semibold text-neutral-600"
           >
             Password
           </label>

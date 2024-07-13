@@ -33,7 +33,7 @@ export default function AlertModal({ icon, message, dismiss }: IAlertModal) {
       >
         {icon || defaultIcon}
         {message && (
-          <h2 className="text-md text-neutral-700 font-medium text-center" id="alert-modal-title">
+          <h2 className="text-md text-neutral-700 font-semibold text-center" id="alert-modal-title">
             {
               message
                 .split('\n')
@@ -44,7 +44,7 @@ export default function AlertModal({ icon, message, dismiss }: IAlertModal) {
           </h2>
         )}
         <div>
-          <button onClick={dismiss} className="bg-neutral-300 hover:bg-neutral-400/50 text-neutral-700 text-sm font-medium px-4 py-2 mt-4 rounded-lg">
+          <button onClick={dismiss} className="bg-neutral-300 hover:bg-neutral-400/50 text-neutral-700 text-sm font-semibold px-4 py-2 mt-4 rounded-lg">
             Close
           </button>
         </div>

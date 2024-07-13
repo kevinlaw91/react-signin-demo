@@ -9,7 +9,7 @@ export default function BusyScreen({ message }: { message?: string }) {
     >
       <section className="flex flex-col w-1/2 gap-3 justify-center items-center">
         {message && (
-          <h2 className="text-md text-white/90 font-medium">{message}</h2>
+          <h2 className="text-md text-white/90 font-semibold">{message}</h2>
         )}
         <div className={`${styles.progressbar} h-[4px] w-[400px] max-w-[20svw]`} />
       </section>
