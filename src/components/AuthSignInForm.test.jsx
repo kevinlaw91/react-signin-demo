@@ -1,4 +1,4 @@
-import { screen, act } from '@testing-library/react';
+import { screen, act, cleanup } from '@testing-library/react';
 import renderWithTestUserEvent from 'test/utils/renderWithTestUserEvent.ts';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import AuthSignInForm from './AuthSignInForm';
@@ -19,6 +19,8 @@ describe('AuthSignInForm', () => {
 
     afterEach(async () => {
       vi.restoreAllMocks();
+
+      cleanup();
     });
 
     it('calls onSuccessCallback on successful sign in', async () => {

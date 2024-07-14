@@ -1,9 +1,9 @@
-import { screen, act } from '@testing-library/react';
+import { screen, act, cleanup } from '@testing-library/react';
 import renderWithTestUserEvent from 'test/utils/renderWithTestUserEvent.ts';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import AuthSignUpForm from './AuthSignUpForm';
 import * as Auth from '@/services/auth.ts';
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter } from 'react-router-dom';
 
 describe('AuthSignUpForm', () => {
   describe('User submitted valid email and password', () => {
@@ -20,6 +20,7 @@ describe('AuthSignUpForm', () => {
 
     afterEach(async () => {
       vi.restoreAllMocks();
+      cleanup();
     });
 
     it('calls onSuccessCallback on successful sign up', async () => {
