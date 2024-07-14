@@ -116,7 +116,6 @@ export default function AuthSignInForm(props: {
             setError('root', { type: 'api', message: MSG_ERR_SIGN_IN });
             onErrorCallback(MSG_ERR_SIGN_IN);
           }
-          throw err;
         })
         .finally(() => {
           // Restore fetch mock

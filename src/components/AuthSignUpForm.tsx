@@ -163,7 +163,6 @@ export default function AuthSignUpForm(props: {
             setError('root', { type: 'api', message: MSG_ERR_GENERIC });
             onErrorCallback(MSG_ERR_GENERIC);
           }
-          throw err;
         })
         .finally(() => {
           // Restore fetch mock

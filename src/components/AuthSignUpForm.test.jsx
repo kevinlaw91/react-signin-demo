@@ -40,15 +40,20 @@ describe('AuthSignUpForm', () => {
       await user.type(screen.getByLabelText("Password"), 'atleast8characters');
       await user.click(screen.getByRole('button', { name: /create account/i }));
 
-      expect(onSubmitCallback).toHaveBeenCalled();
-      expect(apiCall).toHaveBeenCalledWith({ email: 'test@example.com', password: 'atleast8characters' });
+      await act(async () => {
+        expect(onSubmitCallback).toHaveBeenCalled();
+        expect(apiCall).toHaveBeenCalledWith({ email: 'test@example.com', password: 'atleast8characters' });
 
-      await act(async () => vi.waitFor(
-        () => expect(onSuccessCallback).toHaveBeenCalled(),
-        { timeout: 10000 },
-      ));
+        await vi.waitUntil(
+          () => apiCall.mock.settledResults[0],
+          { timeout: 2000 },
+        )
 
-      expect(onErrorCallback).not.toHaveBeenCalled();
+        await expect(apiCall).toHaveResolved();
+
+        expect(onSuccessCallback).toHaveBeenCalled();
+        expect(onErrorCallback).not.toHaveBeenCalled();
+      });
     });
 
     afterEach(async () => {
@@ -86,15 +91,20 @@ describe('AuthSignUpForm', () => {
       await user.type(screen.getByLabelText("Password"), 'atleast8characters');
       await user.click(screen.getByRole('button', { name: /create account/i }));
 
-      expect(onSubmitCallback).toHaveBeenCalled();
-      expect(apiCall).toHaveBeenCalledWith({ email: 'registered@example.com', password: 'atleast8characters' });
+      await act(async () => {
+        expect(onSubmitCallback).toHaveBeenCalled();
+        expect(apiCall).toHaveBeenCalledWith({ email: 'registered@example.com', password: 'atleast8characters' });
 
-      await act(async () => vi.waitFor(
-        () => expect(onErrorCallback).toHaveBeenCalled(),
-        { timeout: 10000 },
-      ));
+        await vi.waitUntil(
+          () => apiCall.mock.settledResults[0],
+          { timeout: 2000 },
+        )
 
-      expect(onSuccessCallback).not.toHaveBeenCalled();
+        const resultLastAPICall = apiCall.mock.results.at(-1).value;
+        await expect(resultLastAPICall).rejects.toThrow(Auth.ERR_SIGNUP_REJECTED);
+        expect(onSuccessCallback).not.toHaveBeenCalled();
+        expect(onErrorCallback).toHaveBeenCalled();
+      });
     });
   });
 });
