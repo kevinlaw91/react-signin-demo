@@ -26,7 +26,10 @@
     },
 
     /* Types */
-    "types": ["vitest/globals"]
+    "types": [
+      "vitest/globals",
+      "@vitest/browser/matchers",
+    ]
   },
   "exclude": ["public"],
   "references": [{ "path": "./tsconfig.node.json" }],
