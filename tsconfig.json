@@ -24,6 +24,9 @@
       "@/*": ["./src/*"],
       "test/*": ["./test/*"],
     },
+
+    /* Types */
+    "types": ["vitest/globals"]
   },
   "exclude": ["public"],
   "references": [{ "path": "./tsconfig.node.json" }],
