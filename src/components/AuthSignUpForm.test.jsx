@@ -1,111 +1,129 @@
-import { screen, act, cleanup } from '@testing-library/react';
-import renderWithTestUserEvent from 'test/utils/renderWithTestUserEvent.ts';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render } from '@testing-library/react';
+import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
+import userEvent from '@testing-library/user-event';
 import AuthSignUpForm from './AuthSignUpForm';
 import * as Auth from '@/services/auth.ts';
 import { MemoryRouter } from 'react-router-dom';
 
 describe('AuthSignUpForm', () => {
-  describe('User submitted valid email and password', () => {
+  let apiCall;
+
+  beforeAll(() => {
+    apiCall = vi.spyOn(Auth, 'createUser');
+  });
+
+  afterAll(() => {
+    apiCall.mockRestore();
+  });
+
+  describe('submit valid email and password', () => {
     // const signInApiCall = vi.fn().mockResolvedValue({ success: true });
-    let onSubmitCallback = vi.fn();
-    let onSuccessCallback = vi.fn();
-    let onErrorCallback = vi.fn();
+    let onSubmit, onSuccess, onError;
+    let user;
+    let form;
 
-    beforeEach(() => {
-      onSubmitCallback.mockReset();
-      onSuccessCallback.mockReset();
-      onErrorCallback.mockReset();
-    });
+    beforeAll(async () => {
+      onSubmit = vi.fn();
+      onSuccess = vi.fn();
+      onError = vi.fn();
 
-    afterEach(async () => {
-      vi.restoreAllMocks();
-      cleanup();
-    });
-
-    it('calls onSuccessCallback on successful sign up', async () => {
-      const apiCall = vi.spyOn(Auth, 'createUser');
-
-      const { user } = renderWithTestUserEvent(
+      user = userEvent.setup();
+      form = render(
         <MemoryRouter>
           <AuthSignUpForm
-            onSubmit={onSubmitCallback}
-            onSuccess={onSuccessCallback}
-            onError={onErrorCallback}
+            onSubmit={onSubmit}
+            onSuccess={onSuccess}
+            onError={onError}
           />
         </MemoryRouter>,
       );
 
       // Simulate form submission
-      await user.type(screen.getByLabelText('Email'), 'test@example.com');
-      await user.type(screen.getByLabelText('Password'), 'atleast8characters');
-      await user.click(screen.getByRole('button', { name: /create account/i }));
-
-      await act(async () => {
-        expect(onSubmitCallback).toHaveBeenCalled();
-        expect(apiCall).toHaveBeenCalledWith({ email: 'test@example.com', password: 'atleast8characters' });
-
-        await vi.waitUntil(
-          () => apiCall.mock.settledResults[0],
-          { timeout: 2000 },
-        );
-
-        await expect(apiCall).toHaveResolved();
-
-        expect(onSuccessCallback).toHaveBeenCalled();
-        expect(onErrorCallback).not.toHaveBeenCalled();
-      });
+      await user.type(form.getByLabelText('Email'), 'test@example.com');
+      await user.type(form.getByLabelText('Password'), 'atleast8characters');
+      await user.click(form.getByRole('button', { name: /create account/i }));
     });
 
-    afterEach(async () => {
-      vi.restoreAllMocks();
+    afterAll(() => {
+      apiCall.mockClear();
+    });
+
+    it('should submit the form with correct data', async () => {
+      expect(onSubmit).toHaveBeenCalled();
+      expect(apiCall).toHaveBeenCalledWith({ email: 'test@example.com', password: 'atleast8characters' });
+    });
+
+    it('api call resolves', async () => {
+      await vi.waitUntil(
+        () => apiCall.mock.results[0],
+        { timeout: 2000 },
+      );
+      await expect(apiCall.mock.results[0].value).resolves.toBeDefined();
+    });
+
+    it('should call onSuccess', () => {
+      expect(onSuccess).toHaveBeenCalled();
+    });
+
+    it('should not call onError', () => {
+      expect(onError).not.toHaveBeenCalled();
     });
   });
 
   describe('Email or password rejected', () => {
     // const signInApiCall = vi.fn().mockResolvedValue({ success: true });
-    let onSubmitCallback = vi.fn();
-    let onSuccessCallback = vi.fn();
-    let onErrorCallback = vi.fn();
+    let onSubmit, onSuccess, onError;
+    let user;
+    let form;
 
-    beforeEach(() => {
-      onSubmitCallback.mockReset();
-      onSuccessCallback.mockReset();
-      onErrorCallback.mockReset();
-    });
+    beforeAll(async () => {
+      onSubmit = vi.fn();
+      onSuccess = vi.fn();
+      onError = vi.fn();
 
-    it('calls onErrorCallback on unsuccessful sign in', async () => {
-      const apiCall = vi.spyOn(Auth, 'createUser');
-
-      const { user } = renderWithTestUserEvent(
+      user = userEvent.setup();
+      form = render(
         <MemoryRouter>
           <AuthSignUpForm
-            onSubmit={onSubmitCallback}
-            onSuccess={onSuccessCallback}
-            onError={onErrorCallback}
+            onSubmit={onSubmit}
+            onSuccess={onSuccess}
+            onError={onError}
           />
         </MemoryRouter>,
       );
 
       // Simulate form submission
-      await user.type(screen.getByLabelText('Email'), 'registered@example.com');
-      await user.type(screen.getByLabelText('Password'), 'atleast8characters');
-      await user.click(screen.getByRole('button', { name: /create account/i }));
+      await user.type(form.getByLabelText('Email'), 'registered@example.com');
+      await user.type(form.getByLabelText('Password'), 'atleast8characters');
+      await user.click(form.getByRole('button', { name: /create account/i }));
+    });
 
-      await act(async () => {
-        expect(onSubmitCallback).toHaveBeenCalled();
-        expect(apiCall).toHaveBeenCalledWith({ email: 'registered@example.com', password: 'atleast8characters' });
+    afterAll(() => {
+      apiCall.mockClear();
+    });
 
-        await vi.waitUntil(
-          () => apiCall.mock.settledResults[0],
-          { timeout: 2000 },
-        );
+    it('should submit the form with correct data', async () => {
+      expect(onSubmit).toHaveBeenCalled();
+      expect(apiCall).toHaveBeenCalledWith({ email: 'registered@example.com', password: 'atleast8characters' });
+    });
 
-        const resultLastAPICall = apiCall.mock.results.at(-1).value;
-        await expect(resultLastAPICall).rejects.toThrow(Auth.ERR_SIGNUP_REJECTED);
-        expect(onSuccessCallback).not.toHaveBeenCalled();
-        expect(onErrorCallback).toHaveBeenCalled();
-      });
+    it('calls onError on unsuccessful sign in', async () => {
+      await vi.waitUntil(
+        () => apiCall.mock.settledResults[0],
+        { timeout: 2000 },
+      );
+
+      await expect(apiCall.mock.results[0].value)
+        .rejects
+        .toThrow(Auth.ERR_SIGNUP_REJECTED);
+    });
+
+    it('should not call onSuccess', () => {
+      expect(onSuccess).not.toHaveBeenCalled();
+    });
+
+    it('should call onError', () => {
+      expect(onError).toHaveBeenCalled();
     });
   });
 });
