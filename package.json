@@ -17,8 +17,8 @@
     "@floating-ui/react": "^0.26.19",
     "@hookform/resolvers": "^3.9.0",
     "clsx": "^2.1.1",
-    "fetch-mock": "^10.0.7",
-    "framer-motion": "^11.2.13",
+    "fetch-mock": "^10.0.8",
+    "framer-motion": "^11.3.2",
     "globals": "^15.8.0",
     "jose": "^5.6.3",
     "react": "^18.3.1",
@@ -31,11 +31,11 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@eslint/compat": "^1.1.0",
-    "@eslint/js": "^9.6.0",
+    "@eslint/compat": "^1.1.1",
+    "@eslint/js": "^9.7.0",
     "@iconify-icon/react": "^2.1.0",
     "@stylistic/eslint-plugin": "^2.3.0",
-    "@testing-library/dom": "^10.3.1",
+    "@testing-library/dom": "^10.3.2",
     "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.2",
@@ -45,17 +45,17 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react-swc": "^3.7.0",
     "autoprefixer": "^10.4.19",
-    "eslint": "^9.6.0",
+    "eslint": "^9.7.0",
     "eslint-plugin-promise": "^6.4.0",
-    "eslint-plugin-react": "^7.34.3",
+    "eslint-plugin-react": "^7.34.4",
     "eslint-plugin-react-hooks": "^4.6.2",
-    "eslint-plugin-react-refresh": "^0.4.7",
+    "eslint-plugin-react-refresh": "^0.4.8",
     "jsdom": "^24.1.0",
     "postcss": "^8.4.39",
-    "tailwindcss": "^3.4.4",
+    "tailwindcss": "^3.4.5",
     "typescript": "^5.5.3",
     "typescript-eslint": "8.0.0-alpha.30",
     "vite": "^5.3.3",
-    "vitest": "^2.0.1"
+    "vitest": "^2.0.3"
   }
 }
