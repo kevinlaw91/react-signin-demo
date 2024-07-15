@@ -37,8 +37,8 @@ describe('AuthSignUpForm', () => {
       );
 
       // Simulate form submission
-      await user.type(screen.getByLabelText("Email"), 'test@example.com');
-      await user.type(screen.getByLabelText("Password"), 'atleast8characters');
+      await user.type(screen.getByLabelText('Email'), 'test@example.com');
+      await user.type(screen.getByLabelText('Password'), 'atleast8characters');
       await user.click(screen.getByRole('button', { name: /create account/i }));
 
       await act(async () => {
@@ -48,7 +48,7 @@ describe('AuthSignUpForm', () => {
         await vi.waitUntil(
           () => apiCall.mock.settledResults[0],
           { timeout: 2000 },
-        )
+        );
 
         await expect(apiCall).toHaveResolved();
 
@@ -88,8 +88,8 @@ describe('AuthSignUpForm', () => {
       );
 
       // Simulate form submission
-      await user.type(screen.getByLabelText("Email"), 'registered@example.com');
-      await user.type(screen.getByLabelText("Password"), 'atleast8characters');
+      await user.type(screen.getByLabelText('Email'), 'registered@example.com');
+      await user.type(screen.getByLabelText('Password'), 'atleast8characters');
       await user.click(screen.getByRole('button', { name: /create account/i }));
 
       await act(async () => {
@@ -99,7 +99,7 @@ describe('AuthSignUpForm', () => {
         await vi.waitUntil(
           () => apiCall.mock.settledResults[0],
           { timeout: 2000 },
-        )
+        );
 
         const resultLastAPICall = apiCall.mock.results.at(-1).value;
         await expect(resultLastAPICall).rejects.toThrow(Auth.ERR_SIGNUP_REJECTED);

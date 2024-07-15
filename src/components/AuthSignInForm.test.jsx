@@ -17,9 +17,8 @@ describe('AuthSignInForm', () => {
       onErrorCallback.mockReset();
     });
 
-    afterEach(async () => {
+    afterEach(() => {
       vi.restoreAllMocks();
-
       cleanup();
     });
 
@@ -46,11 +45,11 @@ describe('AuthSignInForm', () => {
         await vi.waitUntil(
           () => apiCall.mock.settledResults[0],
           { timeout: 2000 },
-        )
+        );
 
         await expect(apiCall).toHaveResolved();
 
-        expect(onSuccessCallback).toHaveBeenCalled()
+        expect(onSuccessCallback).toHaveBeenCalled();
         expect(onErrorCallback).not.toHaveBeenCalled();
       });
     });
@@ -95,12 +94,12 @@ describe('AuthSignInForm', () => {
         await vi.waitUntil(
           () => apiCall.mock.settledResults[0],
           { timeout: 2000 },
-        )
+        );
 
         const resultLastAPICall = apiCall.mock.results.at(-1).value;
         await expect(resultLastAPICall).rejects.toThrow(Auth.ERR_INVALID_CREDENTIALS);
-        expect(onErrorCallback).toHaveBeenCalled()
-        expect(onSuccessCallback).not.toHaveBeenCalled()
+        expect(onErrorCallback).toHaveBeenCalled();
+        expect(onSuccessCallback).not.toHaveBeenCalled();
       });
     });
   });
