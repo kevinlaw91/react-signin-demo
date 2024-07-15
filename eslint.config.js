@@ -29,9 +29,7 @@ export default tseslint.config(
     plugins: {
       'react-hooks': fixupPluginRules(pluginReactHooks),
     },
-    rules: {
-      ...pluginReactHooks.configs.recommended.rules,
-    },
+    rules: pluginReactHooks.configs.recommended.rules,
   },
   pluginPromise.configs['flat/recommended'],
   {
@@ -43,7 +41,6 @@ export default tseslint.config(
     },
   },
   {
-    name: 'Rules',
     languageOptions: {
       parserOptions: {
         projectService: true,
@@ -78,5 +75,18 @@ export default tseslint.config(
         version: 'detect',
       },
     },
+  },
+  {
+    files: [
+      '**/*.test.ts',
+      '**/*.test.tsx',
+    ],
+  },
+  {
+    files: [
+      '**/*.test.js',
+      '**/*.test.jsx',
+    ],
+    ...tseslint.configs.disableTypeChecked,
   },
 );
