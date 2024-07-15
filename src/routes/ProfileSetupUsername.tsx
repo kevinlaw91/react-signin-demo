@@ -11,7 +11,7 @@ import AlertModal from '@/components/AlertModal.tsx';
 import { ButtonPrimary, ButtonBusy } from '@/components/Button.tsx';
 import { LoaderPulsingDotsCircular } from '@/components/loaders/LoaderPulsingDots.tsx';
 import {
-  setUsername,
+  saveUsername,
   checkUsernameAvailability,
   ERR_UNEXPECTED_ERROR,
   ERR_USERNAME_TAKEN,
@@ -241,7 +241,7 @@ export default function ProfileSetupPage() {
     // Claim the username
     let res;
     try {
-      res = await setUsername({ profileId, username: data.candidate });
+      res = await saveUsername({ profileId, username: data.candidate });
     } catch (err) {
       if (err instanceof Error) {
         if (err.message === ERR_USERNAME_TAKEN) {
