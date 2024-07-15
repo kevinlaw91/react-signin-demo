@@ -1,50 +1,94 @@
-import { cleanup, screen } from '@testing-library/react';
-import {HelmetProvider} from "react-helmet-async";
-import renderWithTestUserEvent from 'test/utils/renderWithTestUserEvent.ts';
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import { cleanup, render } from '@testing-library/react/pure';
+import { HelmetProvider } from 'react-helmet-async';
+import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import ProfileSetupUsername from '@/routes/ProfileSetupUsername.tsx';
+import userEvent from '@testing-library/user-event';
+import * as Profile from '@/services/profile.ts';
 
 describe('ProfileSetupUsername', () => {
-  describe('check availability', () => {
+  describe('username registered', () => {
+    let user;
+    let container;
 
-    afterEach(() => {
-      cleanup();
-    });
-
-    describe('using available username', async () => {
-      const { user } = renderWithTestUserEvent(
+    beforeAll(async () => {
+      user = userEvent.setup();
+      container = render(
         <HelmetProvider>
           <ProfileSetupUsername />
-        </HelmetProvider>
+        </HelmetProvider>,
       );
 
-      const textbox = screen.getByRole('textbox');
-      expect(textbox).toBeInTheDocument();
       // Simulate form submission
-      await user.type(textbox, 'available_username');
-      await user.click(screen.getByRole('button', { name: /check/i }));
-
-      it('should show available', async () => {
-        expect(await screen.findByText(/is available/i)).toBeInTheDocument();
-      })
+      const textbox = container.getByRole('textbox');
+      // Note: usernames with odd lengths are 'taken'
+      await user.type(textbox, 'usernametaken');
+      await user.click(container.getByRole('button', { name: /check/i }));
     });
 
-    describe('using taken username', async () => {
-      const { user } = renderWithTestUserEvent(
+    afterAll(cleanup);
+
+    it('should show username taken', async () => {
+      expect(await container.findByText(/already taken/i)).toBeInTheDocument();
+    });
+
+    it('should still show error even when retry', async () => {
+      // Still show error even when retry
+      await user.click(container.getByRole('button', { name: /check/i }));
+      expect(await container.findByText(/already taken/i)).toBeInTheDocument();
+    });
+  });
+
+  describe('username available', () => {
+    let user;
+    let container;
+    let apiCall;
+
+    beforeAll(async () => {
+      user = userEvent.setup();
+      container = render(
         <HelmetProvider>
           <ProfileSetupUsername />
-        </HelmetProvider>
+        </HelmetProvider>,
       );
 
-      const textbox = screen.getByRole('textbox');
-      expect(textbox).toBeInTheDocument();
-      // Simulate form submission
-      await user.type(textbox, 'taken');
-      await user.click(screen.getByRole('button', { name: /check/i }));
+      apiCall = vi.spyOn(Profile, 'saveUsername');
 
-      it('should show taken', async () => {
-        expect(await screen.findByText(/taken/i)).toBeInTheDocument();
-      })
-    })
+      // Simulate form submission
+      const textbox = container.getByRole('textbox');
+      // Note: usernames with even lengths are 'taken'
+      await user.type(textbox, 'username');
+      await user.click(container.getByRole('button', { name: /check/i }));
+    });
+
+    afterAll(() => {
+      apiCall.mockRestore();
+    });
+
+    it('should show username available', async () => {
+      expect(await container.findByText(/is available/i)).toBeInTheDocument();
+    });
+
+    it('should show confirm button', async () => {
+      expect(await container.findByRole('button', { name: /confirm/i })).toBeInTheDocument();
+    });
+
+    it('should submit form when pressed', async () => {
+      await user.click(await container.findByRole('button', { name: /confirm/i }));
+      expect(apiCall).toHaveBeenCalled();
+      await vi.waitUntil(
+        () => apiCall.mock.results[0],
+        { timeout: 2000 },
+      );
+
+      await expect(apiCall.mock.results[0].value).resolves.toBeDefined();
+    });
+
+    it('should return success', async () => {
+      await vi.waitUntil(
+        () => apiCall.mock.results[0],
+        { timeout: 2000 },
+      );
+      await expect(apiCall.mock.results[0].value).resolves.toBeDefined();
+    });
   });
 });
