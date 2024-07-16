@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useContext, useRef, useState } from 'react';
 import fetchMock from 'fetch-mock';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
@@ -16,6 +16,7 @@ import {
   ERR_UNEXPECTED_ERROR,
   ERR_USERNAME_TAKEN,
 } from '@/services/profile.ts';
+import { ProfileSetupStep, WizardContext } from '@/context/ProfileSetupWizardContext.ts';
 
 // Username awaiting availability check
 const usernameSchema = z.object({
@@ -124,6 +125,11 @@ function UsernameCheckResultMessage({ isAvailable }: { isAvailable: boolean }) {
 export default function ProfileSetupPage() {
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const runningUsernameCheck = useRef<AbortController | null>(null);
+
+  const wizardController = useContext(WizardContext);
+  const gotoNextStep = useCallback(() => {
+    wizardController?.setCurrentStep?.(ProfileSetupStep.STEP_PROFILE_PICTURE);
+  }, [wizardController]);
 
   const frmCheckUsername = useForm<UsernameFormData>({
     resolver: zodResolver(usernameSchema),
@@ -259,7 +265,10 @@ export default function ProfileSetupPage() {
 
     // Success
     if (res?.success) {
-      return res.data.username;
+      // TODO: update session username
+      // res.data.username;
+      gotoNextStep();
+      return;
     } else {
       setAlertModalMessage(MSG_UNEXPECTED_ERROR);
       setIsModalOpen(true);
