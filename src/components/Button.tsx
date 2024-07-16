@@ -1,8 +1,9 @@
+import { ReactNode } from 'react';
 import clsx from 'clsx';
 import { LoaderPulsingDotsLinear } from '@/components/loaders/LoaderPulsingDots.tsx';
 
 interface IButton {
-  children?: React.ReactNode;
+  children?: ReactNode;
   className?: string;
   [key: string]: unknown;
 }

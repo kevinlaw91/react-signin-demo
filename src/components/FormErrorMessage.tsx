@@ -1,9 +1,9 @@
 /* ===== Child components ===== */
-import React from 'react';
+import { ReactNode } from 'react';
 
 interface IFormErrorMessage {
-  icon?: React.ReactNode;
-  children?: React.ReactNode;
+  icon?: ReactNode;
+  children?: ReactNode;
 }
 
 export default function FormErrorMessage({ icon, children }: IFormErrorMessage) {

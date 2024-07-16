@@ -1,8 +1,9 @@
+import { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { Icon } from '@iconify-icon/react';
 
 interface IAlertModal {
-  icon?: React.ReactNode;
+  icon?: ReactNode;
   message?: string;
   dismiss?: () => void;
 }
