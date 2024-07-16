@@ -3,7 +3,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import fetchMock from 'fetch-mock';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { authenticateUser, ERR_INVALID_CREDENTIALS, ERR_UNEXPECTED_ERROR } from '@/services/auth.ts';
+import { authenticateUser, AuthErrorCode } from '@/services/auth.ts';
 import { AuthenticatedUser } from '@/context/AuthContext.tsx';
 import FormErrorMessage from '@/components/FormErrorMessage.tsx';
 import { ButtonPrimary } from '@/components/Button.tsx';
@@ -100,12 +100,12 @@ export default function AuthSignInForm(props: {
           }
 
           // Malformed response?
-          throw new Error(ERR_UNEXPECTED_ERROR);
+          throw new Error(AuthErrorCode.ERR_UNEXPECTED_ERROR);
         })
         .catch((err) => {
           if (err instanceof Error) {
             // Failure, tell the parent component sign in failed
-            if (err.message && err.message === ERR_INVALID_CREDENTIALS) {
+            if (err.message && err.message as AuthErrorCode === AuthErrorCode.ERR_INVALID_CREDENTIALS) {
               setError('password', { type: 'api', message: MSG_ERR_INVALID_CREDENTIALS }, { shouldFocus: true });
               onErrorCallback(MSG_ERR_INVALID_CREDENTIALS);
             } else {

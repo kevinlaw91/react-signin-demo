@@ -109,7 +109,7 @@ describe('AuthSignInForm', () => {
 
       await expect(apiCall.mock.results[0].value)
         .rejects
-        .toThrow(Auth.ERR_INVALID_CREDENTIALS);
+        .toThrow(Auth.AuthErrorCode.ERR_INVALID_CREDENTIALS);
     });
 
     it('should not call onSuccess', () => {

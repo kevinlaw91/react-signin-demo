@@ -6,7 +6,7 @@ import fetchMock from 'fetch-mock';
 import { z } from 'zod';
 import { Icon } from '@iconify-icon/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { createUser, ERR_UNEXPECTED_ERROR, ERR_SIGNUP_REJECTED } from '@/services/auth.ts';
+import { createUser, AuthErrorCode } from '@/services/auth.ts';
 import { AuthenticatedUser } from '@/context/AuthContext.tsx';
 import FormErrorMessage from '@/components/FormErrorMessage.tsx';
 import { ButtonPrimary } from '@/components/Button.tsx';
@@ -39,7 +39,7 @@ const MSG_ERR_REJECTED = 'This email and password combination cannot be used';
 
 /* ===== Mock data ===== */
 const responseSuccess: SignUpSuccessResponse = { success: true, data: { id: '1234' } };
-const responseErrorSignUpRejected: SignUpFailureResponse = { success: false, message: ERR_SIGNUP_REJECTED };
+const responseErrorSignUpRejected: SignUpFailureResponse = { success: false, message: AuthErrorCode.ERR_SIGNUP_REJECTED };
 
 export default function AuthSignUpForm(props: {
   onSubmit: () => void;
@@ -147,12 +147,12 @@ export default function AuthSignUpForm(props: {
             return;
           }
           // Malformed response?
-          throw new Error(ERR_UNEXPECTED_ERROR);
+          throw new Error(AuthErrorCode.ERR_UNEXPECTED_ERROR);
         })
         .catch((err) => {
           // Error: Unable to create user account
           if (err instanceof Error) {
-            if (err.message && err.message === ERR_SIGNUP_REJECTED) {
+            if (err.message && err.message as AuthErrorCode === AuthErrorCode.ERR_SIGNUP_REJECTED) {
               setError('root', { type: 'api', message: MSG_ERR_REJECTED });
               onErrorCallback(MSG_ERR_REJECTED);
             } else {

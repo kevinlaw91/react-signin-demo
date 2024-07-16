@@ -115,7 +115,7 @@ describe('AuthSignUpForm', () => {
 
       await expect(apiCall.mock.results[0].value)
         .rejects
-        .toThrow(Auth.ERR_SIGNUP_REJECTED);
+        .toThrow(Auth.AuthErrorCode.ERR_SIGNUP_REJECTED);
     });
 
     it('should not call onSuccess', () => {
