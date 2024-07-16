@@ -39,7 +39,7 @@ const MSG_ERR_REJECTED = 'This email and password combination cannot be used';
 
 /* ===== Mock data ===== */
 const responseSuccess: SignUpSuccessResponse = { success: true, data: { id: '1234' } };
-const responseErrorSignUpRejected: SignUpFailureResponse = { success: false, message: AuthErrorCode.ERR_SIGNUP_REJECTED };
+const responseErrorSignUpRejected: SignUpFailureResponse = { success: false, message: AuthErrorCode.ERR_ACCOUNT_SIGNUP_REJECTED };
 
 export default function AuthSignUpForm(props: {
   onSubmit: () => void;
@@ -152,7 +152,7 @@ export default function AuthSignUpForm(props: {
         .catch((err) => {
           // Error: Unable to create user account
           if (err instanceof Error) {
-            if (err.message && err.message as AuthErrorCode === AuthErrorCode.ERR_SIGNUP_REJECTED) {
+            if (err.message && err.message as AuthErrorCode === AuthErrorCode.ERR_ACCOUNT_SIGNUP_REJECTED) {
               setError('root', { type: 'api', message: MSG_ERR_REJECTED });
               onErrorCallback(MSG_ERR_REJECTED);
             } else {
