@@ -275,7 +275,7 @@ export default function ProfileSetupPage() {
       setIsAlertModalOpen(true);
       throw new Error(ERR_UNEXPECTED_ERROR);
     }
-  }, []);
+  }, [gotoNextStep]);
 
   const frmCandidateValidationFailedHandler: SubmitErrorHandler<UsernameFormData> = useCallback((errors) => {
     // Show error dialog if field is blank
