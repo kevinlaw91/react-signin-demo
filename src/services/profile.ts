@@ -22,8 +22,10 @@ interface CheckUsernameResponse {
 }
 
 // Error codes
-export const ERR_UNEXPECTED_ERROR = 'ERR_UNEXPECTED_ERROR';
-export const ERR_USERNAME_TAKEN = 'ERR_USERNAME_TAKEN';
+export enum ProfileErrorCode {
+  ERR_UNEXPECTED_ERROR = 'ERR_UNEXPECTED_ERROR',
+  ERR_PROFILE_USERNAME_TAKEN = 'ERR_PROFILE_USERNAME_TAKEN',
+}
 
 export async function saveUsername({ profileId, username }: { profileId: string; username: string }) {
   const response = await fetch(new URL(`/api/profile/${profileId}`, APP_API_URL).href, {
@@ -34,9 +36,9 @@ export async function saveUsername({ profileId, username }: { profileId: string;
 
   if (!response.ok) {
     if (response.status === 409) {
-      throw new Error(ERR_USERNAME_TAKEN);
+      throw new Error(ProfileErrorCode.ERR_PROFILE_USERNAME_TAKEN);
     }
-    throw new Error(ERR_UNEXPECTED_ERROR);
+    throw new Error(ProfileErrorCode.ERR_UNEXPECTED_ERROR);
   }
 
   return await response.json() as ClaimUsernameResponse;

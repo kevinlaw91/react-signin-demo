@@ -13,8 +13,7 @@ import { LoaderPulsingDotsCircular } from '@/components/loaders/LoaderPulsingDot
 import {
   saveUsername,
   checkUsernameAvailability,
-  ERR_UNEXPECTED_ERROR,
-  ERR_USERNAME_TAKEN,
+  ProfileErrorCode,
 } from '@/services/profile.ts';
 import { ProfileSetupStep, WizardContext } from '@/context/ProfileSetupWizardContext.ts';
 
@@ -250,7 +249,7 @@ export default function ProfileSetupPage() {
       res = await saveUsername({ profileId, username: data.candidate });
     } catch (err) {
       if (err instanceof Error) {
-        if (err.message === ERR_USERNAME_TAKEN) {
+        if (err.message && err.message as ProfileErrorCode === ProfileErrorCode.ERR_PROFILE_USERNAME_TAKEN) {
           setAlertModalMessage(MSG_USERNAME_CLAIM_FAILED);
         } else {
           setAlertModalMessage(MSG_UNEXPECTED_ERROR);
@@ -273,7 +272,7 @@ export default function ProfileSetupPage() {
       setAlertModalMessage(MSG_UNEXPECTED_ERROR);
       setIsModalOpen(true);
       setIsAlertModalOpen(true);
-      throw new Error(ERR_UNEXPECTED_ERROR);
+      throw new Error(ProfileErrorCode.ERR_UNEXPECTED_ERROR);
     }
   }, [gotoNextStep]);
 
