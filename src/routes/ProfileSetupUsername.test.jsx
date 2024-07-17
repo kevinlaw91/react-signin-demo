@@ -4,6 +4,7 @@ import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import ProfileSetupUsername from '@/routes/ProfileSetupUsername.tsx';
 import userEvent from '@testing-library/user-event';
 import * as Profile from '@/services/profile.ts';
+import { WizardContext } from '@/contexts/ProfileSetupWizardContext.ts';
 
 describe('ProfileSetupUsername', () => {
   describe('username registered', () => {
@@ -43,11 +44,16 @@ describe('ProfileSetupUsername', () => {
     let container;
     let apiCall;
 
+    // Wizard context
+    let setCurrentStep = vi.fn();
+
     beforeAll(async () => {
       user = userEvent.setup();
       container = render(
         <HelmetProvider>
-          <ProfileSetupUsername />
+          <WizardContext.Provider value={{ setCurrentStep }}>
+            <ProfileSetupUsername />
+          </WizardContext.Provider>
         </HelmetProvider>,
       );
 
@@ -89,6 +95,10 @@ describe('ProfileSetupUsername', () => {
         { timeout: 2000 },
       );
       await expect(apiCall.mock.results[0].value).resolves.toBeDefined();
+    });
+
+    it('should trigger a signal to proceed to the next step', () => {
+      expect(setCurrentStep).toBeCalled();
     });
   });
 });
