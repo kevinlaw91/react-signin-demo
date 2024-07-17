@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
-import IndexPage from '@/routes/index.tsx';
+import IndexPage from '@/routes/IndexPage.tsx';
 import SignInPage from '@/routes/SignInPage.tsx';
 import SignUpPage from '@/routes/SignUpPage.tsx';
 import NotFoundPage from '@/routes/NotFoundPage.tsx';

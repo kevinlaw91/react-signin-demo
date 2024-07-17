@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import AuthSignUpForm from '@/components/AuthSignUpForm.tsx';
 import BusyScreen from '@/components/BusyScreen.tsx';
-import AuthContext, { AuthenticatedUser } from '@/context/AuthContext.tsx';
+import AuthContext, { AuthenticatedUser } from '@/contexts/AuthContext.tsx';
 import AlertModal from '@/components/AlertModal.tsx';
 import GoogleSignInButton from '@/components/GoogleSignInButton.tsx';
 

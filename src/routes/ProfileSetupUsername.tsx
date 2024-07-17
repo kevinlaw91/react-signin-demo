@@ -15,7 +15,7 @@ import {
   checkUsernameAvailability,
   ProfileErrorCode,
 } from '@/services/profile.ts';
-import { ProfileSetupStep, WizardContext } from '@/context/ProfileSetupWizardContext.ts';
+import { ProfileSetupStep, WizardContext } from '@/contexts/ProfileSetupWizardContext.ts';
 
 // Username awaiting availability check
 const usernameSchema = z.object({

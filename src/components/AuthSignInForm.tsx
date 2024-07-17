@@ -4,7 +4,7 @@ import fetchMock from 'fetch-mock';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { authenticateUser, AuthErrorCode } from '@/services/auth.ts';
-import { AuthenticatedUser } from '@/context/AuthContext.tsx';
+import { AuthenticatedUser } from '@/contexts/AuthContext.tsx';
 import FormErrorMessage from '@/components/FormErrorMessage.tsx';
 import { ButtonPrimary } from '@/components/Button.tsx';
 

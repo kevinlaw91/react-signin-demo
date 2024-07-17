@@ -1,6 +1,6 @@
 import ProfileSetupUsername from '@/routes/ProfileSetupUsername.tsx';
 import { useState } from 'react';
-import { ProfileSetupStep, WizardContext } from '@/context/ProfileSetupWizardContext.ts';
+import { ProfileSetupStep, WizardContext } from '@/contexts/ProfileSetupWizardContext.ts';
 
 export default function ProfileSetupPage() {
   const [currentStep, setCurrentStep] = useState<ProfileSetupStep | null>(null);

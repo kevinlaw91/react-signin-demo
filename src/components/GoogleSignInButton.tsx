@@ -1,6 +1,6 @@
 import { ReactElement, useCallback, useContext } from 'react';
 import { decodeJwt } from 'jose';
-import AuthContext, { AuthenticatedUser } from '@/context/AuthContext.tsx';
+import AuthContext, { AuthenticatedUser } from '@/contexts/AuthContext.tsx';
 import { useNavigate } from 'react-router-dom';
 
 // Improvement: Implement custom button using GSI

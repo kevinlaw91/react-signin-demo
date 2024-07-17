@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import AuthContext from '@/context/AuthContext.tsx';
+import AuthContext from '@/contexts/AuthContext.tsx';
 
 export default function IndexPage() {
   const navigate = useNavigate();

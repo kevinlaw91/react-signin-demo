@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { Icon } from '@iconify-icon/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createUser, AuthErrorCode } from '@/services/auth.ts';
-import { AuthenticatedUser } from '@/context/AuthContext.tsx';
+import { AuthenticatedUser } from '@/contexts/AuthContext.tsx';
 import FormErrorMessage from '@/components/FormErrorMessage.tsx';
 import { ButtonPrimary } from '@/components/Button.tsx';
 

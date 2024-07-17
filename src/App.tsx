@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { RouterProvider } from 'react-router-dom';
-import AuthContext, { AuthenticatedUser } from '@/context/AuthContext.tsx';
+import AuthContext, { AuthenticatedUser } from '@/contexts/AuthContext.tsx';
 import router from '@/router.tsx';
 import '@/index.css';
 
