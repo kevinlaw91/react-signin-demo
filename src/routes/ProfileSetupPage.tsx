@@ -1,13 +1,14 @@
-import ProfileSetupUsername from '@/routes/ProfileSetupUsername.tsx';
 import { useEffect, useState } from 'react';
 import { ProfileSetupStep, WizardContext } from '@/contexts/ProfileSetupWizardContext.ts';
+import ProfileSetupUsername from '@/routes/ProfileSetupUsername.tsx';
+import ProfileSetupProfilePicture from '@/routes/ProfileSetupProfilePicture.tsx';
 
 export default function ProfileSetupPage() {
   const [currentStep, setCurrentStep] = useState<ProfileSetupStep | null>(null);
 
   useEffect(() => {
     // Request user to set username
-    setCurrentStep(ProfileSetupStep.STEP_USERNAME);
+    setCurrentStep(ProfileSetupStep.STEP_PROFILE_PICTURE);
   }, []);
 
   return (
@@ -18,8 +19,12 @@ export default function ProfileSetupPage() {
             currentStep === ProfileSetupStep.STEP_USERNAME
             && <ProfileSetupUsername />
           }
+          {
+            currentStep === ProfileSetupStep.STEP_PROFILE_PICTURE
+            && <ProfileSetupProfilePicture />
+          }
         </div>
       </section>
     </WizardContext.Provider>
-);
+  );
 }
