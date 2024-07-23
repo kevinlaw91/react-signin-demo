@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import clsx from 'clsx';
+import { twMerge } from 'tailwind-merge';
 import { LoaderPulsingDotsLinear } from '@/components/loaders/LoaderPulsingDots.tsx';
 import { Icon } from '@iconify-icon/react';
 
@@ -34,10 +34,10 @@ export function Button({ children, leftIcon, rightIcon, iconCentered = true, cla
   return (
     <button
       type="button"
-      className={clsx('flex items-stretch justify-center font-semibold rounded-xl outline-none focus:ring-2 ring-offset-1 transition duration-150', className)}
+      className={twMerge('flex items-stretch justify-center font-semibold rounded-xl text-neutral-800 focus:outline focus:outline-2 outline-primary-600 transition duration-150', className)}
       {...otherProps}
     >
-      <span className={clsx('flex justify-self-stretch w-full items-stretch justify-items-stretch gap-3 mx-4 my-3', iconCentered ? 'justify-center' : 'justify-between')}>
+      <span className={twMerge('flex w-full items-stretch justify-items-stretch gap-3 mx-4 my-3', iconCentered ? 'justify-center' : 'justify-between')}>
         {
           leftIcon && (<span className="flex h-full min-w-6 shrink-0 items-center aspect-square">{leftIcon}</span>)
         }
@@ -53,7 +53,7 @@ export function Button({ children, leftIcon, rightIcon, iconCentered = true, cla
 export function ButtonBusy({ className, ...otherProps }: IButton) {
   return (
     <Button
-      className={clsx('bg-neutral-200 text-neutral-50', className)}
+      className={twMerge('bg-neutral-200 text-neutral-50', className)}
       disabled
       {...otherProps}
     >
@@ -71,7 +71,7 @@ function createCustomButton(name: string, classNames: string) {
   const btn = function ({ children, className, ...otherProps }: IButton) {
     return (
       <Button
-        className={clsx(classNames, className)}
+        className={twMerge(classNames, className)}
         {...otherProps}
       >
         {children}
@@ -83,4 +83,4 @@ function createCustomButton(name: string, classNames: string) {
   return btn;
 }
 
-export const ButtonPrimary = createCustomButton('ButtonPrimary', 'bg-primary hover:bg-primary-500 ring-primary text-white');
+export const ButtonPrimary = createCustomButton('ButtonPrimary', 'bg-primary hover:bg-primary-500 outline-white text-white');
