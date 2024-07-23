@@ -301,79 +301,81 @@ export default function ProfileSetupPage() {
       <Helmet>
         <title>Set Username</title>
       </Helmet>
-      <section>
-        <div className="py-6">
-          <img
-            src="/assets/svg/logo.svg"
-            alt="Logo"
-            className="w-24 h-24 mx-auto"
-          />
-        </div>
-        <h1 className="text-xl md:text-2xl font-bold text-center my-4 text-neutral-700">Let&apos;s pick your username</h1>
-        <div className="text-neutral-400 text-xs text-center my-2" role="note">
-          You can use letters (a-z), numbers (0-9), and underscores (_)
-        </div>
-        <form onSubmit={formAction}>
-          <div className="mt-6">
-            <IMaskInput
-              inputRef={setUsernameInputRef}
-              mask={/^[a-zA-Z0-9_]*$/}
-              className="block w-full h-12 px-4 py-2 text-neutral-700 text-center rounded-lg appearance-none bg-neutral-200 placeholder-neutral-400 outline-none focus:ring-1 focus:ring-neutral-400 ring-offset-0 sm:text-sm transition duration-150"
-              maxLength={32}
-              prepareChar={str => str.trim().toLowerCase()}
-              onAccept={(value) => {
-                setIsAvailable(null);
-                frmCheckUsername.setValue('username', value);
-                frmClaimUsername.setValue('candidate', '');
-              }}
-              defaultValue=""
-              autoFocus
-              placeholder="Enter a username..."
-              value={frmCheckUsername.watch('username')}
-              {...otherFieldProps}
+      <section className="flex justify-center items-center min-h-svh mx-auto px-4 py-12 max-w-md md:max-w-sm md:px-0 md:w-96 sm:px-4">
+        <div>
+          <div className="py-6">
+            <img
+              src="/assets/svg/logo.svg"
+              alt="Logo"
+              className="w-24 h-24 mx-auto"
             />
           </div>
-          {
-            frmCheckUsername.formState.isSubmitting && (
-              <div className="flex gap-2 my-2 items-center">
-                <div className="flex justify-center ">
-                  <LoaderPulsingDotsCircular className="text-lime-600 size-6" />
-                </div>
-                <div className="text-neutral-500 text-xs">
-                  Checking availability...
-                </div>
-              </div>
-            )
-          }
-          {isAvailable !== null && <UsernameCheckResultMessage isAvailable={isAvailable} />}
-          <div className="pt-3">
-            {
-              isSubmitting
-              && <ButtonBusy className="w-full" />
-            }
-            {
-              !frmCheckUsername.formState.isSubmitting && (isAvailable === null || !isAvailable) && (
-                <ButtonPrimary type="submit" className="w-full">Check Availability</ButtonPrimary>
-              )
-            }
-            {
-              (!frmClaimUsername.formState.isSubmitSuccessful && !frmClaimUsername.formState.isSubmitting && isAvailable === true)
-              && (
-                <AnimatePresence>
-                  (
-                  isAvailable === true &&
-                  <motion.div
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                  >
-                    <ButtonPrimary type="submit" className="w-full">Confirm</ButtonPrimary>
-                  </motion.div>
-                  )
-                </AnimatePresence>
-              )
-            }
+          <h1 className="text-xl md:text-2xl font-bold text-center my-4 text-neutral-700">Let&apos;s pick your username</h1>
+          <div className="text-neutral-400 text-xs text-center my-2" role="note">
+            You can use letters (a-z), numbers (0-9), and underscores (_)
           </div>
-        </form>
+          <form onSubmit={formAction}>
+            <div className="mt-6">
+              <IMaskInput
+                inputRef={setUsernameInputRef}
+                mask={/^[a-zA-Z0-9_]*$/}
+                className="block w-full h-12 px-4 py-2 text-neutral-700 text-center rounded-lg appearance-none bg-neutral-200 placeholder-neutral-400 outline-none focus:ring-1 focus:ring-neutral-400 ring-offset-0 sm:text-sm transition duration-150"
+                maxLength={32}
+                prepareChar={str => str.trim().toLowerCase()}
+                onAccept={(value) => {
+                  setIsAvailable(null);
+                  frmCheckUsername.setValue('username', value);
+                  frmClaimUsername.setValue('candidate', '');
+                }}
+                defaultValue=""
+                autoFocus
+                placeholder="Enter a username..."
+                value={frmCheckUsername.watch('username')}
+                {...otherFieldProps}
+              />
+            </div>
+            {
+              frmCheckUsername.formState.isSubmitting && (
+                <div className="flex gap-2 my-2 items-center">
+                  <div className="flex justify-center ">
+                    <LoaderPulsingDotsCircular className="text-lime-600 size-6" />
+                  </div>
+                  <div className="text-neutral-500 text-xs">
+                    Checking availability...
+                  </div>
+                </div>
+              )
+            }
+            {isAvailable !== null && <UsernameCheckResultMessage isAvailable={isAvailable} />}
+            <div className="pt-3">
+              {
+                isSubmitting
+                && <ButtonBusy className="w-full" />
+              }
+              {
+                !frmCheckUsername.formState.isSubmitting && (isAvailable === null || !isAvailable) && (
+                  <ButtonPrimary type="submit" className="w-full">Check Availability</ButtonPrimary>
+                )
+              }
+              {
+                (!frmClaimUsername.formState.isSubmitSuccessful && !frmClaimUsername.formState.isSubmitting && isAvailable === true)
+                && (
+                  <AnimatePresence>
+                    (
+                    isAvailable === true &&
+                    <motion.div
+                      initial={{ opacity: 0, y: 50 }}
+                      animate={{ opacity: 1, y: 0 }}
+                    >
+                      <ButtonPrimary type="submit" className="w-full">Confirm</ButtonPrimary>
+                    </motion.div>
+                    )
+                  </AnimatePresence>
+                )
+              }
+            </div>
+          </form>
+        </div>
       </section>
       <AnimatePresence>
         {isModalOpen && (
