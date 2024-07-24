@@ -56,16 +56,14 @@ export default function SignInPage() {
       <Helmet>
         <title>Sign In</title>
       </Helmet>
-      <div className="flex justify-center min-h-svh min-w-full lg:px-0 md:px-12 isolate">
-        <div className="relative z-10 flex flex-col flex-1 px-4 py-10 bg-neutral-100 lg:border-r lg:py-24 md:flex-none md:px-28 sm:justify-center">
-          <div className="w-full max-w-md mx-auto md:max-w-sm md:px-0 md:w-96 sm:px-4">
-            <div className="flex flex-col">
-              <img
-                src="assets/svg/logo.svg"
-                alt="Logo"
-                className="w-32 h-32 mx-auto my-6"
-              />
-            </div>
+      <div className="grid grid-cols-[repeat(5,1fr)] min-h-svh min-w-full isolate">
+        <div className="row-span-full col-span-full md:col-span-3 md:col-start-2 lg:col-start-1  lg:col-span-2 flex place-items-center px-4 py-6 z-10 bg-neutral-100 lg:border-r">
+          <div className="w-full max-w-md mx-auto px-4">
+            <img
+              src="assets/svg/logo.svg"
+              alt="Logo"
+              className="w-32 h-32 mx-auto my-6"
+            />
             <div className="mt-8">
               <GoogleSignInButton />
               <div className="relative py-3">
@@ -105,15 +103,7 @@ export default function SignInPage() {
             </div>
           </div>
         </div>
-        <div className="hidden lg:block lg:flex-1 lg:relative sm:contents">
-          <div className="absolute w-full h-full">
-            <img
-              className="object-cover w-full h-full"
-              src="assets/images/pawel-czerwinski-Zd315A95aqg-unsplash.webp"
-              alt=""
-            />
-          </div>
-        </div>
+        <div className="row-span-full col-span-full bg-[url('/assets/images/pawel-czerwinski-Zd315A95aqg-unsplash.webp')] bg-cover bg-center bg-no-repeat"></div>
       </div>
       <AnimatePresence>
         {isModalOpen && (
