@@ -24,17 +24,17 @@ interface IButton {
 
 export function Button({ children, leftIcon, rightIcon, iconCentered = true, className, ...otherProps }: IButton) {
   if (typeof leftIcon === 'string') {
-    leftIcon = <Icon icon={leftIcon} className="h-full text-white" height="unset" />;
+    leftIcon = <Icon icon={leftIcon} className="h-full text-current" height="unset" />;
   }
 
   if (typeof rightIcon === 'string') {
-    rightIcon = <Icon icon={rightIcon} className="h-full text-white" height="unset" />;
+    rightIcon = <Icon icon={rightIcon} className="h-full text-current" height="unset" />;
   }
 
   return (
     <button
       type="button"
-      className={twMerge('flex items-stretch justify-center font-semibold rounded-xl text-neutral-800 focus:outline focus:outline-2 outline-primary-600 transition duration-150', className)}
+      className={twMerge('flex items-stretch justify-center font-semibold rounded-xl text-neutral-800 focus:outline focus:outline-2 outline-current transition duration-150', className)}
       {...otherProps}
     >
       <span className={twMerge('flex w-full items-stretch justify-items-stretch gap-3 mx-4 my-3', iconCentered ? 'justify-center' : 'justify-between')}>
@@ -65,13 +65,13 @@ export function ButtonBusy({ className, ...otherProps }: IButton) {
 /**
  * Factory to create custom buttons
  * @param name Display name of the custom button
- * @param classNames Classes to inject to the custom button
+ * @param variantClasses Classes to inject to the custom button
  */
-function createCustomButton(name: string, classNames: string) {
+function createCustomButton(name: string, variantClasses: string) {
   const btn = function ({ children, className, ...otherProps }: IButton) {
     return (
       <Button
-        className={twMerge(classNames, className)}
+        className={twMerge(variantClasses, className)}
         {...otherProps}
       >
         {children}
@@ -83,4 +83,5 @@ function createCustomButton(name: string, classNames: string) {
   return btn;
 }
 
-export const ButtonPrimary = createCustomButton('ButtonPrimary', 'bg-primary hover:bg-primary-500 outline-white text-white');
+export const ButtonPrimary = createCustomButton('ButtonPrimary', 'bg-primary hover:bg-primary-500 outline-offset-1 outline-primary text-white');
+export const ButtonOutline = createCustomButton('ButtonOutline', 'border-2 border-current focus:outline-neutral-500 focus:outline-1 focus:border-neutral-500');

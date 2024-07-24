@@ -3,7 +3,7 @@ import { useCallback, useRef, useState } from 'react';
 import Cropper, { Point, Area } from 'react-easy-crop';
 import { getBase64Strings } from 'exif-rotate-js';
 import { Icon } from '@iconify-icon/react';
-import { Button, ButtonPrimary } from '@/components/Button.tsx';
+import { Button, ButtonPrimary, ButtonOutline } from '@/components/Button.tsx';
 
 async function cropImage(
   imageSrc: string,
@@ -159,12 +159,13 @@ export default function ProfileSetupProfilePicture() {
             </div>
             <div className="flex flex-col gap-2 min-w-[30svw] bottom-0 z-10 justify-items-stretch content-center">
               <ButtonPrimary
+                className="outline-white outline-offset-0"
                 onClick={generateCroppedImage}
               >
                 Confirm
               </ButtonPrimary>
               <Button
-                className="bg-neutral-100"
+                className="bg-neutral-100 outline-offset-0"
                 onClick={handleCropCancel}
               >
                 Cancel
@@ -199,17 +200,18 @@ export default function ProfileSetupProfilePicture() {
                 </div>
               </div>
               <h1 className="my-6 font-semibold text-lg text-neutral-700 text-center">Set Profile Picture</h1>
-              <div className="w-1/2">
-                <ButtonPrimary
+              <div className="flex flex-col gap-1 w-1/2">
+                <ButtonOutline
                   leftIcon="uil:image-upload"
-                  className="w-full"
+                  className="w-full text-primary"
                   onClick={triggerChooseFile}
                 >
                   { !avatarURL.current ? 'Choose File' : 'Change' }
-                </ButtonPrimary>
+                </ButtonOutline>
                 {
-                  avatarURL && (
+                  avatarURL.current && (
                     <ButtonPrimary
+                      leftIcon="mdi:arrow-right"
                       className="w-full"
                       onClick={handleAvatarSave}
                     >
@@ -218,7 +220,7 @@ export default function ProfileSetupProfilePicture() {
                   )
                 }
                 <Button
-                  className="w-full outline-neutral-400"
+                  className="w-full"
                 >
                   Skip
                 </Button>
