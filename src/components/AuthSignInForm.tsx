@@ -140,7 +140,7 @@ export default function AuthSignInForm(props: {
             type="email"
             maxLength={254}
             placeholder="Your email"
-            className="block w-full h-12 px-4 py-2 text-neutral-700 rounded-lg appearance-none bg-neutral-200 placeholder-neutral-400 outline-none focus:ring-1 focus:ring-neutral-400/50 ring-offset-0 sm:text-sm transition duration-150"
+            className="block w-full h-12 px-4 py-2 text-neutral-700 rounded-lg appearance-none bg-neutral-200 placeholder-neutral-400 outline-none focus:ring-1 focus:ring-neutral-400/50 ring-offset-0 text-sm transition duration-150"
             {...register('email', { setValueAs: (value: string) => value.trim() })}
           />
           {errors?.email && (
@@ -155,7 +155,7 @@ export default function AuthSignInForm(props: {
             Password
           </label>
           <input
-            className="block w-full h-12 px-4 py-2 text-neutral-700 rounded-lg appearance-none bg-neutral-200 placeholder-neutral-400 outline-none focus:ring-1 focus:ring-neutral-400/50 ring-offset-0 sm:text-sm transition duration-150"
+            className="block w-full h-12 px-4 py-2 text-neutral-700 rounded-lg appearance-none bg-neutral-200 placeholder-neutral-400 outline-none focus:ring-1 focus:ring-neutral-400/50 ring-offset-0 text-sm transition duration-150"
             placeholder="Try &quot;success&quot;"
             id="password"
             maxLength={255}
