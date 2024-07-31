@@ -9,6 +9,10 @@ const loadImage = (src: string): Promise<HTMLImageElement> =>
     img.src = src;
   });
 
+/**
+ * Return base64-encoded data url of image
+ * @param file source file
+ */
 export const fixImageOrientation = async (file: File) => {
   const base64URLs = await getBase64Strings([file]);
   return base64URLs?.[0];
