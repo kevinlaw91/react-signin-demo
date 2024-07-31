@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+import { twMerge } from 'tailwind-merge';
 import { ChangeEvent, useCallback, useRef, useState } from 'react';
 import Cropper, { Area, Point } from 'react-easy-crop';
 import { Icon } from '@iconify-icon/react';
@@ -102,11 +103,40 @@ function ProfilePictureEditor({ sourceUrl, onApply, onCancel }: {
   );
 }
 
+function ProfilePicturePreview({ src, className, ...otherProps }: {
+  src?: string;
+  className?: string;
+  onClick?: () => void;
+}) {
+  return (
+    <section data-testid="avatar_preview" className={twMerge('aspect-square', className)} role="button" {...otherProps}>
+      <div className="bg-gradient-to-br from-neutral-400/50 to-neutral-400 rounded-full w-full aspect-square overflow-hidden flex items-center justify-center">
+        {
+          src
+            ? (
+                <img
+                  src={src}
+                  alt="Preview of profile picture"
+                  className="w-full h-full object-cover"
+                />
+              )
+            : (
+                <Icon icon="teenyicons:user-solid" className="flex items-center justify-center w-3/4 text-white/20 aspect-square" width="unset" />
+              )
+        }
+      </div>
+      <div className="absolute bottom-0 right-0 w-1/4 box-border p-3 aspect-square bg-primary border-2 border-white rounded-full flex items-center justify-center">
+        <Icon icon="ph:camera" className="w-full text-white" width="unset" />
+      </div>
+    </section>
+  );
+}
+
 export default function ProfileSetupProfilePicture() {
   const [imageSrc, setImageSrc] = useState<string>();
   const [isCropEditorVisible, setIsCropEditorVisible] = useState<boolean>(false);
   const [croppedImage, setCroppedImage] = useState<Blob>();
-  const [avatarUrl, createUrl] = useObjectURL();
+  const [previewUrl, createUrl] = useObjectURL();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const triggerChooseFile = () => fileInputRef?.current?.click?.();
@@ -164,26 +194,11 @@ export default function ProfileSetupProfilePicture() {
         && (
           <section className="flex justify-center items-center min-h-svh mx-auto px-4 py-12 max-w-md md:max-w-sm md:px-0 md:w-96 sm:px-4">
             <section className="flex flex-col items-center justify-center w-full">
-              <div className="relative w-full max-w-[224px] aspect-square" data-testid="avatar_preview" role="button" onClick={triggerChooseFile}>
-                <div className="bg-gradient-to-br from-neutral-400/50 to-neutral-400 rounded-full w-full aspect-square overflow-hidden flex items-center justify-center">
-                  {
-                    avatarUrl
-                      ? (
-                          <img
-                            src={avatarUrl}
-                            alt="Preview of profile picture"
-                            className="w-full h-full object-cover"
-                          />
-                        )
-                      : (
-                          <Icon icon="teenyicons:user-solid" className="flex items-center justify-center w-3/4 text-white/20 aspect-square" width="unset" />
-                        )
-                  }
-                </div>
-                <div className="absolute bottom-0 right-0 w-1/4 box-border p-3 aspect-square bg-primary border-2 border-white rounded-full flex items-center justify-center">
-                  <Icon icon="ph:camera" className="w-full text-white" width="unset" />
-                </div>
-              </div>
+              <ProfilePicturePreview
+                src={previewUrl}
+                className="relative w-full max-w-[224px]"
+                onClick={triggerChooseFile}
+              />
               <h1 className="my-6 font-semibold text-lg text-neutral-700 text-center">Set Profile Picture</h1>
               <div className="flex flex-col gap-1 w-1/2">
                 <ButtonOutline
@@ -191,10 +206,10 @@ export default function ProfileSetupProfilePicture() {
                   className="w-full text-primary"
                   onClick={triggerChooseFile}
                 >
-                  { !avatarUrl ? 'Choose File' : 'Change Picture' }
+                  {!previewUrl ? 'Choose File' : 'Change Picture'}
                 </ButtonOutline>
                 {
-                  avatarUrl && (
+                  previewUrl && (
                     <ButtonPrimary
                       leftIcon="mdi:arrow-right"
                       className="w-full"
