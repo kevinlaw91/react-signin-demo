@@ -5,6 +5,7 @@ import Cropper, { Area, Point } from 'react-easy-crop';
 import { Icon } from '@iconify-icon/react';
 import { Button, ButtonOutline, ButtonPrimary } from '@/components/Button.tsx';
 import { cropImage, CropParams, fixImageOrientation } from '@/utils/image.ts';
+import BusyScreen from '@/components/BusyScreen.tsx';
 
 function useObjectURL(): [string | undefined, (blob: Blob) => void] {
   const [url, setUrl] = useState<string>();
@@ -133,6 +134,7 @@ function ProfilePicturePreview({ src, className, ...otherProps }: {
 }
 
 export default function ProfileSetupProfilePicture() {
+  const [isLoading, setIsLoading] = useState(false);
   const [imageSrc, setImageSrc] = useState<string>();
   const [isCropEditorVisible, setIsCropEditorVisible] = useState<boolean>(false);
   const [croppedImage, setCroppedImage] = useState<Blob>();
@@ -152,8 +154,13 @@ export default function ProfileSetupProfilePicture() {
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const url = await fixImageOrientation(e.target.files[0]);
-      if (url) showCropper(url);
+      setIsLoading(true);
+      void fixImageOrientation(e.target.files[0])
+        .then((url) => {
+          if (url) showCropper(url);
+          setIsLoading(false);
+          return;
+        });
     }
   };
 
@@ -181,7 +188,14 @@ export default function ProfileSetupProfilePicture() {
         <title>Profile Picture</title>
       </Helmet>
       {
-        isCropEditorVisible && (
+        isLoading && (
+          <section className="flex items-center justify-center w-full h-svh">
+            <BusyScreen />
+          </section>
+        )
+      }
+      {
+        isCropEditorVisible && !isLoading && (
           <ProfilePictureEditor
             sourceUrl={imageSrc}
             onCancel={hideCropper}
@@ -190,8 +204,7 @@ export default function ProfileSetupProfilePicture() {
         )
       }
       {
-        !isCropEditorVisible
-        && (
+        !isCropEditorVisible && !isLoading && (
           <section className="flex justify-center items-center min-h-svh mx-auto px-4 py-12 max-w-md md:max-w-sm md:px-0 md:w-96 sm:px-4">
             <section className="flex flex-col items-center justify-center w-full">
               <ProfilePicturePreview
