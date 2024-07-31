@@ -20,6 +20,7 @@ export default function BusyScreen({ message, messageClassName, progressValueCol
           <h1 className={twMerge('text-md text-current font-semibold', messageClassName)}>{message}</h1>
         )}
         <div
+          role="progressbar"
           className={`${styles.progressbar} h-[4px] w-[400px] max-w-[20svw]`}
           style={{
             '--progress-value-fill': progressValueColor,
