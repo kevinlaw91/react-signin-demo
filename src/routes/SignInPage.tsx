@@ -117,7 +117,7 @@ export default function SignInPage() {
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {isSubmitting && <BusyScreen message="Signing In" />}
+        {isSubmitting && <BusyScreen message="Signing In" messageClassName="text-white/90" />}
       </AnimatePresence>
       <AnimatePresence>
         {isAlertModalOpen && (

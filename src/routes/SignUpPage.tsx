@@ -106,7 +106,7 @@ export default function SignUpPage() {
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {isSubmitting && <BusyScreen message="Creating account" />}
+        {isSubmitting && <BusyScreen message="Creating account" messageClassName="text-white/90" />}
       </AnimatePresence>
       <AnimatePresence>
         {isAlertModalOpen && (
