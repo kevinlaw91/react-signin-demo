@@ -53,16 +53,62 @@ function AvatarCropper(props: {
   );
 }
 
-export default function ProfileSetupProfilePicture() {
-  const [isCropEditorVisible, setIsCropEditorVisible] = useState<boolean>(false);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  // Avatar cropper
-  const [imageSrc, setImageSrc] = useState<string>();
+function ProfilePictureEditor({ sourceUrl, onApply, onCancel }: {
+  // Image source url
+  sourceUrl?: string;
+  onApply?: (blob: Blob) => void;
+  onCancel?: () => void;
+}) {
   const avatarCropParam = useRef<CropParams>();
+
+  const handleChange = (params: CropParams) => {
+    avatarCropParam.current = params;
+  };
+
+  const handleConfirm = async () => {
+    if (!sourceUrl) throw new Error('No crop image source');
+
+    if (onApply) {
+      const imageBlob = await cropImage(sourceUrl, avatarCropParam.current);
+      if (!imageBlob) throw new Error('No crop result returned');
+
+      onApply(imageBlob);
+    }
+  };
+
+  return (
+    <section className="flex flex-col gap-8 items-center justify-center w-full h-svh overflow-hidden">
+      <div className="relative h-full max-h-[512px] w-full overflow-visible" data-testid="cropper-container">
+        <AvatarCropper
+          image={sourceUrl}
+          onChange={handleChange}
+        />
+      </div>
+      <div className="flex flex-col gap-2 min-w-[30svw] bottom-0 z-10 justify-items-stretch content-center">
+        <ButtonPrimary
+          className="outline-white outline-offset-0"
+          onClick={handleConfirm}
+        >
+          Confirm
+        </ButtonPrimary>
+        <Button
+          className="bg-neutral-100 outline-offset-0"
+          onClick={onCancel}
+        >
+          Cancel
+        </Button>
+      </div>
+    </section>
+  );
+}
+
+export default function ProfileSetupProfilePicture() {
+  const [imageSrc, setImageSrc] = useState<string>();
+  const [isCropEditorVisible, setIsCropEditorVisible] = useState<boolean>(false);
   const [croppedImage, setCroppedImage] = useState<Blob>();
   const [avatarUrl, createUrl] = useObjectURL();
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const triggerChooseFile = () => fileInputRef?.current?.click?.();
 
   /**
@@ -81,26 +127,7 @@ export default function ProfileSetupProfilePicture() {
     }
   };
 
-  const handleCropChange = (params: CropParams) => {
-    avatarCropParam.current = params;
-  };
-
-  const handleCropConfirm = () => {
-    if (!imageSrc) throw new Error('No crop image source');
-
-    return cropImage(imageSrc, avatarCropParam.current)
-      .then((blob) => {
-        if (!blob) throw new Error('No crop image returned');
-
-        setCroppedImage(blob);
-        createUrl(blob);
-        // Hide cropper
-        showCropper(undefined);
-        return;
-      });
-  };
-
-  const handleCropCancel = () => showCropper(undefined);
+  const hideCropper = () => showCropper(undefined);
 
   const handleAvatarSave = useCallback(() => {
     if (croppedImage) {
@@ -110,6 +137,14 @@ export default function ProfileSetupProfilePicture() {
     }
   }, [croppedImage]);
 
+  const handleCropConfirm = (blob: Blob) => {
+    setCroppedImage(blob);
+    createUrl(blob);
+    // Hide cropper
+    hideCropper();
+    return;
+  };
+
   return (
     <>
       <Helmet>
@@ -117,28 +152,11 @@ export default function ProfileSetupProfilePicture() {
       </Helmet>
       {
         isCropEditorVisible && (
-          <section className="flex flex-col gap-8 items-center justify-center w-full h-svh overflow-hidden">
-            <div className="relative h-full max-h-[512px] w-full overflow-visible" data-testid="cropper-container">
-              <AvatarCropper
-                image={imageSrc}
-                onChange={handleCropChange}
-              />
-            </div>
-            <div className="flex flex-col gap-2 min-w-[30svw] bottom-0 z-10 justify-items-stretch content-center">
-              <ButtonPrimary
-                className="outline-white outline-offset-0"
-                onClick={handleCropConfirm}
-              >
-                Confirm
-              </ButtonPrimary>
-              <Button
-                className="bg-neutral-100 outline-offset-0"
-                onClick={handleCropCancel}
-              >
-                Cancel
-              </Button>
-            </div>
-          </section>
+          <ProfilePictureEditor
+            sourceUrl={imageSrc}
+            onCancel={hideCropper}
+            onApply={handleCropConfirm}
+          />
         )
       }
       {
