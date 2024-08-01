@@ -152,14 +152,16 @@ export default function ProfileSetupProfilePicture() {
     setIsCropEditorVisible(!!url);
   };
 
-  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setIsLoading(true);
       void fixImageOrientation(e.target.files[0])
         .then((url) => {
           if (url) showCropper(url);
-          setIsLoading(false);
           return;
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   };
