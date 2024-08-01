@@ -138,7 +138,7 @@ export default function ProfileSetupProfilePicture() {
   const [imageSrc, setImageSrc] = useState<string>();
   const [isCropEditorVisible, setIsCropEditorVisible] = useState<boolean>(false);
   const [croppedImage, setCroppedImage] = useState<Blob>();
-  const [previewUrl, createUrl] = useObjectURL();
+  const [previewUrl, generatePreviewUrl] = useObjectURL();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const triggerChooseFile = () => fileInputRef?.current?.click?.();
@@ -178,7 +178,7 @@ export default function ProfileSetupProfilePicture() {
 
   const handleCropConfirm = (blob: Blob) => {
     setCroppedImage(blob);
-    createUrl(blob);
+    generatePreviewUrl(blob);
     // Hide cropper
     hideCropper();
     return;
