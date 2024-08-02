@@ -14,7 +14,7 @@ const loadImage = (src: string): Promise<HTMLImageElement> =>
  * @param file source file
  */
 export const fixImageOrientation = async (file: File) => {
-  const base64URLs = await getBase64Strings([file]);
+  const base64URLs = await getBase64Strings([file], { type: 'image/png' });
   return base64URLs?.[0];
 };
 
@@ -72,6 +72,6 @@ export async function cropImage(
       } else {
         reject(new Error('Failed to create blob.'));
       }
-    }, 'image/jpeg');
+    }, 'image/png');
   });
 }

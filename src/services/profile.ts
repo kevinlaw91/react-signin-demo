@@ -57,3 +57,28 @@ export async function checkUsernameAvailability(username: string, signal?: Abort
   });
   return await response.json() as CheckUsernameResponse;
 }
+
+interface UploadProfilePictureSuccessResponse {
+  success: true;
+  data: {
+    src: string;
+  };
+}
+
+interface UploadProfilePictureFailureResponse {
+  success: false;
+}
+
+type UploadProfilePictureResponse = UploadProfilePictureSuccessResponse | UploadProfilePictureFailureResponse;
+
+export async function setProfilePicture({ profileId, image }: { profileId: string; image: Blob }) {
+  const formData = new FormData();
+  formData.append('image', image);
+
+  const response = await fetch(new URL(`/api/profile/${profileId}/picture`, APP_API_URL).href, {
+    method: 'POST',
+    body: formData,
+  });
+
+  return await response.json() as UploadProfilePictureResponse;
+}

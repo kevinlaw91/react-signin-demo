@@ -1,11 +1,13 @@
 import { Helmet } from 'react-helmet-async';
 import { twMerge } from 'tailwind-merge';
+import fetchMock from 'fetch-mock';
 import { ChangeEvent, useCallback, useRef, useState } from 'react';
 import Cropper, { Area, Point } from 'react-easy-crop';
 import { Icon } from '@iconify-icon/react';
 import { Button, ButtonOutline, ButtonPrimary } from '@/components/Button.tsx';
 import { cropImage, CropParams, fixImageOrientation } from '@/utils/image.ts';
 import BusyScreen from '@/components/BusyScreen.tsx';
+import { setProfilePicture } from '@/services/profile.ts';
 
 function useObjectURL(): [string | undefined, (blob: Blob) => void] {
   const [url, setUrl] = useState<string>();
@@ -168,11 +170,45 @@ export default function ProfileSetupProfilePicture() {
 
   const hideCropper = () => showCropper(undefined);
 
-  const handleAvatarSave = useCallback(() => {
+  const handleProfilePictureSave = useCallback(async () => {
+    // Mock request response
+    fetchMock.post(
+      {
+        url: `express:/api/profile/:profileId/picture`,
+      },
+      {
+        status: 200,
+        body: {
+          success: true,
+          data: {
+            src: 'profilepicture.png',
+          },
+        },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+      { delay: 1000 },
+    );
+
     if (croppedImage) {
-      // TODO: Show loader
-      // TODO: Upload cropped image to server
-      // TODO: Proceed to next step if success
+      setIsLoading(true);
+
+      setProfilePicture({ profileId: '1234', image: croppedImage })
+        .then((res) => {
+          if (res.success) {
+            // TODO: Proceed to next step if success
+            // res.data.src;
+          }
+          return;
+        })
+        .catch((e) => {
+          // Alert error
+          console.error(e);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   }, [croppedImage]);
 
@@ -228,7 +264,7 @@ export default function ProfileSetupProfilePicture() {
                     <ButtonPrimary
                       leftIcon="mdi:arrow-right"
                       className="w-full"
-                      onClick={handleAvatarSave}
+                      onClick={handleProfilePictureSave}
                     >
                       Continue
                     </ButtonPrimary>
