@@ -113,7 +113,7 @@ function ProfilePicturePreview({ src, className, ...otherProps }: {
 }) {
   return (
     <section data-testid="avatar_preview" className={twMerge('aspect-square', className)} role="button" {...otherProps}>
-      <div className="bg-gradient-to-br from-neutral-400/50 to-neutral-400 rounded-full w-full aspect-square overflow-hidden flex items-center justify-center">
+      <div className={twMerge('rounded-full w-full aspect-square overflow-hidden flex items-center justify-center border-4 border-white', src ? 'bg-transparent' : 'bg-gradient-to-br from-neutral-400/50 to-neutral-400')}>
         {
           src
             ? (
