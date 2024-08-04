@@ -57,9 +57,9 @@ function AvatarCropper(props: {
   );
 }
 
-function ProfilePictureEditor({ sourceUrl, onApply, onCancel }: {
+function ProfilePictureEditor({ src, onApply, onCancel }: {
   // Image source url
-  sourceUrl?: string;
+  src?: string;
   onApply?: (blob: Blob) => void;
   onCancel?: () => void;
 }) {
@@ -70,10 +70,10 @@ function ProfilePictureEditor({ sourceUrl, onApply, onCancel }: {
   };
 
   const handleConfirm = async () => {
-    if (!sourceUrl) throw new Error('No crop image source');
+    if (!src) throw new Error('No crop image source');
 
     if (onApply) {
-      const imageBlob = await cropImage(sourceUrl, avatarCropParam.current);
+      const imageBlob = await cropImage(src, avatarCropParam.current);
       if (!imageBlob) throw new Error('No crop result returned');
 
       onApply(imageBlob);
@@ -84,7 +84,7 @@ function ProfilePictureEditor({ sourceUrl, onApply, onCancel }: {
     <section className="flex flex-col gap-8 items-center justify-center w-full h-svh overflow-hidden">
       <div className="relative h-full max-h-[512px] w-full overflow-visible" data-testid="cropper-container">
         <AvatarCropper
-          image={sourceUrl}
+          image={src}
           onChange={handleChange}
         />
       </div>
@@ -301,7 +301,7 @@ export default function ProfileSetupProfilePicture() {
       {
         isCropEditorVisible && !isLoading && (
           <ProfilePictureEditor
-            sourceUrl={imageFileSrc}
+            src={imageFileSrc}
             onCancel={hideCropper}
             onApply={handleCropConfirm}
           />
