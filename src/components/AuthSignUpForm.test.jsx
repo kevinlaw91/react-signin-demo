@@ -17,7 +17,6 @@ describe('AuthSignUpForm', () => {
   });
 
   describe('submit valid email and password', () => {
-    // const signInApiCall = vi.fn().mockResolvedValue({ success: true });
     let onSubmit, onSuccess, onError;
     let user;
     let form;
@@ -71,7 +70,6 @@ describe('AuthSignUpForm', () => {
   });
 
   describe('Email or password rejected', () => {
-    // const signInApiCall = vi.fn().mockResolvedValue({ success: true });
     let onSubmit, onSuccess, onError;
     let user;
     let form;
