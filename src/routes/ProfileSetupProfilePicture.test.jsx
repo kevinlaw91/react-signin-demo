@@ -3,8 +3,13 @@ import userEvent from '@testing-library/user-event';
 import { cleanup, render, waitForElementToBeRemoved } from '@testing-library/react/pure';
 import * as exifRotate from 'exif-rotate-js';
 import { HelmetProvider } from 'react-helmet-async';
-import ProfileSetupProfilePicture from '@/routes/ProfileSetupProfilePicture.tsx';
+import ProfileSetupProfilePicture, { ProfileSetupProfilePictureForm } from '@/routes/ProfileSetupProfilePicture.tsx';
 import * as imageUtils from '@/utils/image.ts';
+import * as Profile from '@/services/profile.ts';
+
+const fakeImageDataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII';
+
+URL.revokeObjectURL = vi.fn();
 
 describe('ProfileSetupProfilePicture', () => {
   let testProfileImageBlob, testProfileImageFile;
@@ -73,9 +78,9 @@ describe('ProfileSetupProfilePicture', () => {
 
     beforeAll(async () => {
       user = userEvent.setup();
-      vi.spyOn(exifRotate, 'getBase64Strings').mockReturnValue(['data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII']);
+      vi.spyOn(exifRotate, 'getBase64Strings').mockReturnValue([fakeImageDataUrl]);
       vi.spyOn(imageUtils, 'cropImage').mockResolvedValue(testProfileImageBlob);
-      window.URL.createObjectURL = vi.fn().mockReturnValue('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII');
+      URL.createObjectURL = vi.fn().mockReturnValue(fakeImageDataUrl);
     });
 
     afterAll(() => {
@@ -125,9 +130,9 @@ describe('ProfileSetupProfilePicture', () => {
         </HelmetProvider>,
       );
 
-      vi.spyOn(exifRotate, 'getBase64Strings').mockReturnValue(['data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII']);
+      vi.spyOn(exifRotate, 'getBase64Strings').mockReturnValue([fakeImageDataUrl]);
       vi.spyOn(imageUtils, 'cropImage').mockResolvedValue(testProfileImageBlob);
-      window.URL.createObjectURL = vi.fn().mockReturnValue('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII');
+      URL.createObjectURL = vi.fn().mockReturnValue(fakeImageDataUrl);
     });
 
     afterAll(() => {
@@ -145,6 +150,40 @@ describe('ProfileSetupProfilePicture', () => {
 
       const preview = await container.findByAltText('Preview of profile picture', { timeout: 4000 });
       expect(preview).toBeInTheDocument();
+    });
+  });
+});
+
+describe('ProfileSetupProfilePictureForm', () => {
+  let user;
+  let container;
+  let apiCall;
+  let onSubmit;
+
+  beforeAll(async () => {
+    onSubmit = vi.fn();
+
+    user = userEvent.setup();
+    container = render(
+      <ProfileSetupProfilePictureForm
+        previewSrc={fakeImageDataUrl}
+        onSubmit={onSubmit}
+        onFileSelect={vi.fn()}
+      />,
+    );
+
+    apiCall = vi.spyOn(Profile, 'setProfilePicture');
+  });
+
+  afterAll(() => {
+    vi.restoreAllMocks();
+    cleanup();
+  });
+
+  describe('Call API to upload image', () => {
+    it('should call API when submit button is clicked', async () => {
+      await user.click(container.getByRole('button', { name: /continue/i }));
+      expect(onSubmit).toHaveBeenCalled();
     });
   });
 });

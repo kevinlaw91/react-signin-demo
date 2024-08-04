@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { twMerge } from 'tailwind-merge';
 import fetchMock from 'fetch-mock';
-import { ChangeEvent, useCallback, useRef, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 import Cropper, { Area, Point } from 'react-easy-crop';
 import { Icon } from '@iconify-icon/react';
 import { Button, ButtonOutline, ButtonPrimary } from '@/components/Button.tsx';
@@ -9,12 +9,12 @@ import { cropImage, CropParams, fixImageOrientation } from '@/utils/image.ts';
 import BusyScreen from '@/components/BusyScreen.tsx';
 import { setProfilePicture } from '@/services/profile.ts';
 
-function useObjectURL(): [string | undefined, (blob: Blob) => void] {
+function useObjectURL(): [string | undefined, (blob?: Blob) => void] {
   const [url, setUrl] = useState<string>();
 
-  const createUrl = (blob: Blob) => {
+  const createUrl = (blob?: Blob) => {
     if (url) URL.revokeObjectURL(url);
-    setUrl(URL.createObjectURL(blob));
+    setUrl(blob ? URL.createObjectURL(blob) : undefined);
   };
 
   return [url, createUrl];
@@ -135,42 +135,24 @@ function ProfilePicturePreview({ src, className, ...otherProps }: {
   );
 }
 
-export default function ProfileSetupProfilePicture() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [imageSrc, setImageSrc] = useState<string>();
-  const [isCropEditorVisible, setIsCropEditorVisible] = useState<boolean>(false);
-  const [croppedImage, setCroppedImage] = useState<Blob>();
+export function ProfileSetupProfilePictureForm(props: {
+  previewSrc?: Blob;
+  onFileSelect?: (e: File) => void;
+  onSubmit?: (promise: ReturnType<typeof setProfilePicture>) => void;
+}) {
+  const { onSubmit, previewSrc } = props;
   const [previewUrl, generatePreviewUrl] = useObjectURL();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const triggerChooseFile = () => fileInputRef?.current?.click?.();
 
-  /**
-   * Show cropper if `url` is a `string`. Hide cropper when `url` is `undefined`
-   * @param {string} [url]
-   */
-  const showCropper = (url?: string) => {
-    setImageSrc(url);
-    setIsCropEditorVisible(!!url);
-  };
-
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setIsLoading(true);
-      void fixImageOrientation(e.target.files[0])
-        .then((url) => {
-          if (url) showCropper(url);
-          return;
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+  const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      props.onFileSelect?.(e.target.files[0]);
     }
   };
 
-  const hideCropper = () => showCropper(undefined);
-
-  const handleProfilePictureSave = useCallback(async () => {
+  const handleSubmit = useCallback(() => {
     // Mock request response
     fetchMock.post(
       {
@@ -191,33 +173,117 @@ export default function ProfileSetupProfilePicture() {
       { delay: 1000 },
     );
 
-    if (croppedImage) {
-      setIsLoading(true);
-
-      setProfilePicture({ profileId: '1234', image: croppedImage })
-        .then((res) => {
-          if (res.success) {
-            // TODO: Proceed to next step if success
-            // res.data.src;
-          }
-          return;
-        })
-        .catch((e) => {
-          // Alert error
-          console.error(e);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+    if (previewSrc) {
+      onSubmit?.(
+        setProfilePicture({
+          profileId: '1234',
+          image: previewSrc,
+        }),
+      );
     }
-  }, [croppedImage]);
+  }, [onSubmit, previewSrc]);
+
+  useEffect(() => {
+    generatePreviewUrl(props.previewSrc);
+  }, [generatePreviewUrl, props.previewSrc]);
+
+  return (
+    <>
+      <ProfilePicturePreview
+        src={previewUrl}
+        className="relative w-full max-w-[224px]"
+        onClick={triggerChooseFile}
+      />
+      <h1 className="my-6 font-semibold text-lg text-neutral-700 text-center">Set Profile Picture</h1>
+      <div className="flex flex-col gap-1 w-1/2">
+        <ButtonOutline
+          leftIcon="uil:image-upload"
+          className="w-full text-primary"
+          onClick={triggerChooseFile}
+        >
+          {!props.previewSrc ? 'Choose File' : 'Change Picture'}
+        </ButtonOutline>
+        {
+          props.previewSrc && (
+            <ButtonPrimary
+              leftIcon="mdi:arrow-right"
+              className="w-full"
+              onClick={handleSubmit}
+            >
+              Continue
+            </ButtonPrimary>
+          )
+        }
+        <Button
+          className="w-full"
+        >
+          Skip
+        </Button>
+        <input
+          ref={fileInputRef}
+          data-testid="file_input"
+          type="file"
+          className="hidden"
+          accept=".jpg, .jpeg, image/png, image/webp, image/avif"
+          onChange={handleFileInputChange}
+        />
+      </div>
+    </>
+  );
+}
+
+export default function ProfileSetupProfilePicture() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [imageSrc, setImageSrc] = useState<string>();
+  const [isCropEditorVisible, setIsCropEditorVisible] = useState<boolean>(false);
+  const [croppedImage, setCroppedImage] = useState<Blob>();
+
+  /**
+   * Show cropper if `url` is a `string`. Hide cropper when `url` is `undefined`
+   * @param {string} [url]
+   */
+  const showCropper = (url?: string) => {
+    setImageSrc(url);
+    setIsCropEditorVisible(!!url);
+  };
+
+  const hideCropper = () => showCropper(undefined);
+
+  const handleFileSelect = (file: File) => {
+    setIsLoading(true);
+    void fixImageOrientation(file)
+      .then((url) => {
+        if (url) showCropper(url);
+        return;
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
 
   const handleCropConfirm = (blob: Blob) => {
     setCroppedImage(blob);
-    generatePreviewUrl(blob);
     // Hide cropper
     hideCropper();
     return;
+  };
+
+  const handleSubmitResponse = (apiCall: ReturnType<typeof setProfilePicture>) => {
+    setIsLoading(true);
+    apiCall
+      .then((res) => {
+        if (res.success) {
+          // Proceed to next step if success
+          // res.data.src
+        }
+        return;
+      })
+      .catch((err: Error) => {
+        console.error(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -245,45 +311,11 @@ export default function ProfileSetupProfilePicture() {
         !isCropEditorVisible && !isLoading && (
           <section className="flex justify-center items-center min-h-svh mx-auto px-4 py-12 max-w-md md:max-w-sm md:px-0 md:w-96 sm:px-4">
             <section className="flex flex-col items-center justify-center w-full">
-              <ProfilePicturePreview
-                src={previewUrl}
-                className="relative w-full max-w-[224px]"
-                onClick={triggerChooseFile}
+              <ProfileSetupProfilePictureForm
+                previewSrc={croppedImage}
+                onFileSelect={handleFileSelect}
+                onSubmit={handleSubmitResponse}
               />
-              <h1 className="my-6 font-semibold text-lg text-neutral-700 text-center">Set Profile Picture</h1>
-              <div className="flex flex-col gap-1 w-1/2">
-                <ButtonOutline
-                  leftIcon="uil:image-upload"
-                  className="w-full text-primary"
-                  onClick={triggerChooseFile}
-                >
-                  {!previewUrl ? 'Choose File' : 'Change Picture'}
-                </ButtonOutline>
-                {
-                  previewUrl && (
-                    <ButtonPrimary
-                      leftIcon="mdi:arrow-right"
-                      className="w-full"
-                      onClick={handleProfilePictureSave}
-                    >
-                      Continue
-                    </ButtonPrimary>
-                  )
-                }
-                <Button
-                  className="w-full"
-                >
-                  Skip
-                </Button>
-                <input
-                  ref={fileInputRef}
-                  data-testid="file_input"
-                  type="file"
-                  className="hidden"
-                  accept=".jpg, .jpeg, image/png, image/webp, image/avif"
-                  onChange={handleFileChange}
-                />
-              </div>
             </section>
           </section>
         )
