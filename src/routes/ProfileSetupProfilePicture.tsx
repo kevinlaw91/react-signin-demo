@@ -234,7 +234,7 @@ export function ProfileSetupProfilePictureForm(props: {
 
 export default function ProfileSetupProfilePicture() {
   const [isLoading, setIsLoading] = useState(false);
-  const [imageSrc, setImageSrc] = useState<string>();
+  const [imageFileSrc, setImageFileSrc] = useState<string>();
   const [isCropEditorVisible, setIsCropEditorVisible] = useState<boolean>(false);
   const [croppedImage, setCroppedImage] = useState<Blob>();
 
@@ -243,7 +243,7 @@ export default function ProfileSetupProfilePicture() {
    * @param {string} [url]
    */
   const showCropper = (url?: string) => {
-    setImageSrc(url);
+    setImageFileSrc(url);
     setIsCropEditorVisible(!!url);
   };
 
@@ -301,7 +301,7 @@ export default function ProfileSetupProfilePicture() {
       {
         isCropEditorVisible && !isLoading && (
           <ProfilePictureEditor
-            sourceUrl={imageSrc}
+            sourceUrl={imageFileSrc}
             onCancel={hideCropper}
             onApply={handleCropConfirm}
           />
