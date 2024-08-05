@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { twMerge } from 'tailwind-merge';
 import fetchMock from 'fetch-mock';
-import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useCallback, useContext, useRef, useState } from 'react';
 import Cropper, { Area, Point } from 'react-easy-crop';
 import { Icon } from '@iconify-icon/react';
 import { Button, ButtonOutline, ButtonPrimary } from '@/components/Button.tsx';
@@ -9,17 +9,6 @@ import { cropImage, CropParams, fixImageOrientation } from '@/utils/image.ts';
 import BusyScreen from '@/components/BusyScreen.tsx';
 import { setProfilePicture } from '@/services/profile.ts';
 import { ProfileSetupStep, WizardContext } from '@/contexts/ProfileSetupWizardContext.ts';
-
-function useObjectURL(): [string | undefined, (blob?: Blob) => void] {
-  const [url, setUrl] = useState<string>();
-
-  const createUrl = (blob?: Blob) => {
-    if (url) URL.revokeObjectURL(url);
-    setUrl(blob ? URL.createObjectURL(blob) : undefined);
-  };
-
-  return [url, createUrl];
-}
 
 function AvatarCropper(props: {
   image: string | undefined;
@@ -137,12 +126,11 @@ function ProfilePicturePreview({ src, className, ...otherProps }: {
 }
 
 export function ProfileSetupProfilePictureForm(props: {
-  previewSrc?: Blob;
+  previewUrl?: string;
   onFileSelect?: (e: File) => void;
   onSubmit?: (promise: ReturnType<typeof setProfilePicture>) => void;
 }) {
-  const { onSubmit, previewSrc } = props;
-  const [previewUrl, generatePreviewUrl] = useObjectURL();
+  const { onSubmit, previewUrl } = props;
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const triggerChooseFile = () => fileInputRef?.current?.click?.();
@@ -152,41 +140,6 @@ export function ProfileSetupProfilePictureForm(props: {
       props.onFileSelect?.(e.target.files[0]);
     }
   };
-
-  const handleSubmit = useCallback(() => {
-    // Mock request response
-    fetchMock.post(
-      {
-        url: `express:/api/profile/:profileId/picture`,
-      },
-      {
-        status: 200,
-        body: {
-          success: true,
-          data: {
-            src: 'profilepicture.png',
-          },
-        },
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-      { delay: 1000 },
-    );
-
-    if (previewSrc) {
-      onSubmit?.(
-        setProfilePicture({
-          profileId: '1234',
-          image: previewSrc,
-        }),
-      );
-    }
-  }, [onSubmit, previewSrc]);
-
-  useEffect(() => {
-    generatePreviewUrl(props.previewSrc);
-  }, [generatePreviewUrl, props.previewSrc]);
 
   return (
     <>
@@ -202,14 +155,14 @@ export function ProfileSetupProfilePictureForm(props: {
           className="w-full text-primary"
           onClick={triggerChooseFile}
         >
-          {!props.previewSrc ? 'Choose File' : 'Change Picture'}
+          {!props.previewUrl ? 'Choose File' : 'Change Picture'}
         </ButtonOutline>
         {
-          props.previewSrc && (
+          props.previewUrl && (
             <ButtonPrimary
               leftIcon="mdi:arrow-right"
               className="w-full"
-              onClick={handleSubmit}
+              onClick={onSubmit}
             >
               Continue
             </ButtonPrimary>
@@ -237,7 +190,8 @@ export default function ProfileSetupProfilePicture() {
   const [isLoading, setIsLoading] = useState(false);
   const [imageFileSrc, setImageFileSrc] = useState<string>();
   const [isCropEditorVisible, setIsCropEditorVisible] = useState<boolean>(false);
-  const [croppedImage, setCroppedImage] = useState<Blob>();
+  const croppedImage = useRef<Blob>();
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string>();
 
   const wizardController = useContext(WizardContext);
 
@@ -250,9 +204,9 @@ export default function ProfileSetupProfilePicture() {
     setIsCropEditorVisible(!!url);
   };
 
-  const hideCropper = () => showCropper(undefined);
+  const hideCropper = useCallback(() => showCropper(undefined), []);
 
-  const handleFileSelect = (file: File) => {
+  const handleFileSelect = useCallback((file: File) => {
     setIsLoading(true);
     void fixImageOrientation(file)
       .then((url) => {
@@ -262,18 +216,51 @@ export default function ProfileSetupProfilePicture() {
       .finally(() => {
         setIsLoading(false);
       });
-  };
+  }, []);
 
-  const handleCropConfirm = (blob: Blob) => {
-    setCroppedImage(blob);
+  const handleCropConfirm = useCallback((blob: Blob) => {
+    croppedImage.current = blob;
+
+    // Generate object url for newly cropped image
+    if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
+    setImagePreviewUrl(URL.createObjectURL(blob));
+
     // Hide cropper
     hideCropper();
     return;
-  };
+  }, [hideCropper, imagePreviewUrl]);
 
-  const handleSubmitResponse = (apiCall: ReturnType<typeof setProfilePicture>) => {
+  const handleSubmitResponse = useCallback(() => {
     setIsLoading(true);
-    apiCall
+
+    // Mock request response
+    fetchMock.post(
+      {
+        url: `express:/api/profile/:profileId/picture`,
+      },
+      {
+        status: 200,
+        body: {
+          success: true,
+          data: {
+            src: 'profilepicture.png',
+          },
+        },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+      { delay: 1000 },
+    );
+
+    if (!croppedImage.current) {
+      throw new Error('No image data to submit');
+    }
+
+    setProfilePicture({
+      profileId: '1234',
+      image: croppedImage.current,
+    })
       .then((res) => {
         if (res.success) {
           // Profile picture src is in res.data.src
@@ -288,7 +275,7 @@ export default function ProfileSetupProfilePicture() {
       .finally(() => {
         setIsLoading(false);
       });
-  };
+  }, [wizardController]);
 
   return (
     <>
@@ -316,7 +303,7 @@ export default function ProfileSetupProfilePicture() {
           <section className="flex justify-center items-center min-h-svh mx-auto px-4 py-12 max-w-md md:max-w-sm md:px-0 md:w-96 sm:px-4">
             <section className="flex flex-col items-center justify-center w-full">
               <ProfileSetupProfilePictureForm
-                previewSrc={croppedImage}
+                previewUrl={imagePreviewUrl}
                 onFileSelect={handleFileSelect}
                 onSubmit={handleSubmitResponse}
               />

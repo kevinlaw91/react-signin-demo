@@ -166,7 +166,7 @@ describe('ProfileSetupProfilePictureForm', () => {
     user = userEvent.setup();
     container = render(
       <ProfileSetupProfilePictureForm
-        previewSrc={fakeImageDataUrl}
+        previewUrl={fakeImageDataUrl}
         onSubmit={onSubmit}
         onFileSelect={vi.fn()}
       />,
@@ -181,7 +181,7 @@ describe('ProfileSetupProfilePictureForm', () => {
   });
 
   describe('Call API to upload image', () => {
-    it('should call API when submit button is clicked', async () => {
+    it('should call callback when appropriate submit button is clicked', async () => {
       await user.click(container.getByRole('button', { name: /continue/i }));
       expect(onSubmit).toHaveBeenCalled();
     });
