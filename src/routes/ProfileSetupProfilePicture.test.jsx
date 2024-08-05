@@ -118,7 +118,8 @@ describe('ProfileSetupProfilePicture', () => {
     });
   });
 
-  describe('Preview', () => {
+  describe('Image upload interaction', () => {
+    let apiCall;
     let user;
     let container;
 
@@ -133,6 +134,7 @@ describe('ProfileSetupProfilePicture', () => {
       vi.spyOn(exifRotate, 'getBase64Strings').mockReturnValue([fakeImageDataUrl]);
       vi.spyOn(imageUtils, 'cropImage').mockResolvedValue(testProfileImageBlob);
       URL.createObjectURL = vi.fn().mockReturnValue(fakeImageDataUrl);
+      apiCall = vi.spyOn(Profile, 'setProfilePicture');
     });
 
     afterAll(() => {
@@ -151,39 +153,10 @@ describe('ProfileSetupProfilePicture', () => {
       const preview = await container.findByAltText('Preview of profile picture', { timeout: 4000 });
       expect(preview).toBeInTheDocument();
     });
-  });
-});
 
-describe('ProfileSetupProfilePictureForm', () => {
-  let user;
-  let container;
-  let apiCall;
-  let onSubmit;
-
-  beforeAll(async () => {
-    onSubmit = vi.fn();
-
-    user = userEvent.setup();
-    container = render(
-      <ProfileSetupProfilePictureForm
-        previewUrl={fakeImageDataUrl}
-        onSubmit={onSubmit}
-        onFileSelect={vi.fn()}
-      />,
-    );
-
-    apiCall = vi.spyOn(Profile, 'setProfilePicture');
-  });
-
-  afterAll(() => {
-    vi.restoreAllMocks();
-    cleanup();
-  });
-
-  describe('Call API to upload image', () => {
-    it('should call callback when appropriate submit button is clicked', async () => {
+    it('should make api call when submitted', async () => {
       await user.click(container.getByRole('button', { name: /continue/i }));
-      expect(onSubmit).toHaveBeenCalled();
+      expect(apiCall).toHaveBeenCalled();
     });
   });
 });
