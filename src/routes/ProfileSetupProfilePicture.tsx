@@ -1,13 +1,14 @@
 import { Helmet } from 'react-helmet-async';
 import { twMerge } from 'tailwind-merge';
 import fetchMock from 'fetch-mock';
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import Cropper, { Area, Point } from 'react-easy-crop';
 import { Icon } from '@iconify-icon/react';
 import { Button, ButtonOutline, ButtonPrimary } from '@/components/Button.tsx';
 import { cropImage, CropParams, fixImageOrientation } from '@/utils/image.ts';
 import BusyScreen from '@/components/BusyScreen.tsx';
 import { setProfilePicture } from '@/services/profile.ts';
+import { ProfileSetupStep, WizardContext } from '@/contexts/ProfileSetupWizardContext.ts';
 
 function useObjectURL(): [string | undefined, (blob?: Blob) => void] {
   const [url, setUrl] = useState<string>();
@@ -238,6 +239,8 @@ export default function ProfileSetupProfilePicture() {
   const [isCropEditorVisible, setIsCropEditorVisible] = useState<boolean>(false);
   const [croppedImage, setCroppedImage] = useState<Blob>();
 
+  const wizardController = useContext(WizardContext);
+
   /**
    * Show cropper if `url` is a `string`. Hide cropper when `url` is `undefined`
    * @param {string} [url]
@@ -273,8 +276,9 @@ export default function ProfileSetupProfilePicture() {
     apiCall
       .then((res) => {
         if (res.success) {
+          // Profile picture src is in res.data.src
           // Proceed to next step if success
-          // res.data.src
+          wizardController?.setCurrentStep?.(ProfileSetupStep.STEP_COMPLETE);
         }
         return;
       })
