@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ProfileSetupStep, WizardContext } from '@/contexts/ProfileSetupWizardContext.ts';
 import ProfileSetupUsername from '@/routes/ProfileSetupUsername.tsx';
 import ProfileSetupProfilePicture from '@/routes/ProfileSetupProfilePicture.tsx';
+import ProfileSetupComplete from '@/routes/ProfileSetupComplete.tsx';
 
 export default function ProfileSetupPage() {
   const [currentStep, setCurrentStep] = useState<ProfileSetupStep | null>(null);
@@ -21,6 +22,10 @@ export default function ProfileSetupPage() {
         {
           currentStep === ProfileSetupStep.STEP_PROFILE_PICTURE
           && <ProfileSetupProfilePicture />
+        }
+        {
+          currentStep === ProfileSetupStep.STEP_COMPLETE
+          && <ProfileSetupComplete />
         }
       </section>
     </WizardContext.Provider>
