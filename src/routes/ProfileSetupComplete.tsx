@@ -1,6 +1,9 @@
 import { ButtonPrimary } from '@/components/Button.tsx';
+import { useLinkClickHandler } from 'react-router-dom';
 
 export default function ProfileSetupComplete() {
+  const handleClick = useLinkClickHandler('/');
+
   return (
     <section>
       <div className="flex h-full min-h-svh flex-col items-center justify-center py-12 gap-12">
@@ -9,7 +12,7 @@ export default function ProfileSetupComplete() {
           <p>You profile is now set up.</p>
         </div>
         <div>
-          <ButtonPrimary>Go to Home</ButtonPrimary>
+          <ButtonPrimary onClick={handleClick}>Go to Home</ButtonPrimary>
         </div>
       </div>
     </section>
