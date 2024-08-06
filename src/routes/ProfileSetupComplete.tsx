@@ -1,6 +1,5 @@
 import { ButtonPrimary } from '@/components/Button.tsx';
 
-
 export default function ProfileSetupComplete() {
   return (
     <section>

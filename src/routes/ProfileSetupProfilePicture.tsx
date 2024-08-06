@@ -274,6 +274,7 @@ export default function ProfileSetupProfilePicture() {
       })
       .finally(() => {
         setIsLoading(false);
+        fetchMock.restore();
       });
   }, [wizardController]);
 

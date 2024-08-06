@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { cleanup, render, waitForElementToBeRemoved } from '@testing-library/react/pure';
 import * as exifRotate from 'exif-rotate-js';
 import { HelmetProvider } from 'react-helmet-async';
-import ProfileSetupProfilePicture, { ProfileSetupProfilePictureForm } from '@/routes/ProfileSetupProfilePicture.tsx';
+import ProfileSetupProfilePicture from '@/routes/ProfileSetupProfilePicture.tsx';
 import * as imageUtils from '@/utils/image.ts';
 import * as Profile from '@/services/profile.ts';
 
