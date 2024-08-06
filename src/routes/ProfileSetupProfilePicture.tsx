@@ -129,6 +129,7 @@ export function ProfileSetupProfilePictureForm(props: {
   previewUrl?: string;
   onFileSelect?: (e: File) => void;
   onSubmit?: (promise: ReturnType<typeof setProfilePicture>) => void;
+  onSkip?: () => void;
 }) {
   const { onSubmit, previewUrl } = props;
 
@@ -170,6 +171,7 @@ export function ProfileSetupProfilePictureForm(props: {
         }
         <Button
           className="w-full"
+          onClick={props.onSkip}
         >
           Skip
         </Button>
@@ -230,6 +232,8 @@ export default function ProfileSetupProfilePicture() {
     return;
   }, [hideCropper, imagePreviewUrl]);
 
+  const goToNextStep = () => wizardController?.setCurrentStep?.(ProfileSetupStep.STEP_COMPLETE);
+
   const handleSubmitResponse = useCallback(() => {
     setIsLoading(true);
 
@@ -265,7 +269,7 @@ export default function ProfileSetupProfilePicture() {
         if (res.success) {
           // Profile picture src is in res.data.src
           // Proceed to next step if success
-          wizardController?.setCurrentStep?.(ProfileSetupStep.STEP_COMPLETE);
+          goToNextStep();
         }
         return;
       })
@@ -276,7 +280,7 @@ export default function ProfileSetupProfilePicture() {
         setIsLoading(false);
         fetchMock.restore();
       });
-  }, [wizardController]);
+  }, [goToNextStep]);
 
   return (
     <>
@@ -307,6 +311,7 @@ export default function ProfileSetupProfilePicture() {
                 previewUrl={imagePreviewUrl}
                 onFileSelect={handleFileSelect}
                 onSubmit={handleSubmitResponse}
+                onSkip={goToNextStep}
               />
             </section>
           </section>
