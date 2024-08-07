@@ -103,20 +103,12 @@ function ProfilePicturePreview({ src, className, ...otherProps }: {
 }) {
   return (
     <section data-testid="avatar_preview" className={twMerge('aspect-square', className)} role="button" {...otherProps}>
-      <div className={twMerge('rounded-full w-full aspect-square overflow-hidden flex items-center justify-center border-4 border-white', src ? 'bg-transparent' : 'bg-gradient-to-br from-neutral-400/50 to-neutral-400')}>
-        {
-          src
-            ? (
-                <img
-                  src={src}
-                  alt="Preview of profile picture"
-                  className="w-full h-full object-cover"
-                />
-              )
-            : (
-                <Icon icon="teenyicons:user-solid" className="flex items-center justify-center w-3/4 text-white/20 aspect-square" width="unset" />
-              )
-        }
+      <div className="rounded-full w-full aspect-square overflow-hidden flex items-center justify-center border-4 border-white">
+        <img
+          src={src ? src : '/assets/images/profile-picture-blank.jpg'}
+          alt="Preview of profile picture"
+          className="w-full h-full object-cover"
+        />
       </div>
       <div className="absolute bottom-0 right-0 w-1/4 box-border p-3 aspect-square bg-primary border-2 border-white rounded-full flex items-center justify-center">
         <Icon icon="ph:camera" className="w-full text-white" width="unset" />

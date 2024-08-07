@@ -142,10 +142,6 @@ describe('ProfileSetupProfilePicture', () => {
       cleanup();
     });
 
-    it('should show blank profile picture on first load', async () => {
-      await expect(container.queryByAltText('Preview of profile picture')).not.toBeInTheDocument();
-    });
-
     it('should update preview when crop is completed', async () => {
       await user.upload(container.getByTestId('file_input'), [testProfileImageFile]);
       await user.click(container.getByRole('button', { name: /confirm/i }));
