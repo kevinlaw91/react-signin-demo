@@ -9,43 +9,7 @@ import { cropImage, CropParams, fixImageOrientation } from '@/utils/image.ts';
 import BusyScreen from '@/components/BusyScreen.tsx';
 import { setProfilePicture } from '@/services/profile.ts';
 import { ProfileSetupStep, WizardContext } from '@/contexts/ProfileSetupWizardContext.ts';
-
-function AvatarCropper(props: {
-  image: string | undefined;
-  onChange: (param: CropParams) => void;
-}) {
-  const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
-  const [rotation, setRotation] = useState(0);
-  const [zoom, setZoom] = useState(1);
-
-  const onCropComplete = (_newCroppedArea: Area, newCroppedAreaPixels: Area) => {
-    props.onChange({
-      ...newCroppedAreaPixels,
-      rotation,
-    });
-  };
-
-  return (
-    <Cropper
-      image={props.image}
-      crop={crop}
-      rotation={rotation}
-      zoom={zoom}
-      aspect={1}
-      cropShape="round"
-      showGrid={false}
-      onCropChange={setCrop}
-      onRotationChange={setRotation}
-      onZoomChange={setZoom}
-      onCropComplete={onCropComplete}
-      style={{
-        containerStyle: {
-          overflow: 'visible',
-        },
-      }}
-    />
-  );
-}
+import { Slider } from '@mui/material';
 
 function ProfilePictureEditor({ src, onApply, onCancel }: {
   // Image source url
@@ -53,10 +17,16 @@ function ProfilePictureEditor({ src, onApply, onCancel }: {
   onApply?: (blob: Blob) => void;
   onCancel?: () => void;
 }) {
+  const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
+  const [rotation, setRotation] = useState(0);
+  const [zoom, setZoom] = useState(1);
   const avatarCropParam = useRef<CropParams>();
 
-  const handleChange = (params: CropParams) => {
-    avatarCropParam.current = params;
+  const onCropComplete = (_newCroppedArea: Area, newCroppedAreaPixels: Area) => {
+    avatarCropParam.current = {
+      ...newCroppedAreaPixels,
+      rotation,
+    };
   };
 
   const handleConfirm = async () => {
@@ -70,15 +40,36 @@ function ProfilePictureEditor({ src, onApply, onCancel }: {
     }
   };
 
+  const handleSliderChange = (_evt: Event, val: number | number[]) => setZoom(val as number);
+
   return (
     <section className="flex flex-col gap-8 items-center justify-center w-full h-svh overflow-hidden">
       <div className="relative h-full max-h-[512px] w-full overflow-visible" data-testid="cropper-container">
-        <AvatarCropper
+        <Cropper
           image={src}
-          onChange={handleChange}
+          crop={crop}
+          rotation={rotation}
+          zoom={zoom}
+          aspect={1}
+          cropShape="round"
+          showGrid={false}
+          onCropChange={setCrop}
+          onRotationChange={setRotation}
+          onZoomChange={setZoom}
+          onCropComplete={onCropComplete}
+          style={{
+            containerStyle: {
+              overflow: 'visible',
+            },
+          }}
         />
       </div>
-      <div className="flex flex-col gap-2 min-w-[30svw] bottom-0 z-10 justify-items-stretch content-center">
+      <div className="flex gap-6 w-full max-w-[300px] items-center isolate">
+        <Icon icon="gg:zoom-in" width="24" className="text-white" />
+        <Slider aria-label="Zoom" value={zoom} min={1} max={3} step={0.05} onChange={handleSliderChange} />
+        <Icon icon="gg:zoom-out" width="24" className="text-white" />
+      </div>
+      <div className="flex flex-col gap-2 w-full max-w-64 my-6 z-10 justify-items-stretch content-center">
         <ButtonPrimary
           className="outline-white outline-offset-0"
           onClick={handleConfirm}

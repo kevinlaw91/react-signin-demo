@@ -14,8 +14,11 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
     "@floating-ui/react": "^0.26.21",
     "@hookform/resolvers": "^3.9.0",
+    "@mui/material": "6.0.0-beta.4",
     "clsx": "^2.1.1",
     "exif-rotate-js": "^1.5.0",
     "fetch-mock": "^10.0.8",
