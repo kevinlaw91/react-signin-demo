@@ -215,7 +215,7 @@ export default function ProfileSetupProfilePicture() {
     return;
   }, [hideCropper, imagePreviewUrl]);
 
-  const goToNextStep = () => wizardController?.setCurrentStep?.(ProfileSetupStep.STEP_COMPLETE);
+  const goToNextStep = useCallback(() => wizardController?.setCurrentStep?.(ProfileSetupStep.STEP_COMPLETE), [wizardController]);
 
   const handleSubmitResponse = useCallback(() => {
     setIsLoading(true);
