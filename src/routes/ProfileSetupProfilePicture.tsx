@@ -11,6 +11,8 @@ import { setProfilePicture } from '@/services/profile.ts';
 import { ProfileSetupStep, WizardContext } from '@/contexts/ProfileSetupWizardContext.ts';
 import { Slider } from '@mui/material';
 import { DropEvent, useDropzone } from 'react-dropzone';
+import { AnimatePresence, motion } from 'framer-motion';
+import AlertModal from '@/components/AlertModal.tsx';
 
 function ProfilePictureEditor({ src, onApply, onCancel }: {
   // Image source url
@@ -179,6 +181,21 @@ export default function ProfileSetupProfilePicture() {
   const croppedImage = useRef<Blob>();
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string>();
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
+  const [alertModalMessage, setAlertModalMessage] = useState<string | undefined>();
+
+  const showAlert = (msg: string) => {
+    setIsModalOpen(true);
+    setIsAlertModalOpen(true);
+    setAlertModalMessage(msg);
+  };
+
+  const handleAlertModalDismiss = () => {
+    setIsModalOpen(false);
+    setIsAlertModalOpen(false);
+  };
+
   const wizardController = useContext(WizardContext);
 
   /**
@@ -201,12 +218,15 @@ export default function ProfileSetupProfilePicture() {
         if (url) showCropper(url);
         return;
       })
+      .catch((_err) => {
+        showAlert('Unable to read image file');
+      })
       .finally(() => {
         setIsLoading(false);
       });
   }, []);
 
-  const handleFileDrop = (files: FileList | File[], _dropEvt: DropEvent) => handleFileSelect(files);
+  const handleFileDropAccepted = (files: FileList | File[], _dropEvt: DropEvent) => handleFileSelect(files);
 
   const handleCropConfirm = useCallback((blob: Blob) => {
     croppedImage.current = blob;
@@ -258,11 +278,13 @@ export default function ProfileSetupProfilePicture() {
           // Profile picture src is in res.data.src
           // Proceed to next step if success
           goToNextStep();
+        } else {
+          throw new Error('Failed to update profile picture');
         }
         return;
       })
-      .catch((err: Error) => {
-        console.error(err);
+      .catch((_err: Error) => {
+        showAlert('Failed to update profile picture');
       })
       .finally(() => {
         setIsLoading(false);
@@ -281,8 +303,8 @@ export default function ProfileSetupProfilePicture() {
     noKeyboard: true,
     useFsAccessApi: false,
     maxFiles: 1,
-    onDropAccepted: handleFileDrop,
-    onDropRejected: () => alert('Please select a valid image file'),
+    onDropAccepted: handleFileDropAccepted,
+    onDropRejected: () => showAlert('Please select a valid image file'),
   });
 
   return (
@@ -338,6 +360,25 @@ export default function ProfileSetupProfilePicture() {
           </section>
         )
       }
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div
+            initial={{ backdropFilter: 'blur(0px)', opacity: 0 }}
+            animate={{ backdropFilter: 'blur(10px)', opacity: 1 }}
+            exit={{ backdropFilter: 'blur(0px)', opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 bg-black/60"
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {isAlertModalOpen && (
+          <AlertModal
+            message={alertModalMessage}
+            dismiss={handleAlertModalDismiss}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }
