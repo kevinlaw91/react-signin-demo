@@ -10,6 +10,7 @@ import BusyScreen from '@/components/BusyScreen.tsx';
 import { setProfilePicture } from '@/services/profile.ts';
 import { ProfileSetupStep, WizardContext } from '@/contexts/ProfileSetupWizardContext.ts';
 import { Slider } from '@mui/material';
+import { DropEvent, useDropzone } from 'react-dropzone';
 
 function ProfilePictureEditor({ src, onApply, onCancel }: {
   // Image source url
@@ -110,7 +111,7 @@ function ProfilePicturePreview({ src, className, ...otherProps }: {
 
 export function ProfileSetupProfilePictureForm(props: {
   previewUrl?: string;
-  onFileSelect?: (e: File) => void;
+  onFileSelect?: (e: FileList) => void;
   onSubmit?: (promise: ReturnType<typeof setProfilePicture>) => void;
   onSkip?: () => void;
 }) {
@@ -120,8 +121,8 @@ export function ProfileSetupProfilePictureForm(props: {
   const triggerChooseFile = () => fileInputRef?.current?.click?.();
 
   const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      props.onFileSelect?.(e.target.files[0]);
+    if (e.target.files !== null) {
+      props.onFileSelect?.(e.target.files);
     }
   };
 
@@ -191,7 +192,9 @@ export default function ProfileSetupProfilePicture() {
 
   const hideCropper = useCallback(() => showCropper(undefined), []);
 
-  const handleFileSelect = useCallback((file: File) => {
+  const handleFileSelect = useCallback((files: FileList | File[]) => {
+    const file = files[0];
+
     setIsLoading(true);
     void fixImageOrientation(file)
       .then((url) => {
@@ -202,6 +205,8 @@ export default function ProfileSetupProfilePicture() {
         setIsLoading(false);
       });
   }, []);
+
+  const handleFileDrop = (files: FileList | File[], _dropEvt: DropEvent) => handleFileSelect(files);
 
   const handleCropConfirm = useCallback((blob: Blob) => {
     croppedImage.current = blob;
@@ -265,6 +270,21 @@ export default function ProfileSetupProfilePicture() {
       });
   }, [goToNextStep]);
 
+  const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
+    accept: {
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/png': [],
+      'image/webp': [],
+      'image/avif': [],
+    },
+    noClick: true,
+    noKeyboard: true,
+    useFsAccessApi: false,
+    maxFiles: 1,
+    onDropAccepted: handleFileDrop,
+    onDropRejected: () => alert('Please select a valid image file'),
+  });
+
   return (
     <>
       <Helmet>
@@ -289,13 +309,31 @@ export default function ProfileSetupProfilePicture() {
       {
         !isCropEditorVisible && !isLoading && (
           <section className="flex justify-center items-center min-h-svh mx-auto px-4 py-12 max-w-md md:max-w-sm md:px-0 md:w-96 sm:px-4">
-            <section className="flex flex-col items-center justify-center w-full">
-              <ProfileSetupProfilePictureForm
-                previewUrl={imagePreviewUrl}
-                onFileSelect={handleFileSelect}
-                onSubmit={handleSubmitResponse}
-                onSkip={goToNextStep}
-              />
+            <section className="relative flex flex-col items-center justify-center w-full" {...getRootProps()}>
+              {
+                isDragActive
+                  ? (
+                      <section className={twMerge('flex flex-col justify-center items-center w-full h-full aspect-square border-2 border-dashed border-primary text-neutral-400', isDragReject && 'border-red-400 text-red-400')}>
+                        <input {...getInputProps()} />
+                        <div>
+                          <Icon icon="radix-icons:avatar" width="36" />
+                        </div>
+                        {
+                          !isDragReject
+                            ? <p>Drop your image file here</p>
+                            : <p>This file type is not supported</p>
+                        }
+                      </section>
+                    )
+                  : (
+                      <ProfileSetupProfilePictureForm
+                        previewUrl={imagePreviewUrl}
+                        onFileSelect={handleFileSelect}
+                        onSubmit={handleSubmitResponse}
+                        onSkip={goToNextStep}
+                      />
+                    )
+              }
             </section>
           </section>
         )
