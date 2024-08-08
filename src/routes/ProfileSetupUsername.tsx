@@ -222,7 +222,7 @@ export default function ProfileSetupPage() {
     const _isAvailable = mockIsAvailable(data.candidate);
 
     // Mock request response
-    fetchMock.patch(`path:/api/profile/${profileId}`,
+    fetchMock.patch(`path:/api/profile/${profileId}/username`,
       {
         status: _isAvailable ? 200 : 409,
         body: _isAvailable

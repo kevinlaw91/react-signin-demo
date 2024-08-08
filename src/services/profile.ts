@@ -28,7 +28,7 @@ export enum ProfileErrorCode {
 }
 
 export async function saveUsername({ profileId, username }: { profileId: string; username: string }) {
-  const response = await fetch(new URL(`/api/profile/${profileId}`, APP_API_URL).href, {
+  const response = await fetch(new URL(`/api/profile/${profileId}/username`, APP_API_URL).href, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username }),
