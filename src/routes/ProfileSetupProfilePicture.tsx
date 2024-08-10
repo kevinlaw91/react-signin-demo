@@ -11,8 +11,7 @@ import { setProfilePicture } from '@/services/profile.ts';
 import { ProfileSetupStep, WizardContext } from '@/contexts/ProfileSetupWizardContext.ts';
 import { Slider } from '@mui/material';
 import { DropEvent, useDropzone } from 'react-dropzone';
-import { AnimatePresence, motion } from 'framer-motion';
-import AlertModal from '@/components/AlertModal.tsx';
+import { usePopupModalManager } from '@/hooks/usePopupModalManager.ts';
 
 function ProfilePictureEditor({ src, onApply, onCancel }: {
   // Image source url
@@ -181,20 +180,16 @@ export default function ProfileSetupProfilePicture() {
   const croppedImage = useRef<Blob>();
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string>();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
-  const [alertModalMessage, setAlertModalMessage] = useState<string | undefined>();
+  const popupManager = usePopupModalManager();
 
-  const showAlert = (msg: string) => {
-    setIsModalOpen(true);
-    setIsAlertModalOpen(true);
-    setAlertModalMessage(msg);
-  };
-
-  const handleAlertModalDismiss = () => {
-    setIsModalOpen(false);
-    setIsAlertModalOpen(false);
-  };
+  const showAlert = useCallback((msg: string) => {
+    popupManager.queueModal({
+      type: 'alert',
+      props: {
+        message: msg,
+      },
+    });
+  }, [popupManager]);
 
   const wizardController = useContext(WizardContext);
 
@@ -224,7 +219,7 @@ export default function ProfileSetupProfilePicture() {
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
+  }, [showAlert]);
 
   const handleFileDropAccepted = (files: FileList | File[], _dropEvt: DropEvent) => handleFileSelect(files);
 
@@ -290,7 +285,7 @@ export default function ProfileSetupProfilePicture() {
         setIsLoading(false);
         fetchMock.restore();
       });
-  }, [goToNextStep]);
+  }, [goToNextStep, showAlert]);
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
     accept: {
@@ -360,25 +355,6 @@ export default function ProfileSetupProfilePicture() {
           </section>
         )
       }
-      <AnimatePresence>
-        {isModalOpen && (
-          <motion.div
-            initial={{ backdropFilter: 'blur(0px)', opacity: 0 }}
-            animate={{ backdropFilter: 'blur(10px)', opacity: 1 }}
-            exit={{ backdropFilter: 'blur(0px)', opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 bg-black/60"
-          />
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
-        {isAlertModalOpen && (
-          <AlertModal
-            message={alertModalMessage}
-            dismiss={handleAlertModalDismiss}
-          />
-        )}
-      </AnimatePresence>
     </>
   );
 }

@@ -1,12 +1,14 @@
-import { ReactNode } from 'react';
+import { ReactNode, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Icon } from '@iconify-icon/react';
+import { usePopupModalManager } from '@/hooks/usePopupModalManager.ts';
+import { ModalComponentProps } from '@/interfaces/PopupModalManager';
 
-interface IAlertModal {
+type AlertModalProps = {
   icon?: ReactNode;
   message?: string;
   dismiss?: () => void;
-}
+};
 
 const defaultIcon = (
   <Icon
@@ -16,29 +18,31 @@ const defaultIcon = (
   />
 );
 
-/**
- * @deprecated To migrate to PopupManager
- * @see ModalAlert
- */
-export default function AlertModal({ icon, message, dismiss }: IAlertModal) {
+export default function AlertModal({ modalId, modalProps }: ModalComponentProps<AlertModalProps>) {
+  const { icon = defaultIcon, message } = modalProps;
+  const popupManager = usePopupModalManager();
+
+  const dismiss = useCallback(() => {
+    popupManager.hideModal(modalId);
+  }, [popupManager, modalId]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: -25 }}
-      animate={{ opacity: 1, y: 0 }}
+      animate={{ opacity: 1, y: 0, transition: { delay: 0.05 } }}
       exit={{ opacity: 0, y: 25 }}
       transition={{ duration: 0.1 }}
       className="fixed inset-0 flex justify-center items-center"
     >
       <section
-        id="alert-modal"
         role="alertdialog"
-        aria-labelledby="alert-modal-title"
+        aria-labelledby="modal-alert-title"
         className="bg-white/80 shadow-lg flex flex-col gap-3 justify-center items-center rounded-3xl p-6"
         style={{ backdropFilter: 'saturate(200%) blur(30px)', minWidth: 'min(400px, 100%)' }}
       >
-        {icon || defaultIcon}
+        {icon}
         {message && (
-          <h2 className="text-md text-neutral-700 font-semibold text-center" id="alert-modal-title">
+          <h2 className="text-md text-neutral-700 font-semibold text-center" id="modal-alert-title">
             {
               message
                 .split('\n')
