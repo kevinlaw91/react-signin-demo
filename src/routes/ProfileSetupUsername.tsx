@@ -7,7 +7,7 @@ import clsx from 'clsx';
 import { z } from 'zod';
 import { useForm, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import AlertModal from '@/components/AlertModal.tsx';
+import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
 import { ButtonPrimary, ButtonBusy } from '@/components/Button.tsx';
 import { LoaderPulsingDotsCircular } from '@/components/loaders/LoaderPulsingDots.tsx';
 import {
@@ -122,6 +122,8 @@ function UsernameCheckResultMessage({ isAvailable }: { isAvailable: boolean }) {
 }
 
 export default function ProfileSetupPage() {
+  const { queueAlertModal } = useAlertPopupModal();
+
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const runningUsernameCheck = useRef<AbortController | null>(null);
 
@@ -177,10 +179,7 @@ export default function ProfileSetupPage() {
     } catch (err) {
       // Aborted requests are not error
       if (err instanceof Error && err.name === 'AbortError') return;
-
-      setAlertModalMessage(MSG_UNEXPECTED_ERROR);
-      setIsModalOpen(true);
-      setIsAlertModalOpen(true);
+      queueAlertModal(MSG_UNEXPECTED_ERROR);
       throw err;
     } finally {
       // Restore fetch mock
@@ -196,26 +195,20 @@ export default function ProfileSetupPage() {
     }
     setIsAvailable(_isAvailable);
     return _isAvailable;
-  }, [frmCheckUsername, frmClaimUsername]);
+  }, [frmCheckUsername, frmClaimUsername, queueAlertModal]);
 
   const frmUsernameValidationFailedHandler: SubmitErrorHandler<UsernameFormData> = useCallback((errors) => {
     // Show error dialog if field is blank
     if (errors.username) {
-      setAlertModalMessage(errors?.username?.message || '');
-      setIsModalOpen(true);
-      setIsAlertModalOpen(true);
+      queueAlertModal(errors?.username?.message || '');
     }
-  }, []);
+  }, [queueAlertModal]);
 
   const {
     ref: setUsernameInputRef, // Needed by setFocus()
     onChange: _, // Not used by IMaskInput
     ...otherFieldProps
   } = frmCheckUsername.register('username');
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
-  const [alertModalMessage, setAlertModalMessage] = useState<string>('');
 
   const doClaimUsername: SubmitHandler<CandidateFormData> = useCallback(async (data: CandidateFormData) => {
     const profileId = '1234';
@@ -250,12 +243,10 @@ export default function ProfileSetupPage() {
     } catch (err) {
       if (err instanceof Error) {
         if (err.message && err.message as ProfileErrorCode === ProfileErrorCode.ERR_PROFILE_USERNAME_TAKEN) {
-          setAlertModalMessage(MSG_USERNAME_CLAIM_FAILED);
+          queueAlertModal(MSG_USERNAME_CLAIM_FAILED);
         } else {
-          setAlertModalMessage(MSG_UNEXPECTED_ERROR);
+          queueAlertModal(MSG_UNEXPECTED_ERROR);
         }
-        setIsModalOpen(true);
-        setIsAlertModalOpen(true);
       }
     } finally {
       // Restore fetch mock
@@ -269,26 +260,17 @@ export default function ProfileSetupPage() {
       gotoNextStep();
       return;
     } else {
-      setAlertModalMessage(MSG_UNEXPECTED_ERROR);
-      setIsModalOpen(true);
-      setIsAlertModalOpen(true);
+      queueAlertModal(MSG_UNEXPECTED_ERROR);
       throw new Error(ProfileErrorCode.ERR_UNEXPECTED_ERROR);
     }
-  }, [gotoNextStep]);
+  }, [gotoNextStep, queueAlertModal]);
 
   const frmCandidateValidationFailedHandler: SubmitErrorHandler<UsernameFormData> = useCallback((errors) => {
     // Show error dialog if field is blank
     if (errors.username) {
-      setAlertModalMessage(errors?.username?.message || '');
-      setIsModalOpen(true);
-      setIsAlertModalOpen(true);
+      queueAlertModal(errors?.username?.message || '');
     }
-  }, []);
-
-  const handleAlertModalDismiss = () => {
-    setIsModalOpen(false);
-    setIsAlertModalOpen(false);
-  };
+  }, [queueAlertModal]);
 
   const formAction = isAvailable
     ? frmClaimUsername.handleSubmit(doClaimUsername, frmCandidateValidationFailedHandler)
@@ -377,26 +359,6 @@ export default function ProfileSetupPage() {
           </form>
         </div>
       </section>
-      <AnimatePresence>
-        {isModalOpen && (
-          <motion.div
-            initial={{ backdropFilter: 'blur(0px)', opacity: 0 }}
-            animate={{ backdropFilter: 'blur(10px)', opacity: 1 }}
-            exit={{ backdropFilter: 'blur(0px)', opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 bg-black/60"
-          />
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
-        {isAlertModalOpen && (
-          <AlertModal
-            message={alertModalMessage}
-            dismiss={handleAlertModalDismiss}
-          />
-        )}
-      </AnimatePresence>
-
     </>
   );
 }
