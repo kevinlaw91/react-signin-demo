@@ -2,18 +2,25 @@ import { AnimatePresence } from 'framer-motion';
 import { usePopupModalManager } from '@/hooks/usePopupModalManager.ts';
 
 import { getModalComponent } from '@/controllers/Modal.ts';
+import { createPortal } from 'react-dom';
 
 export const ModalsContainer = () => {
   const popupManager = usePopupModalManager();
-  const activeModal = popupManager.modals.at(0);
+  const activeModal = popupManager.modals.at(-1);
   if (!activeModal) return null;
 
   const ModalComponent = getModalComponent(activeModal.type);
-  const { id, props: modalProps } = activeModal;
+  if (!ModalComponent) return null;
 
-  return (
-    <AnimatePresence>
-      {ModalComponent ? <ModalComponent key={id} modalId={id} modalProps={modalProps} /> : null}
-    </AnimatePresence>
-  );
+  const { id, props: modalProps } = activeModal;
+  if (activeModal.type === 'placeholder') return null;
+
+  return ModalComponent
+    ? createPortal(
+      <AnimatePresence>
+        <ModalComponent key={id} modalId={id} modalProps={modalProps} />
+      </AnimatePresence>,
+      document.body,
+    )
+    : null;
 };

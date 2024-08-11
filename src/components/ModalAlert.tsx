@@ -18,7 +18,7 @@ const defaultIcon = (
   />
 );
 
-export default function AlertModal({ modalId, modalProps }: ModalComponentProps<AlertModalProps>) {
+export default function AlertModal({ modalId, modalProps = {} }: ModalComponentProps<AlertModalProps>) {
   const { icon = defaultIcon, message } = modalProps;
   const popupManager = usePopupModalManager();
 

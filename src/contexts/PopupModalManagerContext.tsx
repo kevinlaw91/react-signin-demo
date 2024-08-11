@@ -33,8 +33,16 @@ const PopupManagerProvider = ({ children }: { children: ReactNode }) => {
   const queueModal = (modal: Omit<Modal, 'id'> & { id?: Modal['id'] }) => {
     // Generate modal id if not provided
     const newModal = { ...modal, id: modal.id ?? uuidv4() };
-    // Push modal entry into second position
-    setModals(modals => modals.toSpliced(1, 0, newModal));
+
+    if (newModal.type === 'placeholder') {
+      // Placeholder has the lowest priority in stack.
+      // Modals are created manually via createPortal,
+      // controller doesn't actually need to render anything
+      setModals(modals => modals.toSpliced(0, 0, newModal));
+    } else {
+      // Push modal entry into second position
+      setModals(modals => modals.toSpliced(-2, 0, newModal));
+    }
   };
 
   const hideModal = (id: string) => {

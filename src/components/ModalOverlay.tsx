@@ -1,12 +1,12 @@
+import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-
 import { usePopupModalManager } from '@/hooks/usePopupModalManager.ts';
 
 export function ModalOverlay() {
   const popupManager = usePopupModalManager();
   const shouldShowModal = popupManager.modals.length > 0;
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {shouldShowModal && (
         <motion.div
@@ -17,6 +17,7 @@ export function ModalOverlay() {
           className="fixed inset-0 bg-black/60"
         />
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.getElementById('overlay') as HTMLDivElement,
   );
 }
