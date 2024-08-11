@@ -6,6 +6,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import ProfileSetupProfilePicture from '@/routes/ProfileSetupProfilePicture.tsx';
 import * as imageUtils from '@/utils/image.ts';
 import * as Profile from '@/services/profile.ts';
+import { PopupManagerProvider } from '@/contexts/PopupModalManagerContext.tsx';
 
 const fakeImageDataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII';
 
@@ -44,7 +45,9 @@ describe('ProfileSetupProfilePicture', () => {
 
       container = render(
         <HelmetProvider>
-          <ProfileSetupProfilePicture />
+          <PopupManagerProvider>
+            <ProfileSetupProfilePicture />
+          </PopupManagerProvider>
         </HelmetProvider>,
       );
 
@@ -90,7 +93,9 @@ describe('ProfileSetupProfilePicture', () => {
     beforeEach(() => {
       container = render(
         <HelmetProvider>
-          <ProfileSetupProfilePicture />
+          <PopupManagerProvider>
+            <ProfileSetupProfilePicture />
+          </PopupManagerProvider>
         </HelmetProvider>,
       );
     });
@@ -127,7 +132,9 @@ describe('ProfileSetupProfilePicture', () => {
       user = userEvent.setup();
       container = render(
         <HelmetProvider>
-          <ProfileSetupProfilePicture />
+          <PopupManagerProvider>
+            <ProfileSetupProfilePicture />
+          </PopupManagerProvider>
         </HelmetProvider>,
       );
 

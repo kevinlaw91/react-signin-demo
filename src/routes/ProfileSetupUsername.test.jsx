@@ -4,6 +4,7 @@ import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import ProfileSetupUsername from '@/routes/ProfileSetupUsername.tsx';
 import userEvent from '@testing-library/user-event';
 import * as Profile from '@/services/profile.ts';
+import { PopupManagerProvider } from '@/contexts/PopupModalManagerContext.tsx';
 import { WizardContext } from '@/contexts/ProfileSetupWizardContext.ts';
 
 describe('ProfileSetupUsername', () => {
@@ -15,7 +16,9 @@ describe('ProfileSetupUsername', () => {
       user = userEvent.setup();
       container = render(
         <HelmetProvider>
-          <ProfileSetupUsername />
+          <PopupManagerProvider>
+            <ProfileSetupUsername />
+          </PopupManagerProvider>
         </HelmetProvider>,
       );
 
@@ -51,9 +54,11 @@ describe('ProfileSetupUsername', () => {
       user = userEvent.setup();
       container = render(
         <HelmetProvider>
-          <WizardContext.Provider value={{ setCurrentStep }}>
-            <ProfileSetupUsername />
-          </WizardContext.Provider>
+          <PopupManagerProvider>
+            <WizardContext.Provider value={{ setCurrentStep }}>
+              <ProfileSetupUsername />
+            </WizardContext.Provider>
+          </PopupManagerProvider>
         </HelmetProvider>,
       );
 
