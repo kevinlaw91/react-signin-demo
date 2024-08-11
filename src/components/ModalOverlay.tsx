@@ -4,10 +4,11 @@ import { usePopupModalManager } from '@/hooks/usePopupModalManager.ts';
 
 export function ModalOverlay() {
   const popupManager = usePopupModalManager();
+  const shouldShowModal = popupManager.modals.length > 0;
 
   return (
     <AnimatePresence>
-      {popupManager.getModals().length > 0 && (
+      {shouldShowModal && (
         <motion.div
           initial={{ backdropFilter: 'blur(0px)', opacity: 0 }}
           animate={{ backdropFilter: 'blur(10px)', opacity: 1 }}

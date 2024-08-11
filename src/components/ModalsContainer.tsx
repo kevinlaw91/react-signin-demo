@@ -5,8 +5,7 @@ import { getModalComponent } from '@/controllers/Modal.ts';
 
 export const ModalsContainer = () => {
   const popupManager = usePopupModalManager();
-  const modals = popupManager.getModals();
-  const activeModal = modals.at(0);
+  const activeModal = popupManager.modals.at(0);
   if (!activeModal) return null;
 
   const ModalComponent = getModalComponent(activeModal.type);

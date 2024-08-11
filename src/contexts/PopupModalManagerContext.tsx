@@ -3,9 +3,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { Modal } from '@/interfaces/PopupModalManager';
 
 export interface IPopupModalManager {
+  modals: Modal[];
   queueModal: (modal: Omit<Modal, 'id'> & { id?: Modal['id'] }) => void;
   hideModal: (id: string) => void;
-  getModals: () => Modal[];
   clearModals: () => void;
 }
 
@@ -41,16 +41,14 @@ const PopupManagerProvider = ({ children }: { children: ReactNode }) => {
     setModals(modals.filter(modal => modal.id !== id));
   };
 
-  const getModals = () => [...modals];
-
   const clearModals = () => setModals([]);
 
   return (
     <PopupModalManagerContext.Provider
       value={{
+        modals: modals,
         queueModal,
         hideModal,
-        getModals,
         clearModals,
       }}
     >
