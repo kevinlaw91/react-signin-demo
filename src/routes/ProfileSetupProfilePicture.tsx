@@ -11,7 +11,7 @@ import { setProfilePicture } from '@/services/profile.ts';
 import { ProfileSetupStep, WizardContext } from '@/contexts/ProfileSetupWizardContext.ts';
 import { Slider } from '@mui/material';
 import { DropEvent, useDropzone } from 'react-dropzone';
-import { usePopupModalManager } from '@/hooks/usePopupModalManager.ts';
+import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
 
 function ProfilePictureEditor({ src, onApply, onCancel }: {
   // Image source url
@@ -180,16 +180,11 @@ export default function ProfileSetupProfilePicture() {
   const croppedImage = useRef<Blob>();
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string>();
 
-  const popupManager = usePopupModalManager();
+  const { queueAlertModal } = useAlertPopupModal();
 
   const showAlert = useCallback((msg: string) => {
-    popupManager.queueModal({
-      type: 'alert',
-      props: {
-        message: msg,
-      },
-    });
-  }, [popupManager]);
+    queueAlertModal(msg);
+  }, [queueAlertModal]);
 
   const wizardController = useContext(WizardContext);
 
