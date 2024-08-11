@@ -1,20 +1,18 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import AuthSignInForm from '@/components/AuthSignInForm.tsx';
 import BusyScreen from '@/components/BusyScreen.tsx';
 import AuthContext, { AuthenticatedUser } from '@/contexts/AuthContext.tsx';
-import AlertModal from '@/components/AlertModal.tsx';
+import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
 import GoogleSignInButton from '@/components/GoogleSignInButton.tsx';
 
 export default function SignInPage() {
   const navigate = useNavigate();
   const { activeUser, setActiveUser } = useContext(AuthContext);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
-  const [alertModalMessage, setAlertModalMessage] = useState<string | undefined>();
+  const { queueAlertModal } = useAlertPopupModal();
 
   useEffect(() => {
     // If already signed in, skip sign in screen and redirect to home
@@ -24,12 +22,10 @@ export default function SignInPage() {
   }, [activeUser, navigate]);
 
   const onFormSignInSubmit = () => {
-    setIsModalOpen(true);
     setIsSubmitting(true);
   };
 
   const onFormSignInSuccess = useCallback((user: AuthenticatedUser) => {
-    setIsModalOpen(false);
     setIsSubmitting(false);
 
     // Change app's state to signed in
@@ -40,15 +36,8 @@ export default function SignInPage() {
   }, [setActiveUser, navigate]);
 
   const onFormSignInError = (err?: string) => {
-    setIsModalOpen(true);
     setIsSubmitting(false);
-    setIsAlertModalOpen(true);
-    setAlertModalMessage(err || 'An error occurred during sign in');
-  };
-
-  const handleAlertModalDismiss = () => {
-    setIsModalOpen(false);
-    setIsAlertModalOpen(false);
+    queueAlertModal(err || 'An error occurred during sign in');
   };
 
   return (
@@ -106,26 +95,7 @@ export default function SignInPage() {
         <div className="row-span-full col-span-full bg-[url('/assets/images/pawel-czerwinski-Zd315A95aqg-unsplash.webp')] bg-cover bg-center bg-no-repeat"></div>
       </div>
       <AnimatePresence>
-        {isModalOpen && (
-          <motion.div
-            initial={{ backdropFilter: 'blur(0px)', opacity: 0 }}
-            animate={{ backdropFilter: 'blur(10px)', opacity: 1 }}
-            exit={{ backdropFilter: 'blur(0px)', opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 bg-black/60"
-          />
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
         {isSubmitting && <BusyScreen message="Signing In" messageClassName="text-white/90" />}
-      </AnimatePresence>
-      <AnimatePresence>
-        {isAlertModalOpen && (
-          <AlertModal
-            message={alertModalMessage}
-            dismiss={handleAlertModalDismiss}
-          />
-        )}
       </AnimatePresence>
     </>
   );
