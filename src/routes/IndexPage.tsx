@@ -1,11 +1,11 @@
 import { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import AuthContext from '@/contexts/AuthContext.tsx';
+import { UserSessionContext } from '@/contexts/UserSessionContext';
 
 export default function IndexPage() {
   const navigate = useNavigate();
-  const { activeUser } = useContext(AuthContext);
+  const { activeUser } = useContext(UserSessionContext);
 
   useEffect(() => {
     // Redirect to sign in form if not signed in

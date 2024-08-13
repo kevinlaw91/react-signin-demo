@@ -1,6 +1,6 @@
 import { ReactElement, useCallback, useContext } from 'react';
 import { decodeJwt } from 'jose';
-import AuthContext, { AuthenticatedUser } from '@/contexts/AuthContext.tsx';
+import { UserSessionContext, AuthenticatedUser } from '@/contexts/UserSessionContext';
 import { useNavigate } from 'react-router-dom';
 
 // Improvement: Implement custom button using GSI
@@ -28,7 +28,7 @@ function mockCredentialResponse(): Promise<CredentialResponse> {
 
 export default function GoogleSignInButton(): ReactElement {
   const navigate = useNavigate();
-  const { setActiveUser } = useContext(AuthContext);
+  const { setActiveUser } = useContext(UserSessionContext);
 
   const callback = useCallback((response: CredentialResponse) => {
     // To implement callback

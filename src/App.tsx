@@ -1,6 +1,5 @@
-import { useState } from 'react';
 import { RouterProvider } from 'react-router-dom';
-import AuthContext, { AuthenticatedUser } from '@/contexts/AuthContext.tsx';
+import { UserSessionProvider } from '@/contexts/UserSessionContext';
 import { PopupManagerProvider } from '@/contexts/PopupModalManagerContext.tsx';
 import router from '@/router.tsx';
 import { HelmetProvider } from 'react-helmet-async';
@@ -11,17 +10,15 @@ import { ModalOverlay } from '@/components/ModalOverlay.tsx';
 import { ModalsContainer } from '@/components/ModalsContainer.tsx';
 
 export default function App() {
-  const [activeUser, setActiveUser] = useState<null | AuthenticatedUser>(null);
-
   return (
     <HelmetProvider>
       <CssVarsProvider theme={theme}>
         <PopupManagerProvider>
-          <AuthContext.Provider value={{ activeUser, setActiveUser }}>
+          <UserSessionProvider>
             <RouterProvider router={router} />
             <ModalOverlay />
             <ModalsContainer />
-          </AuthContext.Provider>
+          </UserSessionProvider>
         </PopupManagerProvider>
       </CssVarsProvider>
     </HelmetProvider>

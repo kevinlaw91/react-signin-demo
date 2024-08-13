@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import AuthSignUpForm from '@/components/AuthSignUpForm.tsx';
 import BusyScreen from '@/components/BusyScreen.tsx';
-import AuthContext, { AuthenticatedUser } from '@/contexts/AuthContext.tsx';
+import { UserSessionContext, AuthenticatedUser } from '@/contexts/UserSessionContext';
 import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
 import GoogleSignInButton from '@/components/GoogleSignInButton.tsx';
 import { createPortal } from 'react-dom';
@@ -13,7 +13,7 @@ const BUSY_MODAL = 'SIGNUP_BUSY';
 
 export default function SignUpPage() {
   const navigate = useNavigate();
-  const { activeUser, setActiveUser } = useContext(AuthContext);
+  const { activeUser, setActiveUser } = useContext(UserSessionContext);
   const { modals, queueModal, hideModal } = usePopupModalManager();
   const { queueAlertModal } = useAlertPopupModal();
 
