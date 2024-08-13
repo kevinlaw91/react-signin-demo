@@ -12,6 +12,7 @@ import { ProfileSetupStep, WizardContext } from '@/contexts/ProfileSetupWizardCo
 import { Slider } from '@mui/material';
 import { DropEvent, useDropzone } from 'react-dropzone';
 import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
+import { UserSessionContext } from '@/contexts/UserSessionContext.tsx';
 
 function ProfilePictureEditor({ src, onApply, onCancel }: {
   // Image source url
@@ -187,6 +188,7 @@ export default function ProfileSetupProfilePicture() {
   }, [queueAlertModal]);
 
   const wizardController = useContext(WizardContext);
+  const { setAvatar: setSessionAvatar } = useContext(UserSessionContext);
 
   /**
    * Show cropper if `url` is a `string`. Hide cropper when `url` is `undefined`
@@ -265,7 +267,11 @@ export default function ProfileSetupProfilePicture() {
     })
       .then((res) => {
         if (res.success) {
-          // Profile picture src is in res.data.src
+          // Save avatar to session
+          setSessionAvatar({
+            data: croppedImage.current,
+            src: imagePreviewUrl!, // Should be res.data.src in real life
+          });
           // Proceed to next step if success
           goToNextStep();
         } else {
@@ -281,7 +287,7 @@ export default function ProfileSetupProfilePicture() {
         setIsLoading(false);
         fetchMock.restore();
       });
-  }, [goToNextStep, showAlert]);
+  }, [goToNextStep, imagePreviewUrl, setSessionAvatar, showAlert]);
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
     accept: {
