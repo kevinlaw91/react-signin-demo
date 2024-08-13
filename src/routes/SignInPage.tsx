@@ -1,17 +1,20 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import AuthSignInForm from '@/components/AuthSignInForm.tsx';
 import BusyScreen from '@/components/BusyScreen.tsx';
 import AuthContext, { AuthenticatedUser } from '@/contexts/AuthContext.tsx';
 import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
 import GoogleSignInButton from '@/components/GoogleSignInButton.tsx';
+import { createPortal } from 'react-dom';
+import { usePopupModalManager } from '@/hooks/usePopupModalManager.ts';
+
+const BUSY_MODAL = 'SIGNIN_BUSY';
 
 export default function SignInPage() {
   const navigate = useNavigate();
   const { activeUser, setActiveUser } = useContext(AuthContext);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { modals, queueModal, hideModal } = usePopupModalManager();
   const { queueAlertModal } = useAlertPopupModal();
 
   useEffect(() => {
@@ -21,25 +24,30 @@ export default function SignInPage() {
     }
   }, [activeUser, navigate]);
 
+  const showBusyScreenModal = useCallback((show: boolean) => {
+    if (show) {
+      queueModal({ id: BUSY_MODAL, type: 'placeholder' });
+    } else {
+      hideModal(BUSY_MODAL);
+    }
+  }, [queueModal, hideModal]);
+
   const onFormSignInSubmit = () => {
-    setIsSubmitting(true);
+    showBusyScreenModal(true);
   };
 
   const onFormSignInSuccess = useCallback((user: AuthenticatedUser) => {
-    setIsSubmitting(false);
-
+    showBusyScreenModal(false);
     // Change app's state to signed in
     setActiveUser({ id: user.id });
-
     // Go to home page
     navigate('/', { replace: true });
-  }, [setActiveUser, navigate]);
+  }, [showBusyScreenModal, setActiveUser, navigate]);
 
   const onFormSignInError = (err?: string) => {
-    setIsSubmitting(false);
+    showBusyScreenModal(false);
     queueAlertModal(err || 'An error occurred during sign in');
   };
-
   return (
     <>
       <Helmet>
@@ -94,9 +102,7 @@ export default function SignInPage() {
         </div>
         <div className="row-span-full col-span-full bg-[url('/assets/images/pawel-czerwinski-Zd315A95aqg-unsplash.webp')] bg-cover bg-center bg-no-repeat"></div>
       </div>
-      <AnimatePresence>
-        {isSubmitting && <BusyScreen message="Signing In" messageClassName="text-white/90" />}
-      </AnimatePresence>
+      {modals.some(m => m.id === BUSY_MODAL) && createPortal(<BusyScreen message="Signing In" messageClassName="text-white/90" />, document.body, BUSY_MODAL)}
     </>
   );
 }

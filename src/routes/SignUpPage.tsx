@@ -1,18 +1,20 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import AuthSignUpForm from '@/components/AuthSignUpForm.tsx';
 import BusyScreen from '@/components/BusyScreen.tsx';
 import AuthContext, { AuthenticatedUser } from '@/contexts/AuthContext.tsx';
 import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
 import GoogleSignInButton from '@/components/GoogleSignInButton.tsx';
+import { createPortal } from 'react-dom';
+import { usePopupModalManager } from '@/hooks/usePopupModalManager.ts';
+
+const BUSY_MODAL = 'SIGNUP_BUSY';
 
 export default function SignUpPage() {
   const navigate = useNavigate();
   const { activeUser, setActiveUser } = useContext(AuthContext);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const { modals, queueModal, hideModal } = usePopupModalManager();
   const { queueAlertModal } = useAlertPopupModal();
 
   useEffect(() => {
@@ -22,22 +24,30 @@ export default function SignUpPage() {
     }
   }, [activeUser, navigate]);
 
+  const showBusyScreenModal = useCallback((show: boolean) => {
+    if (show) {
+      queueModal({ id: BUSY_MODAL, type: 'placeholder' });
+    } else {
+      hideModal(BUSY_MODAL);
+    }
+  }, [queueModal, hideModal]);
+
   const onFormSignUpSubmit = () => {
-    setIsSubmitting(true);
+    showBusyScreenModal(true);
   };
 
   const onFormSignUpSuccess = useCallback((user: AuthenticatedUser) => {
-    setIsSubmitting(false);
+    showBusyScreenModal(false);
 
     // Change app's state to signed in
     setActiveUser({ id: user.id });
 
     // Go to home page
     navigate('/', { replace: true });
-  }, [setActiveUser, navigate]);
+  }, [showBusyScreenModal, setActiveUser, navigate]);
 
   const onFormSignUpError = (err?: string) => {
-    setIsSubmitting(false);
+    showBusyScreenModal(false);
     queueAlertModal(err || 'Sign up failed');
   };
 
@@ -84,9 +94,7 @@ export default function SignUpPage() {
         </div>
         <div className="row-span-full col-span-full bg-[url('/assets/images/pawel-czerwinski-Zd315A95aqg-unsplash.webp')] bg-cover bg-center bg-no-repeat"></div>
       </div>
-      <AnimatePresence>
-        {isSubmitting && <BusyScreen message="Creating account" messageClassName="text-white/90" />}
-      </AnimatePresence>
+      {modals.some(m => m.id === BUSY_MODAL) && createPortal(<BusyScreen message="Creating account" messageClassName="text-white/90" />, document.body, BUSY_MODAL)}
     </>
   );
 }
