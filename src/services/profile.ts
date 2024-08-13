@@ -85,5 +85,9 @@ export async function setProfilePicture({ profileId, image }: { profileId: strin
     body: formData,
   });
 
-  return await response.json() as UploadProfilePictureResponse;
+  if (response.ok) {
+    return await response.json() as UploadProfilePictureResponse;
+  }
+
+  throw new Error(`${response.statusText} ${response.status}`);
 }

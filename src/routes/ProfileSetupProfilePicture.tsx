@@ -273,7 +273,8 @@ export default function ProfileSetupProfilePicture() {
         }
         return;
       })
-      .catch((_err: Error) => {
+      .catch((err: Error) => {
+        console.error(err);
         showAlert('Failed to update profile picture');
       })
       .finally(() => {
