@@ -140,7 +140,7 @@ export default function ProfileSetupPage() {
     resolver: zodResolver(candidateSchema),
   });
 
-  const doCheckUsername = useCallback(async ({ username }: UsernameFormData) => {
+  const doCheckUsername = useCallback(({ username }: UsernameFormData) => {
     // Discard any unfinished checks
     runningUsernameCheck.current?.abort?.();
     runningUsernameCheck.current = new AbortController();
