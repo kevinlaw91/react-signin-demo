@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { IWizardController } from '@/interfaces/WizardController.ts';
+import { IWizardController } from '@/types/WizardController';
 
 export enum ProfileSetupStep {
   STEP_USERNAME = 'STEP_USERNAME',

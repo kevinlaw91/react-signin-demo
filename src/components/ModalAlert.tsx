@@ -2,7 +2,7 @@ import { ReactNode, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Icon } from '@iconify-icon/react';
 import { usePopupModalManager } from '@/hooks/usePopupModalManager.ts';
-import { ModalComponentProps } from '@/interfaces/PopupModalManager';
+import { ModalComponentProps } from '@/types/PopupModalManager';
 
 type AlertModalProps = {
   icon?: ReactNode;
