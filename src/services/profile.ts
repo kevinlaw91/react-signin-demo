@@ -55,7 +55,12 @@ export async function checkUsernameAvailability(username: string, signal?: Abort
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   });
-  return await response.json() as CheckUsernameResponse;
+
+  if (response.ok) {
+    return await response.json() as CheckUsernameResponse;
+  }
+
+  throw new Error(`${response.statusText} ${response.status}`);
 }
 
 interface UploadProfilePictureSuccessResponse {

@@ -172,29 +172,31 @@ export default function ProfileSetupPage() {
       { delay: 1000 },
     );
 
-    let _isAvailable;
-    try {
-      const res = await checkUsernameAvailability(username, runningUsernameCheck.current.signal);
-      _isAvailable = res.data.isAvailable;
-    } catch (err) {
-      // Aborted requests are not error
-      if (err instanceof Error && err.name === 'AbortError') return;
-      queueAlertModal(MSG_UNEXPECTED_ERROR);
-      throw err;
-    } finally {
-      // Restore fetch mock
-      fetchMock.restore();
-    }
+    checkUsernameAvailability(username, runningUsernameCheck.current.signal)
+      .then((res) => {
+        const available = res.data.isAvailable;
 
-    if (_isAvailable) {
-      frmClaimUsername.setValue('candidate', username);
-    } else {
-      // Reselect input field if username is not available
-      frmCheckUsername.setFocus('username');
-      frmClaimUsername.setValue('candidate', '');
-    }
-    setIsAvailable(_isAvailable);
-    return _isAvailable;
+        if (available) {
+          frmClaimUsername.setValue('candidate', username);
+        } else {
+          // Reselect input field if username is not available
+          frmCheckUsername.setFocus('username');
+          frmClaimUsername.setValue('candidate', '');
+        }
+
+        setIsAvailable(available);
+        return available;
+      })
+      .catch((err) => {
+        // Aborted requests are not error
+        if (err instanceof Error && err.name === 'AbortError') return;
+        console.error(err);
+        queueAlertModal(MSG_UNEXPECTED_ERROR);
+      })
+      .finally(() => {
+        // Restore fetch mock
+        fetchMock.restore();
+      });
   }, [frmCheckUsername, frmClaimUsername, queueAlertModal]);
 
   const frmUsernameValidationFailedHandler: SubmitErrorHandler<UsernameFormData> = useCallback((errors) => {
