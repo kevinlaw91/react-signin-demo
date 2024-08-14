@@ -8,6 +8,7 @@ export default function ProfileSetupComplete() {
     <section>
       <div className="flex h-full min-h-svh flex-col items-center justify-center py-12 gap-12">
         <div className="flex flex-col items-center justify-center">
+          <img src="/assets/svg/success-circle-large.svg" className="size-3/5" />
           <h1 className="text-2xl font-bold">Complete</h1>
           <p>You profile is now set up.</p>
         </div>
