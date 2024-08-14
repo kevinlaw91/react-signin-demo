@@ -7,6 +7,7 @@ import ProfileSetupProfilePicture from '@/routes/ProfileSetupProfilePicture.tsx'
 import * as imageUtils from '@/utils/image.ts';
 import * as Profile from '@/services/profile.ts';
 import { PopupManagerProvider } from '@/contexts/PopupModalManagerContext.tsx';
+import { WizardContext } from '@/contexts/ProfileSetupWizardContext';
 
 const fakeImageDataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII';
 
@@ -128,12 +129,17 @@ describe('ProfileSetupProfilePicture', () => {
     let user;
     let container;
 
+    // Wizard context
+    let setCurrentStep = vi.fn();
+
     beforeAll(async () => {
       user = userEvent.setup();
       container = render(
         <HelmetProvider>
           <PopupManagerProvider>
-            <ProfileSetupProfilePicture />
+            <WizardContext.Provider value={{ setCurrentStep }}>
+              <ProfileSetupProfilePicture />
+            </WizardContext.Provider>
           </PopupManagerProvider>
         </HelmetProvider>,
       );
@@ -160,6 +166,17 @@ describe('ProfileSetupProfilePicture', () => {
     it('should make api call when submitted', async () => {
       await user.click(container.getByRole('button', { name: /continue/i }));
       expect(apiCall).toHaveBeenCalled();
+    });
+
+    it('should return success', async () => {
+      await vi.waitUntil(
+        () => apiCall.mock.results[0],
+      );
+      await expect(apiCall.mock.results[0].value).resolves.toBeDefined();
+    });
+
+    it('should trigger a signal to proceed to the next step', () => {
+      expect(setCurrentStep).toBeCalled();
     });
   });
 });
