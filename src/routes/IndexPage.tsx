@@ -5,7 +5,7 @@ import { UserSessionContext } from '@/contexts/UserSessionContext';
 
 export default function IndexPage() {
   const navigate = useNavigate();
-  const { activeUser } = useContext(UserSessionContext);
+  const { activeUser, avatarSrc } = useContext(UserSessionContext);
 
   useEffect(() => {
     // Redirect to sign in form if not signed in
@@ -17,7 +17,9 @@ export default function IndexPage() {
       <Helmet>
         <title>{`Welcome, ${activeUser?.id}`}</title>
       </Helmet>
-      <section></section>
+      <section>
+        { avatarSrc && <img src={avatarSrc} alt="Profile picture" className="size-8 rounded-full" /> }
+      </section>
     </>
   );
 }
