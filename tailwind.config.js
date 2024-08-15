@@ -1,3 +1,5 @@
+import defaultTheme from 'tailwindcss/defaultTheme';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -35,6 +37,9 @@ export default {
           900: '#00242E',
           950: '#001014',
         },
+      },
+      fontFamily: {
+        sans: ['Figtree', ...defaultTheme.fontFamily.sans],
       },
     },
   },
