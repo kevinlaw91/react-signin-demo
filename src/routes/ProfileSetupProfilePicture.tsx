@@ -114,7 +114,7 @@ function ProfilePicturePreview({ src, className, ...otherProps }: {
 export function ProfileSetupProfilePictureForm(props: {
   previewUrl?: string;
   onFileSelect?: (e: FileList) => void;
-  onSubmit?: (promise: ReturnType<typeof setProfilePicture>) => void;
+  onSubmit?: () => void;
   onSkip?: () => void;
 }) {
   const { onSubmit, previewUrl } = props;
