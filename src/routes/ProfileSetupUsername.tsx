@@ -16,6 +16,7 @@ import {
   ProfileErrorCode,
 } from '@/services/profile.ts';
 import { ProfileSetupStep, WizardContext } from '@/contexts/ProfileSetupWizardContext.ts';
+import { SessionContext } from '@/contexts/SessionContext';
 
 // Username awaiting availability check
 const usernameSchema = z.object({
@@ -121,13 +122,15 @@ function UsernameCheckResultMessage({ isAvailable }: { isAvailable: boolean }) {
   );
 }
 
-export default function ProfileSetupPage() {
+export default function ProfileSetupUsername() {
   const { queueAlertModal } = useAlertPopupModal();
 
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const runningUsernameCheck = useRef<AbortController | null>(null);
 
   const wizardController = useContext(WizardContext);
+  const { updateSessionUser } = useContext(SessionContext);
+
   const gotoNextStep = useCallback(() => {
     wizardController?.setCurrentStep?.(ProfileSetupStep.STEP_PROFILE_PICTURE);
   }, [wizardController]);
@@ -257,15 +260,15 @@ export default function ProfileSetupPage() {
 
     // Success
     if (res?.success) {
-      // TODO: update session username
-      // res.data.username;
+      // Update session username
+      updateSessionUser({ username: res.data.username });
       gotoNextStep();
       return;
     } else {
       queueAlertModal(MSG_UNEXPECTED_ERROR);
       throw new Error(ProfileErrorCode.ERR_UNEXPECTED_ERROR);
     }
-  }, [gotoNextStep, queueAlertModal]);
+  }, [gotoNextStep, queueAlertModal, updateSessionUser]);
 
   const frmCandidateValidationFailedHandler: SubmitErrorHandler<UsernameFormData> = useCallback((errors) => {
     // Show error dialog if field is blank
@@ -277,8 +280,6 @@ export default function ProfileSetupPage() {
   const formAction = isAvailable
     ? frmClaimUsername.handleSubmit(doClaimUsername, frmCandidateValidationFailedHandler)
     : frmCheckUsername.handleSubmit(doCheckUsername, frmUsernameValidationFailedHandler);
-
-  const isSubmitting = frmClaimUsername.formState.isSubmitting || frmClaimUsername.formState.isSubmitting;
 
   return (
     <>
@@ -333,11 +334,11 @@ export default function ProfileSetupPage() {
             {isAvailable !== null && <UsernameCheckResultMessage isAvailable={isAvailable} />}
             <div className="pt-3">
               {
-                isSubmitting
+                (frmCheckUsername.formState.isSubmitting || frmClaimUsername.formState.isSubmitting)
                 && <ButtonBusy className="w-full" />
               }
               {
-                !frmCheckUsername.formState.isSubmitting && (isAvailable === null || !isAvailable) && (
+                !frmCheckUsername.formState.isSubmitting && !isAvailable && (
                   <ButtonPrimary type="submit" className="w-full">Check Availability</ButtonPrimary>
                 )
               }
