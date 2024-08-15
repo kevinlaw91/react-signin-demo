@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { ReactNode, ButtonHTMLAttributes } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { LoaderPulsingDotsLinear } from '@/components/loaders/LoaderPulsingDots.tsx';
 import { Icon } from '@iconify-icon/react';
 
-interface IButton {
+interface IButtonBase {
   /**
    * Icon rendered on the left side
    */
@@ -22,7 +22,25 @@ interface IButton {
   [key: string]: unknown;
 }
 
-export function Button({ children, leftIcon, rightIcon, iconCentered = true, className, ...otherProps }: IButton) {
+interface IButton extends IButtonBase {
+  type?: ButtonHTMLAttributes<'button'>['type'];
+}
+
+interface ILinkButton extends IButtonBase {
+  href?: string;
+  [key: string]: unknown;
+}
+
+export function Button({
+  children,
+  type = 'button',
+  leftIcon,
+  rightIcon,
+  iconCentered = true,
+  className,
+  href,
+  ...otherProps
+}: IButton & ILinkButton) {
   if (typeof leftIcon === 'string') {
     leftIcon = <Icon icon={leftIcon} className="h-full text-current" height="unset" />;
   }
@@ -31,9 +49,15 @@ export function Button({ children, leftIcon, rightIcon, iconCentered = true, cla
     rightIcon = <Icon icon={rightIcon} className="h-full text-current" height="unset" />;
   }
 
+  const Component = href ? 'a' : 'button';
+
   return (
-    <button
-      type="button"
+    <Component
+      {...(
+        href
+          ? { href: href } // inject props for <a>
+          : { type: type } // inject props for <button>
+      )}
       className={twMerge('flex items-stretch justify-center font-semibold rounded-xl text-neutral-800 focus:outline focus:outline-2 outline-current transition duration-150', className)}
       {...otherProps}
     >
@@ -46,7 +70,7 @@ export function Button({ children, leftIcon, rightIcon, iconCentered = true, cla
           rightIcon && (<span className="flex h-full min-w-6 shrink-0 items-center aspect-square">{rightIcon}</span>)
         }
       </span>
-    </button>
+    </Component>
   );
 }
 
