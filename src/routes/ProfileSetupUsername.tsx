@@ -175,7 +175,7 @@ export default function ProfileSetupUsername() {
       { delay: 1000 },
     );
 
-    checkUsernameAvailability(username, runningUsernameCheck.current.signal)
+    return checkUsernameAvailability(username, runningUsernameCheck.current.signal)
       .then((res) => {
         const available = res.data.isAvailable;
 
@@ -188,7 +188,7 @@ export default function ProfileSetupUsername() {
         }
 
         setIsAvailable(available);
-        return available;
+        return;
       })
       .catch((err) => {
         // Aborted requests are not error
