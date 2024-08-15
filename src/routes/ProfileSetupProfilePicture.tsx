@@ -12,7 +12,7 @@ import { ProfileSetupStep, WizardContext } from '@/contexts/ProfileSetupWizardCo
 import { Slider } from '@mui/material';
 import { DropEvent, useDropzone } from 'react-dropzone';
 import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
-import { UserSessionContext } from '@/contexts/UserSessionContext.tsx';
+import { SessionContext } from '@/contexts/SessionContext';
 
 function ProfilePictureEditor({ src, onApply, onCancel }: {
   // Image source url
@@ -188,7 +188,7 @@ export default function ProfileSetupProfilePicture() {
   }, [queueAlertModal]);
 
   const wizardController = useContext(WizardContext);
-  const { setAvatar: setSessionAvatar } = useContext(UserSessionContext);
+  const { updateSessionUser } = useContext(SessionContext);
 
   /**
    * Show cropper if `url` is a `string`. Hide cropper when `url` is `undefined`
@@ -267,12 +267,17 @@ export default function ProfileSetupProfilePicture() {
     })
       .then((res) => {
         if (res.success) {
-          // Save avatar to session
-          setSessionAvatar({
-            data: croppedImage.current,
-            src: imagePreviewUrl!, // Should be res.data.src in real life
+          // Update avatar in session
+          updateSessionUser({
+            // Store blob in context only for demo purpose.
+            // Not used in real life as file is loaded from cdn
+            _avatarBlob: croppedImage.current,
+            // Should be res.data.src in real life
+            // For demo purpose we re-use the generated data url instead
+            avatarSrc: imagePreviewUrl!,
           });
-          // Proceed to next step if success
+
+          // Proceed to next step
           goToNextStep();
         } else {
           throw new Error('Failed to update profile picture');
@@ -287,7 +292,7 @@ export default function ProfileSetupProfilePicture() {
         setIsLoading(false);
         fetchMock.restore();
       });
-  }, [goToNextStep, imagePreviewUrl, setSessionAvatar, showAlert]);
+  }, [goToNextStep, imagePreviewUrl, updateSessionUser, showAlert]);
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
     accept: {

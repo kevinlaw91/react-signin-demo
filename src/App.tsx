@@ -1,5 +1,5 @@
 import { RouterProvider } from 'react-router-dom';
-import { UserSessionProvider } from '@/contexts/UserSessionContext';
+import { UserSessionProvider } from '@/contexts/SessionContext';
 import { PopupManagerProvider } from '@/contexts/PopupModalManagerContext.tsx';
 import router from '@/router.tsx';
 import { HelmetProvider } from 'react-helmet-async';

@@ -1,6 +1,6 @@
 import { ReactElement, useCallback, useContext } from 'react';
 import { decodeJwt } from 'jose';
-import { UserSessionContext, AuthenticatedUser } from '@/contexts/UserSessionContext';
+import { SessionContext } from '@/contexts/SessionContext';
 import { useNavigate } from 'react-router-dom';
 
 // Improvement: Implement custom button using GSI
@@ -28,7 +28,7 @@ function mockCredentialResponse(): Promise<CredentialResponse> {
 
 export default function GoogleSignInButton(): ReactElement {
   const navigate = useNavigate();
-  const { setActiveUser } = useContext(UserSessionContext);
+  const { updateSessionUser } = useContext(SessionContext);
 
   const callback = useCallback((response: CredentialResponse) => {
     // To implement callback
@@ -62,7 +62,7 @@ export default function GoogleSignInButton(): ReactElement {
     if (match) {
       // Already registered
       // Change app's state to signed in
-      setActiveUser({ id: match.id });
+      updateSessionUser({ id: match.id });
       // Redirect to home page
       navigate('/', { replace: true });
     } else {
@@ -71,17 +71,17 @@ export default function GoogleSignInButton(): ReactElement {
       // so we just redirect to home
 
       // Pretend user completed profile setup
-      const newAccount: AuthenticatedUser = {
+      const newAccount = {
         id: '1234',
       };
 
       // Change app's state to signed in
-      setActiveUser({ id: newAccount.id });
+      updateSessionUser({ id: newAccount.id });
       // Redirect to home page
       navigate('/', { replace: true });
     }
     return;
-  }, [navigate, setActiveUser]);
+  }, [navigate, updateSessionUser]);
 
   // Mock Google Sign In popup authorization
   const handleClick = useCallback(async () => {

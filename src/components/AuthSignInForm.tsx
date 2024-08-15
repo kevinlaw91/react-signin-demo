@@ -4,7 +4,7 @@ import fetchMock from 'fetch-mock';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { authenticateUser, AuthErrorCode } from '@/services/auth.ts';
-import { AuthenticatedUser } from '@/contexts/UserSessionContext';
+import { SessionUserMetadata } from '@/contexts/SessionContext';
 import FormErrorMessage from '@/components/FormErrorMessage.tsx';
 import { ButtonPrimary } from '@/components/Button.tsx';
 
@@ -38,7 +38,7 @@ const responseErrorUnauthorized: SignInFailureResponse = { success: false, messa
 
 export default function AuthSignInForm(props: {
   onSubmit: () => void;
-  onSuccess: (user: AuthenticatedUser) => void;
+  onSuccess: (userMetadata: Partial<SessionUserMetadata>) => void;
   onError: (err?: string) => void;
 }) {
   const {

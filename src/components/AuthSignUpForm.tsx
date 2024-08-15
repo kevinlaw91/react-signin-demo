@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { Icon } from '@iconify-icon/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createUser, AuthErrorCode } from '@/services/auth.ts';
-import { AuthenticatedUser } from '@/contexts/UserSessionContext';
+import { SessionUserMetadata } from '@/contexts/SessionContext';
 import FormErrorMessage from '@/components/FormErrorMessage.tsx';
 import { ButtonPrimary } from '@/components/Button.tsx';
 
@@ -43,7 +43,7 @@ const responseErrorSignUpRejected: SignUpFailureResponse = { success: false, mes
 
 export default function AuthSignUpForm(props: {
   onSubmit: () => void;
-  onSuccess: (user: AuthenticatedUser) => void;
+  onSuccess: (user: SessionUserMetadata) => void;
   onError: (err?: string) => void;
 }) {
   /* ===== Form controller ===== */

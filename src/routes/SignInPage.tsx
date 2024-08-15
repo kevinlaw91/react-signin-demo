@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import AuthSignInForm from '@/components/AuthSignInForm.tsx';
 import BusyScreen from '@/components/BusyScreen.tsx';
-import { UserSessionContext, AuthenticatedUser } from '@/contexts/UserSessionContext';
+import { SessionContext, SessionUserMetadata } from '@/contexts/SessionContext';
 import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
 import GoogleSignInButton from '@/components/GoogleSignInButton.tsx';
 import { createPortal } from 'react-dom';
@@ -13,16 +13,16 @@ const BUSY_MODAL = 'SIGNIN_BUSY';
 
 export default function SignInPage() {
   const navigate = useNavigate();
-  const { activeUser, setActiveUser } = useContext(UserSessionContext);
+  const { user, updateSessionUser } = useContext(SessionContext);
   const { modals, queueModal, hideModal } = usePopupModalManager();
   const { queueAlertModal } = useAlertPopupModal();
 
   useEffect(() => {
     // If already signed in, skip sign in screen and redirect to home
-    if (activeUser) {
+    if (user) {
       navigate('/', { replace: true });
     }
-  }, [activeUser, navigate]);
+  }, [user, navigate]);
 
   const showBusyScreenModal = useCallback((show: boolean) => {
     if (show) {
@@ -36,13 +36,13 @@ export default function SignInPage() {
     showBusyScreenModal(true);
   };
 
-  const onFormSignInSuccess = useCallback((user: AuthenticatedUser) => {
+  const onFormSignInSuccess = useCallback((user: Partial<SessionUserMetadata>) => {
     showBusyScreenModal(false);
     // Change app's state to signed in
-    setActiveUser({ id: user.id });
+    updateSessionUser({ id: user.id });
     // Go to home page
     navigate('/', { replace: true });
-  }, [showBusyScreenModal, setActiveUser, navigate]);
+  }, [showBusyScreenModal, updateSessionUser, navigate]);
 
   const onFormSignInError = (err?: string) => {
     showBusyScreenModal(false);

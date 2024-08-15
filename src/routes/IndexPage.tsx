@@ -1,12 +1,29 @@
 import { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { UserSessionContext } from '@/contexts/UserSessionContext';
+import { SessionUserMetadata, SessionContext } from '@/contexts/SessionContext';
+
+function UserWelcomeScreen({ user }: { user?: Partial<SessionUserMetadata> }) {
+  if (!user) return null;
+
+  return (
+    <section>
+      {user.avatarSrc && <img src={user.avatarSrc} alt="Profile picture" className="size-8 rounded-full" />}
+      {
+        user && (
+          <h1>
+            Welcome,
+            <a href={`/profile/${user.id}`}>{user.username}</a>
+          </h1>
+        )
+      }
+    </section>
+  );
+}
 
 export default function IndexPage() {
   const navigate = useNavigate();
-  const { activeUser, avatarSrc } = useContext(UserSessionContext);
-
+  const { user } = useContext(SessionContext);
   useEffect(() => {
     // Redirect to sign in form if not signed in
     if (!activeUser) navigate('/signin', { replace: true });
@@ -15,11 +32,9 @@ export default function IndexPage() {
   return (
     <>
       <Helmet>
-        <title>{`Welcome, ${activeUser?.id}`}</title>
+        <title>{`Welcome, ${user?.username}`}</title>
       </Helmet>
-      <section>
-        { avatarSrc && <img src={avatarSrc} alt="Profile picture" className="size-8 rounded-full" /> }
-      </section>
+      <UserWelcomeScreen user={user} />
     </>
   );
 }
