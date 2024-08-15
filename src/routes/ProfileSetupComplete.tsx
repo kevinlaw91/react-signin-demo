@@ -13,7 +13,7 @@ export default function ProfileSetupComplete() {
           <p className="text-neutral-600 my-3">Your profile is now set up</p>
         </div>
         <div>
-          <ButtonPrimary onClick={handleClick} href="/">Go to Home</ButtonPrimary>
+          <ButtonPrimary onClick={handleClick} to="/" reloadDocument>Go to Home</ButtonPrimary>
         </div>
       </div>
     </section>

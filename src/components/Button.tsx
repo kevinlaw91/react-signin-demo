@@ -1,9 +1,10 @@
-import { ReactNode, ButtonHTMLAttributes } from 'react';
+import { ReactNode, ComponentPropsWithoutRef } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { LoaderPulsingDotsLinear } from '@/components/loaders/LoaderPulsingDots.tsx';
 import { Icon } from '@iconify-icon/react';
+import { Link, type LinkProps } from 'react-router-dom';
 
-interface IButtonBase {
+interface IButtonBaseProps {
   /**
    * Icon rendered on the left side
    */
@@ -22,59 +23,52 @@ interface IButtonBase {
   [key: string]: unknown;
 }
 
-interface IButton extends IButtonBase {
-  type?: ButtonHTMLAttributes<'button'>['type'];
-}
+interface IButton extends IButtonBaseProps, ComponentPropsWithoutRef<'button'> {}
 
-interface ILinkButton extends IButtonBase {
-  href?: string;
-  [key: string]: unknown;
-}
+interface ILinkButton extends IButtonBaseProps, LinkProps {}
 
-export function Button({
-  children,
-  type = 'button',
-  leftIcon,
-  rightIcon,
-  iconCentered = true,
-  className,
-  href,
-  ...otherProps
-}: IButton & ILinkButton) {
-  if (typeof leftIcon === 'string') {
-    leftIcon = <Icon icon={leftIcon} className="h-full text-current" height="unset" />;
-  }
+type IButtonProps = IButton | ILinkButton;
 
-  if (typeof rightIcon === 'string') {
-    rightIcon = <Icon icon={rightIcon} className="h-full text-current" height="unset" />;
-  }
+export function Button(props: IButtonProps) {
+  const {
+    children,
+    className,
+    leftIcon,
+    rightIcon,
+    iconCentered = true,
+    ...remainingProps
+  } = props;
 
-  const Component = href ? 'a' : 'button';
-
-  return (
-    <Component
-      {...(
-        href
-          ? { href: href } // inject props for <a>
-          : { type: type } // inject props for <button>
+  const contents = (
+    <span className={twMerge('flex w-full items-stretch justify-items-stretch gap-3 mx-4 my-3', iconCentered ? 'justify-center' : 'justify-between')}>
+      {typeof leftIcon === 'string' && (
+        <span className="flex h-full min-w-6 shrink-0 items-center aspect-square">
+          <Icon icon={leftIcon} className="h-full text-current" height="unset" />
+        </span>
       )}
-      className={twMerge('flex items-stretch justify-center font-semibold rounded-xl text-neutral-800 focus:outline focus:outline-2 outline-current transition duration-150', className)}
-      {...otherProps}
-    >
-      <span className={twMerge('flex w-full items-stretch justify-items-stretch gap-3 mx-4 my-3', iconCentered ? 'justify-center' : 'justify-between')}>
-        {
-          leftIcon && (<span className="flex h-full min-w-6 shrink-0 items-center aspect-square">{leftIcon}</span>)
-        }
-        {children}
-        {
-          rightIcon && (<span className="flex h-full min-w-6 shrink-0 items-center aspect-square">{rightIcon}</span>)
-        }
-      </span>
-    </Component>
+      {children}
+      {typeof rightIcon === 'string' && (
+        <span className="flex h-full min-w-6 shrink-0 items-center aspect-square">
+          <Icon icon={rightIcon} className="h-full text-current" height="unset" />
+        </span>
+      )}
+    </span>
   );
+
+  const mergedClassName = twMerge('flex items-stretch justify-center font-semibold rounded-xl text-neutral-800 focus:outline focus:outline-2 outline-current transition duration-150', className);
+
+  if ('to' in remainingProps) {
+    return (
+      <Link className={mergedClassName}{...remainingProps as ILinkButton}>{contents}</Link>
+    );
+  } else {
+    return (
+      <button className={mergedClassName}{...remainingProps}>{contents}</button>
+    );
+  }
 }
 
-export function ButtonBusy({ className, ...otherProps }: IButton) {
+export function ButtonBusy({ className, ...otherProps }: IButtonProps) {
   return (
     <Button
       className={twMerge('bg-neutral-200 text-neutral-50', className)}
@@ -92,7 +86,7 @@ export function ButtonBusy({ className, ...otherProps }: IButton) {
  * @param variantClasses Classes to inject to the custom button
  */
 function createCustomButton(name: string, variantClasses: string) {
-  const btn = function ({ children, className, ...otherProps }: IButton) {
+  const btn = function ({ children, className, ...otherProps }: IButtonProps) {
     return (
       <Button
         className={twMerge(variantClasses, className)}
