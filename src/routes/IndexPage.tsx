@@ -24,10 +24,11 @@ function UserWelcomeScreen({ user }: { user?: Partial<SessionUserMetadata> }) {
 export default function IndexPage() {
   const navigate = useNavigate();
   const { user } = useContext(SessionContext);
+
   useEffect(() => {
     // Redirect to sign in form if not signed in
-    if (!activeUser) navigate('/signin', { replace: true });
-  }, [activeUser, navigate]);
+    if (!user) navigate('/signin', { replace: true });
+  }, [navigate, user]);
 
   return (
     <>
