@@ -13,7 +13,7 @@ function UserWelcomeScreen({ user }: { user?: Partial<SessionUserMetadata> }) {
         user && (
           <h1>
             Welcome,
-            <a href={`/profile/${user.id}`}>{user.username}</a>
+            <a href={`/profile/${user.id}`}>{user.username || user.id}</a>
           </h1>
         )
       }
@@ -33,7 +33,10 @@ export default function IndexPage() {
   return (
     <>
       <Helmet>
-        <title>{`Welcome, ${user?.username}`}</title>
+        <title>
+          Welcome
+          { (user?.username || user?.id) ? `, ${user?.username || user?.id}` : '' }
+        </title>
       </Helmet>
       <UserWelcomeScreen user={user} />
     </>
