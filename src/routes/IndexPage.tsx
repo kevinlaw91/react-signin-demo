@@ -8,7 +8,7 @@ function UserWelcomeScreen({ user }: { user?: Partial<SessionUserMetadata> }) {
 
   return (
     <section>
-      {user.avatarSrc && <img src={user.avatarSrc} alt="Profile picture" className="size-8 rounded-full" />}
+      <img src={user.avatarSrc || '/assets/images/profile-picture-blank.jpg'} alt="Profile picture" className="size-8 rounded-full" />
       {
         user && (
           <h1>
