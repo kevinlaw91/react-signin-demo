@@ -1,0 +1,52 @@
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+  }
+  50% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(.95);
+  }
+}
+
+@keyframes reveal {
+  0% {
+    transform: scale(0);
+  }
+  75% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.tick {
+  stroke-dasharray: 168; /* This value should match the path length */
+  stroke-dashoffset: 168;
+  animation: draw 0.5s forwards;
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Let svg escape from Lottie player wrapper container */
+:global(.lf-player-container) {
+  display: contents;
+}
+
+.sparks {
+  opacity: 0.25;
+}
+
+.tick_circle {
+  width: 50%;
+  height: 50%;
+  animation:
+    reveal .35s forwards cubic-bezier(0.175, 0.885, 0.320, 1.275),
+    pulse 1.6s .35s infinite alternate ease-in-out;
+}
