@@ -1,12 +1,7 @@
 import { extendTheme } from '@mui/material/styles';
-import resolveConfig from 'tailwindcss/resolveConfig';
-import tailwindConfigFile from '../tailwind.config.js';
+import twConfig from '@/utils/twConfig.ts';
 
-interface TailwindColor { [key: string]: string }
-interface TailwindColors { [key: string]: TailwindColor }
-
-const tailwindConfig = resolveConfig(tailwindConfigFile);
-const twColors: TailwindColors = tailwindConfig.theme.colors as unknown as TailwindColors;
+const colors = twConfig.theme.colors;
 
 // Integrate tailwind theme into MUI theme
 export const theme = extendTheme({
@@ -14,19 +9,19 @@ export const theme = extendTheme({
     light: {
       palette: {
         primary: {
-          main: twColors.primary.DEFAULT,
-          light: twColors.primary['400'],
-          dark: twColors.primary['800'],
+          main: colors.primary.DEFAULT,
+          light: colors.primary['400'],
+          dark: colors.primary['800'],
         },
         secondary: {
-          main: twColors.secondary.DEFAULT,
-          light: twColors.secondary['400'],
-          dark: twColors.secondary['800'],
+          main: colors.secondary.DEFAULT,
+          light: colors.secondary['400'],
+          dark: colors.secondary['800'],
         },
       },
     },
   },
   typography: {
-    fontFamily: tailwindConfig.theme.fontFamily['sans'].join(','),
+    fontFamily: twConfig.theme.fontFamily['sans'].join(','),
   },
 });
