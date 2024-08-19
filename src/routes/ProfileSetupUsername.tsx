@@ -1,5 +1,6 @@
-import { useCallback, useContext, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import fetchMock from 'fetch-mock';
+import { useSwiper } from 'swiper/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { IMaskInput } from 'react-imask';
@@ -10,12 +11,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
 import { ButtonPrimary, ButtonBusy } from '@/components/Button.tsx';
 import { LoaderPulsingDotsCircular } from '@/components/loaders/LoaderPulsingDots.tsx';
+import { ProfileSetupStep } from '@/routes/ProfileSetupWizard.ts';
 import {
   saveUsername,
   checkUsernameAvailability,
   ProfileErrorCode,
 } from '@/services/profile.ts';
-import { ProfileSetupStep, WizardContext } from '@/contexts/ProfileSetupWizardContext.ts';
 import { SessionContext } from '@/contexts/SessionContext';
 
 // Username awaiting availability check
@@ -125,15 +126,15 @@ function UsernameCheckResultMessage({ isAvailable }: { isAvailable: boolean }) {
 export default function ProfileSetupUsername() {
   const { queueAlertModal } = useAlertPopupModal();
 
+  // Wizard slide
+  const swiper = useSwiper();
+
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const runningUsernameCheck = useRef<AbortController | null>(null);
 
-  const wizardController = useContext(WizardContext);
   const { updateSessionUser } = useContext(SessionContext);
 
-  const gotoNextStep = useCallback(() => {
-    wizardController?.setCurrentStep?.(ProfileSetupStep.STEP_PROFILE_PICTURE);
-  }, [wizardController]);
+  const goToNextStep = useCallback(() => swiper.slideTo(ProfileSetupStep.STEP_USERNAME + 1), [swiper]);
 
   const frmCheckUsername = useForm<UsernameFormData>({
     resolver: zodResolver(usernameSchema),
@@ -262,13 +263,13 @@ export default function ProfileSetupUsername() {
     if (res?.success) {
       // Update session username
       updateSessionUser({ username: res.data.username });
-      gotoNextStep();
+      goToNextStep();
       return;
     } else {
       queueAlertModal(MSG_UNEXPECTED_ERROR);
       throw new Error(ProfileErrorCode.ERR_UNEXPECTED_ERROR);
     }
-  }, [gotoNextStep, queueAlertModal, updateSessionUser]);
+  }, [goToNextStep, queueAlertModal, updateSessionUser]);
 
   const frmCandidateValidationFailedHandler: SubmitErrorHandler<UsernameFormData> = useCallback((errors) => {
     // Show error dialog if field is blank
@@ -280,6 +281,21 @@ export default function ProfileSetupUsername() {
   const formAction = isAvailable
     ? frmClaimUsername.handleSubmit(doClaimUsername, frmCandidateValidationFailedHandler)
     : frmCheckUsername.handleSubmit(doCheckUsername, frmUsernameValidationFailedHandler);
+
+  // Autofocus input for first time
+  const [focusedUsernameInputOnce, setFocusedUsernameInputOnce] = useState(false);
+  const focusUsernameInput = useCallback(() => {
+    if (focusedUsernameInputOnce) return;
+    frmCheckUsername.setFocus('username');
+    setFocusedUsernameInputOnce(true);
+  }, [focusedUsernameInputOnce, frmCheckUsername]);
+
+  useEffect(() => {
+    swiper.on('slideChangeTransitionEnd', focusUsernameInput);
+    return () => {
+      swiper.off('slideChangeTransitionEnd', focusUsernameInput);
+    };
+  }, [swiper, focusUsernameInput]);
 
   return (
     <>
@@ -313,7 +329,6 @@ export default function ProfileSetupUsername() {
                   frmClaimUsername.setValue('candidate', '');
                 }}
                 defaultValue=""
-                autoFocus
                 placeholder="Enter a username..."
                 value={frmCheckUsername.watch('username')}
                 {...otherFieldProps}

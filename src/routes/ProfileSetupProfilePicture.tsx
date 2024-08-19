@@ -6,13 +6,14 @@ import Cropper, { Area, Point } from 'react-easy-crop';
 import { Icon } from '@iconify-icon/react';
 import { Button, ButtonOutline, ButtonPrimary } from '@/components/Button.tsx';
 import { cropImage, CropParams, fixImageOrientation } from '@/utils/image.ts';
-import BusyScreen from '@/components/BusyScreen.tsx';
 import { setProfilePicture } from '@/services/profile.ts';
-import { ProfileSetupStep, WizardContext } from '@/contexts/ProfileSetupWizardContext.ts';
+import { ProfileSetupStep } from '@/routes/ProfileSetupWizard.ts';
 import { Slider } from '@mui/material';
 import { DropEvent, useDropzone } from 'react-dropzone';
 import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
 import { SessionContext } from '@/contexts/SessionContext';
+import { useSwiper } from 'swiper/react';
+import { IndeterminateProgressBar } from '@/components/IndeterminateProgressBar.tsx';
 
 function ProfilePictureEditor({ src, onApply, onCancel }: {
   // Image source url
@@ -175,6 +176,8 @@ export function ProfileSetupProfilePictureForm(props: {
 }
 
 export default function ProfileSetupProfilePicture() {
+  const swiper = useSwiper();
+
   const [isLoading, setIsLoading] = useState(false);
   const [imageFileSrc, setImageFileSrc] = useState<string>();
   const [isCropEditorVisible, setIsCropEditorVisible] = useState<boolean>(false);
@@ -187,7 +190,6 @@ export default function ProfileSetupProfilePicture() {
     queueAlertModal(msg);
   }, [queueAlertModal]);
 
-  const wizardController = useContext(WizardContext);
   const { updateSessionUser } = useContext(SessionContext);
 
   /**
@@ -232,7 +234,7 @@ export default function ProfileSetupProfilePicture() {
     return;
   }, [hideCropper, imagePreviewUrl]);
 
-  const goToNextStep = useCallback(() => wizardController?.setCurrentStep?.(ProfileSetupStep.STEP_COMPLETE), [wizardController]);
+  const goToNextStep = useCallback(() => swiper.slideTo(ProfileSetupStep.STEP_PROFILE_PICTURE + 1), [swiper]);
 
   const handleSubmitResponse = useCallback(() => {
     setIsLoading(true);
@@ -284,12 +286,11 @@ export default function ProfileSetupProfilePicture() {
         }
         return;
       })
-      .catch((err: Error) => {
-        console.error(err);
+      .catch((_err: Error) => {
         showAlert('Failed to update profile picture');
+        setIsLoading(false);
       })
       .finally(() => {
-        setIsLoading(false);
         fetchMock.restore();
       });
   }, [goToNextStep, imagePreviewUrl, updateSessionUser, showAlert]);
@@ -316,8 +317,8 @@ export default function ProfileSetupProfilePicture() {
       </Helmet>
       {
         isLoading && (
-          <section className="flex items-center justify-center w-full h-svh">
-            <BusyScreen />
+          <section className="flex justify-center items-center min-h-svh mx-auto md:w-96 max-w-md md:max-w-sm">
+            <IndeterminateProgressBar className="h-[4px] w-[400px] max-w-[40svw]" />
           </section>
         )
       }

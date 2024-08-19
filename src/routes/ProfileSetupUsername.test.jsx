@@ -5,7 +5,6 @@ import ProfileSetupUsername from '@/routes/ProfileSetupUsername.tsx';
 import userEvent from '@testing-library/user-event';
 import * as Profile from '@/services/profile.ts';
 import { PopupManagerProvider } from '@/contexts/PopupModalManagerContext.tsx';
-import { WizardContext } from '@/contexts/ProfileSetupWizardContext.ts';
 
 describe('ProfileSetupUsername', () => {
   describe('username registered', () => {
@@ -55,9 +54,7 @@ describe('ProfileSetupUsername', () => {
       container = render(
         <HelmetProvider>
           <PopupManagerProvider>
-            <WizardContext.Provider value={{ setCurrentStep }}>
-              <ProfileSetupUsername />
-            </WizardContext.Provider>
+            <ProfileSetupUsername />
           </PopupManagerProvider>
         </HelmetProvider>,
       );

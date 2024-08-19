@@ -7,7 +7,6 @@ import ProfileSetupProfilePicture from '@/routes/ProfileSetupProfilePicture.tsx'
 import * as imageUtils from '@/utils/image.ts';
 import * as Profile from '@/services/profile.ts';
 import { PopupManagerProvider } from '@/contexts/PopupModalManagerContext.tsx';
-import { WizardContext } from '@/contexts/ProfileSetupWizardContext';
 
 const fakeImageDataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII';
 
@@ -137,9 +136,7 @@ describe('ProfileSetupProfilePicture', () => {
       container = render(
         <HelmetProvider>
           <PopupManagerProvider>
-            <WizardContext.Provider value={{ setCurrentStep }}>
-              <ProfileSetupProfilePicture />
-            </WizardContext.Provider>
+            <ProfileSetupProfilePicture />
           </PopupManagerProvider>
         </HelmetProvider>,
       );
