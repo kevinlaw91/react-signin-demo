@@ -295,7 +295,7 @@ export default function ProfileSetupUsername() {
               className="w-24 h-24 mx-auto"
             />
           </div>
-          <h1 className="text-xl md:text-2xl font-bold text-center my-4 text-neutral-700">Let&apos;s pick your username</h1>
+          <h1 className="text-xl md:text-2xl font-bold text-center my-4 text-neutral-600">Let&apos;s pick your username</h1>
           <div className="text-neutral-400 text-xs text-center my-2" role="note">
             You can use letters (a-z), numbers (0-9), and underscores (_)
           </div>

@@ -55,8 +55,8 @@ export default function ProfileSetupComplete() {
             </svg>
           </div>
           {/* <img src="/assets/svg/success-circle-large.svg" className="size-3/5 mb-3.5 pulse" alt="" /> */}
-          <h1 className="text-2xl font-bold text-primary-500">Complete</h1>
-          <p className="text-neutral-600 my-3">Your profile is now set up</p>
+          <h1 className="text-2xl font-bold text-center text-primary-500">Complete</h1>
+          <p className="text-neutral-400 text-sm my-3">Your profile is now set up</p>
         </div>
         <div>
           <ButtonPrimary onClick={handleClick} to="/" reloadDocument>Go to Home</ButtonPrimary>

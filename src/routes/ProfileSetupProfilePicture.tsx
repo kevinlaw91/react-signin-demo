@@ -135,7 +135,7 @@ export function ProfileSetupProfilePictureForm(props: {
         className="relative w-full max-w-[224px]"
         onClick={triggerChooseFile}
       />
-      <h1 className="my-6 font-semibold text-lg text-neutral-700 text-center">Set Profile Picture</h1>
+      <h1 className="text-xl font-bold text-center my-4 text-neutral-600">Set Profile Picture</h1>
       <div className="flex flex-col gap-1 w-1/2">
         <ButtonOutline
           leftIcon="uil:image-upload"
@@ -156,7 +156,7 @@ export function ProfileSetupProfilePictureForm(props: {
           )
         }
         <Button
-          className="w-full"
+          className="w-full font-normal"
           onClick={props.onSkip}
         >
           Skip
