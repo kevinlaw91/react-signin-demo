@@ -1,17 +1,13 @@
 import { motion } from 'framer-motion';
-import styles from './BusyScreen.module.css';
 import { twMerge } from 'tailwind-merge';
+import { IndeterminateProgressBar } from '@/components/IndeterminateProgressBar.tsx';
 
-interface BusyScreenProps {
+interface IBusyScreenProps {
   message?: string;
   messageClassName?: string;
-  // Progressbar fill color
-  progressValueColor?: string;
-  // Progressbar background color
-  progressBarColor?: string;
 }
 
-export default function BusyScreen({ message, messageClassName, progressValueColor, progressBarColor }: BusyScreenProps) {
+export default function BusyScreen({ message, messageClassName }: IBusyScreenProps) {
   return (
     <motion.div
       exit={{ opacity: 0 }}
@@ -21,14 +17,7 @@ export default function BusyScreen({ message, messageClassName, progressValueCol
         {message && (
           <h1 className={twMerge('text-md text-current font-semibold', messageClassName)}>{message}</h1>
         )}
-        <div
-          role="progressbar"
-          className={`${styles.progressbar} h-[4px] w-[400px] max-w-[20svw]`}
-          style={{
-            '--progress-value-fill': progressValueColor,
-            '--progress-bar-fill': progressBarColor,
-          }}
-        />
+        <IndeterminateProgressBar className="h-[4px] w-[400px] max-w-[20svw]" />
       </section>
     </motion.div>
   );
