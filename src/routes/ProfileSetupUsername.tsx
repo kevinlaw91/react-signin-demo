@@ -321,11 +321,11 @@ export default function ProfileSetupUsername() {
             </div>
             {
               frmCheckUsername.formState.isSubmitting && (
-                <div className="flex gap-2 my-2 items-center">
+                <div className="flex gap-2 my-2 items-center text-neutral-600">
                   <div className="flex justify-center ">
-                    <LoaderPulsingDotsCircular className="text-lime-600 size-6" />
+                    <LoaderPulsingDotsCircular className="size-6" />
                   </div>
-                  <div className="text-neutral-500 text-xs">
+                  <div className="text-xs">
                     Checking availability...
                   </div>
                 </div>
