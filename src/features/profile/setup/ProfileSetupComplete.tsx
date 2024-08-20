@@ -4,9 +4,32 @@ import { twMerge } from 'tailwind-merge';
 import { Player } from '@lottiefiles/react-lottie-player';
 import sparkles from '@/features/profile/setup/celebration_sparkles.lottie.json';
 import styles from './ProfileSetupComplete.module.css';
+import { useCallback, useEffect, useState } from 'react';
+import Swiper from 'swiper';
+import { ProfileSetupStep } from '@/features/profile/setup/ProfileSetupWizard.ts';
+import { useSwiper } from 'swiper/react';
 
 export default function ProfileSetupComplete() {
   const handleClick = useLinkClickHandler('/');
+  const [tickAnimationVisible, setTickAnimationVisible] = useState(false);
+  const [sparklesAnimationVisible, setSparklesAnimationVisible] = useState(false);
+
+  // Wizard slide
+  const swiper = useSwiper();
+
+  const delayedEnterAnimation = useCallback((evtSwiper: Swiper) => {
+    if (evtSwiper.activeIndex !== ProfileSetupStep.STEP_COMPLETE as number) return;
+    setTimeout(() => setTickAnimationVisible(true), 100);
+    setTimeout(() => setSparklesAnimationVisible(true), 500);
+    swiper.off('slideChangeTransitionEnd', delayedEnterAnimation);
+  }, [swiper]);
+
+  useEffect(() => {
+    swiper.on('slideChangeTransitionEnd', delayedEnterAnimation);
+    return () => {
+      swiper.off('slideChangeTransitionEnd', delayedEnterAnimation);
+    };
+  }, [swiper, delayedEnterAnimation]);
 
   return (
     <section>
@@ -23,38 +46,41 @@ export default function ProfileSetupComplete() {
               loop
               autoplay
               src={sparkles}
-              className={twMerge(styles.sparks, 'row-start-1 col-start-1 h-full')}
+              className={twMerge(styles.sparks, 'row-start-1 col-start-1 h-full', !sparklesAnimationVisible && 'invisible')}
             />
-            <svg viewBox="0 0 257 257" className={twMerge(styles.tick_circle, 'pulse row-start-1 col-start-1')}>
-              <defs>
-                <linearGradient id="a" x1="13.93" y1="69.88" x2="242.07" y2="186.12" gradientUnits="userSpaceOnUse">
-                  <stop offset="0" stopColor="#fb5914" />
-                  <stop offset="1" stopColor="#c42b0a" />
-                </linearGradient>
-                <filter id="b" filterUnits="userSpaceOnUse">
-                  <feOffset dy="6.25" />
-                  <feGaussianBlur result="blur" stdDeviation="3.13" />
-                  <feFlood floodColor="#000" floodOpacity=".15" />
-                  <feComposite in2="blur" operator="in" />
-                  <feComposite in="SourceGraphic" />
-                </filter>
-              </defs>
-              <circle cx="128" cy="128" r="128" fill="url(#a)" />
-              <path
-                style={{
-                  fill: 'none',
-                  filter: 'url(#b)',
-                  stroke: '#fff',
-                  strokeLinecap: 'round',
-                  strokeLinejoin: 'round',
-                  strokeWidth: '25.64px',
-                }}
-                d="m68.97 127.49 43.69 43.7 74.37-74.38"
-                className={styles.tick}
-              />
-            </svg>
+            {
+              tickAnimationVisible && (
+                <svg viewBox="0 0 257 257" className={twMerge(styles.tick_circle, 'pulse row-start-1 col-start-1')}>
+                  <defs>
+                    <linearGradient id="a" x1="13.93" y1="69.88" x2="242.07" y2="186.12" gradientUnits="userSpaceOnUse">
+                      <stop offset="0" stopColor="#fb5914" />
+                      <stop offset="1" stopColor="#c42b0a" />
+                    </linearGradient>
+                    <filter id="b" filterUnits="userSpaceOnUse">
+                      <feOffset dy="6.25" />
+                      <feGaussianBlur result="blur" stdDeviation="3.13" />
+                      <feFlood floodColor="#000" floodOpacity=".15" />
+                      <feComposite in2="blur" operator="in" />
+                      <feComposite in="SourceGraphic" />
+                    </filter>
+                  </defs>
+                  <circle cx="128" cy="128" r="128" fill="url(#a)" />
+                  <path
+                    style={{
+                      fill: 'none',
+                      filter: 'url(#b)',
+                      stroke: '#fff',
+                      strokeLinecap: 'round',
+                      strokeLinejoin: 'round',
+                      strokeWidth: '25.64px',
+                    }}
+                    d="m68.97 127.49 43.69 43.7 74.37-74.38"
+                    className={styles.tick}
+                  />
+                </svg>
+              )
+            }
           </div>
-          {/* <img src="/assets/svg/success-circle-large.svg" className="size-3/5 mb-3.5 pulse" alt="" /> */}
           <h1 className="text-2xl font-bold text-center text-primary-500">Complete</h1>
           <p className="text-neutral-400 text-sm my-3">Your profile is now set up</p>
         </div>
