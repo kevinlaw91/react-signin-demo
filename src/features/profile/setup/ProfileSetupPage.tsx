@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperClass from 'swiper';
 import 'swiper/css';
-import { ProfileSetupStep } from '@/routes/ProfileSetupWizard.ts';
-import ProfileSetupUsername from '@/routes/ProfileSetupUsername.tsx';
-import ProfileSetupProfilePicture from '@/routes/ProfileSetupProfilePicture.tsx';
-import ProfileSetupComplete from '@/routes/ProfileSetupComplete.tsx';
+import { ProfileSetupStep } from '@/features/profile/setup/ProfileSetupWizard.ts';
+import ProfileSetupUsername from '@/features/profile/setup/ProfileSetupUsername.tsx';
+import ProfileSetupProfilePicture from '@/features/profile/setup/ProfileSetupProfilePicture.tsx';
+import ProfileSetupComplete from '@/features/profile/setup/ProfileSetupComplete.tsx';
 import { IndeterminateProgressBar } from '@/components/IndeterminateProgressBar.tsx';
 
 export default function ProfileSetupPage() {

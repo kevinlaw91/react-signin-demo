@@ -7,11 +7,11 @@ import { Icon } from '@iconify-icon/react';
 import { Button, ButtonOutline, ButtonPrimary } from '@/components/Button.tsx';
 import { cropImage, CropParams, fixImageOrientation } from '@/utils/image.ts';
 import { setProfilePicture } from '@/services/profile.ts';
-import { ProfileSetupStep } from '@/routes/ProfileSetupWizard.ts';
+import { ProfileSetupStep } from '@/features/profile/setup/ProfileSetupWizard.ts';
 import { Slider } from '@mui/material';
 import { DropEvent, useDropzone } from 'react-dropzone';
 import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
-import { SessionContext } from '@/contexts/SessionContext';
+import { SessionContext } from '@/contexts/SessionContext.tsx';
 import { useSwiper } from 'swiper/react';
 import { IndeterminateProgressBar } from '@/components/IndeterminateProgressBar.tsx';
 

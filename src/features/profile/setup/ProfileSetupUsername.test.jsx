@@ -1,7 +1,7 @@
 import { cleanup, render } from '@testing-library/react/pure';
 import { HelmetProvider } from 'react-helmet-async';
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
-import ProfileSetupUsername from '@/routes/ProfileSetupUsername.tsx';
+import ProfileSetupUsername from '@/features/profile/setup/ProfileSetupUsername.tsx';
 import userEvent from '@testing-library/user-event';
 import * as Profile from '@/services/profile.ts';
 import { PopupManagerProvider } from '@/contexts/PopupModalManagerContext.tsx';

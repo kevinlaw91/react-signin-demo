@@ -3,7 +3,7 @@ import IndexPage from '@/routes/IndexPage.tsx';
 import SignInPage from '@/routes/SignInPage.tsx';
 import SignUpPage from '@/routes/SignUpPage.tsx';
 import NotFoundPage from '@/routes/NotFoundPage.tsx';
-import ProfileSetupPage from '@/routes/ProfileSetupPage.tsx';
+import ProfileSetupPage from '@/routes/ProfileSetupPage';
 
 const router = createBrowserRouter(
   [

@@ -11,13 +11,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
 import { ButtonPrimary, ButtonBusy } from '@/components/Button.tsx';
 import { LoaderPulsingDotsCircular } from '@/components/loaders/LoaderPulsingDots.tsx';
-import { ProfileSetupStep } from '@/routes/ProfileSetupWizard.ts';
+import { ProfileSetupStep } from '@/features/profile/setup/ProfileSetupWizard.ts';
 import {
   saveUsername,
   checkUsernameAvailability,
   ProfileErrorCode,
 } from '@/services/profile.ts';
-import { SessionContext } from '@/contexts/SessionContext';
+import { SessionContext } from '@/contexts/SessionContext.tsx';
 
 // Username awaiting availability check
 const usernameSchema = z.object({

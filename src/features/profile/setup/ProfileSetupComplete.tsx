@@ -2,7 +2,7 @@ import { ButtonPrimary } from '@/components/Button.tsx';
 import { useLinkClickHandler } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 import { Player } from '@lottiefiles/react-lottie-player';
-import sparkles from '@/lottie/celebration_sparkles.json';
+import sparkles from '@/features/profile/setup/celebration_sparkles.lottie.json';
 import styles from './ProfileSetupComplete.module.css';
 
 export default function ProfileSetupComplete() {
