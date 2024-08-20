@@ -1,6 +1,6 @@
 import { APP_API_URL } from '@/config.ts';
 import { SignInResponse } from '@/features/signin/AuthSignInForm.tsx';
-import { SignUpResponse } from '@/components/AuthSignUpForm.tsx';
+import { SignUpResponse } from '@/features/signup/AuthSignUpForm';
 
 // Error codes
 export enum AuthErrorCode {

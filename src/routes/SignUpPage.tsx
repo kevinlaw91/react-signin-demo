@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import AuthSignUpForm from '@/components/AuthSignUpForm.tsx';
+import AuthSignUpForm from '@/features/signup/AuthSignUpForm';
 import BusyScreen from '@/components/BusyScreen.tsx';
 import { SessionContext, SessionUserMetadata } from '@/contexts/SessionContext';
 import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
