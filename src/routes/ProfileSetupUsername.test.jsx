@@ -6,13 +6,35 @@ import userEvent from '@testing-library/user-event';
 import * as Profile from '@/services/profile.ts';
 import { PopupManagerProvider } from '@/contexts/PopupModalManagerContext.tsx';
 
+const useSwiper = vi.hoisted(() => vi.fn());
+
 describe('ProfileSetupUsername', () => {
+  beforeAll(() => {
+    vi.mock(import('swiper/react'), async (importOriginal) => {
+      const mod = await importOriginal();
+      return {
+        ...mod,
+        useSwiper,
+      };
+    });
+  });
+
+  afterAll(() => {
+    vi.restoreAllMocks();
+  });
+
   describe('username registered', () => {
     let user;
     let container;
 
     beforeAll(async () => {
       user = userEvent.setup();
+
+      useSwiper.mockReturnValue({
+        on: vi.fn(),
+        off: vi.fn(),
+      });
+
       container = render(
         <HelmetProvider>
           <PopupManagerProvider>
@@ -47,10 +69,18 @@ describe('ProfileSetupUsername', () => {
     let apiCall;
 
     // Wizard context
-    let setCurrentStep = vi.fn();
+    let nextStepFn;
 
     beforeAll(async () => {
       user = userEvent.setup();
+
+      nextStepFn = vi.fn();
+      useSwiper.mockReturnValue({
+        on: vi.fn(),
+        off: vi.fn(),
+        slideTo: nextStepFn,
+      });
+
       container = render(
         <HelmetProvider>
           <PopupManagerProvider>
@@ -100,7 +130,7 @@ describe('ProfileSetupUsername', () => {
     });
 
     it('should trigger a signal to proceed to the next step', () => {
-      expect(setCurrentStep).toBeCalled();
+      expect(nextStepFn).toBeCalled();
     });
   });
 });

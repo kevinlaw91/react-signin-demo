@@ -8,6 +8,8 @@ import * as imageUtils from '@/utils/image.ts';
 import * as Profile from '@/services/profile.ts';
 import { PopupManagerProvider } from '@/contexts/PopupModalManagerContext.tsx';
 
+const useSwiper = vi.hoisted(() => vi.fn());
+
 const fakeImageDataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII';
 
 URL.revokeObjectURL = vi.fn();
@@ -16,6 +18,14 @@ describe('ProfileSetupProfilePicture', () => {
   let testProfileImageBlob, testProfileImageFile;
 
   beforeAll(() => {
+    vi.mock(import('swiper/react'), async (importOriginal) => {
+      const mod = await importOriginal();
+      return {
+        ...mod,
+        useSwiper,
+      };
+    });
+
     return new Promise((resolve) => {
       const canvas = document.createElement('canvas');
       canvas.width = 1;
@@ -127,12 +137,16 @@ describe('ProfileSetupProfilePicture', () => {
     let apiCall;
     let user;
     let container;
-
-    // Wizard context
-    let setCurrentStep = vi.fn();
+    let nextStepFn;
 
     beforeAll(async () => {
       user = userEvent.setup();
+
+      nextStepFn = vi.fn();
+      useSwiper.mockReturnValue({
+        slideTo: nextStepFn,
+      });
+
       container = render(
         <HelmetProvider>
           <PopupManagerProvider>
@@ -173,7 +187,7 @@ describe('ProfileSetupProfilePicture', () => {
     });
 
     it('should trigger a signal to proceed to the next step', () => {
-      expect(setCurrentStep).toBeCalled();
+      expect(nextStepFn).toBeCalled();
     });
   });
 });
