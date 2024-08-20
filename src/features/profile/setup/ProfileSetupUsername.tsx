@@ -18,6 +18,7 @@ import {
   ProfileErrorCode,
 } from '@/services/profile.ts';
 import { SessionContext } from '@/contexts/SessionContext';
+import Swiper from 'swiper';
 
 // Username awaiting availability check
 const usernameSchema = z.object({
@@ -284,10 +285,12 @@ export default function ProfileSetupUsername() {
 
   // Autofocus input for first time
   const [focusedUsernameInputOnce, setFocusedUsernameInputOnce] = useState(false);
-  const focusUsernameInput = useCallback(() => {
+  const focusUsernameInput = useCallback((evtSwiper: Swiper) => {
+    if (evtSwiper.activeIndex !== ProfileSetupStep.STEP_USERNAME as number) return;
     if (focusedUsernameInputOnce) return;
     frmCheckUsername.setFocus('username');
     setFocusedUsernameInputOnce(true);
+    evtSwiper.off('slideChangeTransitionEnd', focusUsernameInput);
   }, [focusedUsernameInputOnce, frmCheckUsername]);
 
   useEffect(() => {
