@@ -1,11 +1,11 @@
 import { useCallback, useContext, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import AuthSignInForm from '@/components/AuthSignInForm.tsx';
+import AuthSignInForm from '@/features/signin/AuthSignInForm';
 import BusyScreen from '@/components/BusyScreen.tsx';
 import { SessionContext, SessionUserMetadata } from '@/contexts/SessionContext';
 import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
-import GoogleSignInButton from '@/components/GoogleSignInButton.tsx';
+import GoogleSignInButton from '@/features/signin/GoogleSignInButton';
 import { createPortal } from 'react-dom';
 import { usePopupModalManager } from '@/hooks/usePopupModalManager.ts';
 

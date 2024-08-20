@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import userEvent from '@testing-library/user-event';
-import AuthSignInForm from './AuthSignInForm';
+import AuthSignInForm from 'src/features/signin/AuthSignInForm.js';
 import * as Auth from '@/services/auth.ts';
 
 describe('AuthSignInForm', () => {

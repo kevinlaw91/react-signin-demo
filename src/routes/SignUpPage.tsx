@@ -5,7 +5,7 @@ import AuthSignUpForm from '@/components/AuthSignUpForm.tsx';
 import BusyScreen from '@/components/BusyScreen.tsx';
 import { SessionContext, SessionUserMetadata } from '@/contexts/SessionContext';
 import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
-import GoogleSignInButton from '@/components/GoogleSignInButton.tsx';
+import GoogleSignInButton from '@/features/signin/GoogleSignInButton';
 import { createPortal } from 'react-dom';
 import { usePopupModalManager } from '@/hooks/usePopupModalManager.ts';
 

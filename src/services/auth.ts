@@ -1,5 +1,5 @@
 import { APP_API_URL } from '@/config.ts';
-import { SignInResponse } from '@/components/AuthSignInForm.tsx';
+import { SignInResponse } from '@/features/signin/AuthSignInForm.tsx';
 import { SignUpResponse } from '@/components/AuthSignUpForm.tsx';
 
 // Error codes

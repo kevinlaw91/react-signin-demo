@@ -11,7 +11,7 @@ import { ProfileSetupStep } from '@/features/profile/setup/ProfileSetupWizard.ts
 import { Slider } from '@mui/material';
 import { DropEvent, useDropzone } from 'react-dropzone';
 import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
-import { SessionContext } from '@/contexts/SessionContext.tsx';
+import { SessionContext } from '@/contexts/SessionContext';
 import { useSwiper } from 'swiper/react';
 import { IndeterminateProgressBar } from '@/components/IndeterminateProgressBar.tsx';
 

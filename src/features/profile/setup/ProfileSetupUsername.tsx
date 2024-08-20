@@ -17,7 +17,7 @@ import {
   checkUsernameAvailability,
   ProfileErrorCode,
 } from '@/services/profile.ts';
-import { SessionContext } from '@/contexts/SessionContext.tsx';
+import { SessionContext } from '@/contexts/SessionContext';
 
 // Username awaiting availability check
 const usernameSchema = z.object({
