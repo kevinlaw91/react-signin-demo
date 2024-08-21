@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import userEvent from '@testing-library/user-event';
-import AuthSignUpForm from 'src/features/signup/AuthSignUpForm.js';
+import AuthSignUpForm from '@/features/signup/AuthSignUpForm';
 import * as Auth from '@/services/auth.ts';
 import { MemoryRouter } from 'react-router-dom';
 
