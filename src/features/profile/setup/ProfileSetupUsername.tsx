@@ -264,6 +264,7 @@ export default function ProfileSetupUsername() {
     if (res?.success) {
       // Update session username
       updateSessionUser({ username: res.data.username });
+      sessionStorage.setItem('user:1234:username', res.data.username);
       goToNextStep();
       return;
     } else {

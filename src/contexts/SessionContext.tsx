@@ -1,4 +1,5 @@
-import { ReactNode, createContext, useState } from 'react';
+import { ReactNode, createContext, useState, useRef } from 'react';
+import { useSessionStorage } from 'react-use';
 
 export type SessionUserMetadata = {
   id: string;
@@ -19,7 +20,18 @@ const SessionContext = createContext<ISessionContext>({
 });
 
 const UserSessionProvider = ({ children }: { children: ReactNode }) => {
-  const [sessionUserMetadata, setSessionUserMetadata] = useState<Partial<SessionUserMetadata>>();
+  const [storedSessionUsername] = useSessionStorage<string | undefined>('user:1234:username', '');
+
+  const rememberedSession = useRef<Partial<SessionUserMetadata> | undefined>();
+
+  if (storedSessionUsername?.trim() !== '') {
+    rememberedSession.current = {
+      id: '1234',
+      username: storedSessionUsername?.trim(),
+    };
+  }
+
+  const [sessionUserMetadata, setSessionUserMetadata] = useState<Partial<SessionUserMetadata> | undefined>(rememberedSession.current);
 
   const updateSessionUser = (metadata: Partial<SessionUserMetadata>) => {
     setSessionUserMetadata(currentUserMetadata => ({
