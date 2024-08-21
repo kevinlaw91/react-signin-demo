@@ -144,7 +144,7 @@ describe('ProfileSetupProfilePicture', () => {
 
       nextStepFn = vi.fn();
       useSwiper.mockReturnValue({
-        slideTo: nextStepFn,
+        slideNext: nextStepFn,
       });
 
       container = render(

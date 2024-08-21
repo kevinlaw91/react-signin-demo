@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import fetchMock from 'fetch-mock';
-import { useSwiper } from 'swiper/react';
+import { useSwiper, useSwiperSlide } from 'swiper/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { IMaskInput } from 'react-imask';
@@ -11,7 +11,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
 import { ButtonPrimary, ButtonBusy } from '@/components/Button.tsx';
 import { LoaderPulsingDotsCircular } from '@/components/loaders/LoaderPulsingDots.tsx';
-import { ProfileSetupStep } from '@/features/profile/setup/ProfileSetupWizard.ts';
 import {
   saveUsername,
   checkUsernameAvailability,
@@ -129,13 +128,14 @@ export default function ProfileSetupUsername() {
 
   // Wizard slide
   const swiper = useSwiper();
+  const swiperSlide = useSwiperSlide();
 
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const runningUsernameCheck = useRef<AbortController | null>(null);
 
   const { updateSessionUser } = useContext(SessionContext);
 
-  const goToNextStep = useCallback(() => swiper.slideTo(ProfileSetupStep.STEP_USERNAME + 1), [swiper]);
+  const goToNextStep = useCallback(() => swiper.slideNext(), [swiper]);
 
   const frmCheckUsername = useForm<UsernameFormData>({
     resolver: zodResolver(usernameSchema),
@@ -286,12 +286,12 @@ export default function ProfileSetupUsername() {
   // Autofocus input for first time
   const [focusedUsernameInputOnce, setFocusedUsernameInputOnce] = useState(false);
   const focusUsernameInput = useCallback((evtSwiper: Swiper) => {
-    if (evtSwiper.activeIndex !== ProfileSetupStep.STEP_USERNAME as number) return;
+    if (!swiperSlide.isActive) return;
     if (focusedUsernameInputOnce) return;
     frmCheckUsername.setFocus('username');
     setFocusedUsernameInputOnce(true);
     evtSwiper.off('slideChangeTransitionEnd', focusUsernameInput);
-  }, [focusedUsernameInputOnce, frmCheckUsername]);
+  }, [focusedUsernameInputOnce, frmCheckUsername, swiperSlide.isActive]);
 
   useEffect(() => {
     swiper.on('slideChangeTransitionEnd', focusUsernameInput);

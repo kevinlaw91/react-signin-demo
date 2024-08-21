@@ -7,6 +7,7 @@ import * as Profile from '@/services/profile.ts';
 import { PopupManagerProvider } from '@/contexts/PopupModalManagerContext.tsx';
 
 const useSwiper = vi.hoisted(() => vi.fn());
+const useSwiperSlide = vi.hoisted(() => vi.fn());
 
 describe('ProfileSetupUsername', () => {
   beforeAll(() => {
@@ -15,7 +16,12 @@ describe('ProfileSetupUsername', () => {
       return {
         ...mod,
         useSwiper,
+        useSwiperSlide,
       };
+    });
+
+    useSwiperSlide.mockReturnValue({
+      isActive: true,
     });
   });
 
@@ -78,7 +84,7 @@ describe('ProfileSetupUsername', () => {
       useSwiper.mockReturnValue({
         on: vi.fn(),
         off: vi.fn(),
-        slideTo: nextStepFn,
+        slideNext: nextStepFn,
       });
 
       container = render(

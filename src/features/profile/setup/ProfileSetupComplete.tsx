@@ -6,8 +6,7 @@ import sparkles from '@/features/profile/setup/celebration_sparkles.lottie.json'
 import styles from './ProfileSetupComplete.module.css';
 import { useCallback, useEffect, useState } from 'react';
 import Swiper from 'swiper';
-import { ProfileSetupStep } from '@/features/profile/setup/ProfileSetupWizard.ts';
-import { useSwiper } from 'swiper/react';
+import { useSwiper, useSwiperSlide } from 'swiper/react';
 
 export default function ProfileSetupComplete() {
   const handleClick = useLinkClickHandler('/');
@@ -16,13 +15,15 @@ export default function ProfileSetupComplete() {
 
   // Wizard slide
   const swiper = useSwiper();
+  const swiperSlide = useSwiperSlide();
 
   const delayedEnterAnimation = useCallback((evtSwiper: Swiper) => {
-    if (evtSwiper.activeIndex !== ProfileSetupStep.STEP_COMPLETE as number) return;
+    if (!swiperSlide.isActive) return;
+
     setTimeout(() => setTickAnimationVisible(true), 100);
     setTimeout(() => setSparklesAnimationVisible(true), 500);
-    swiper.off('slideChangeTransitionEnd', delayedEnterAnimation);
-  }, [swiper]);
+    evtSwiper.off('slideChangeTransitionEnd', delayedEnterAnimation);
+  }, [swiperSlide.isActive]);
 
   useEffect(() => {
     swiper.on('slideChangeTransitionEnd', delayedEnterAnimation);

@@ -7,7 +7,6 @@ import { Icon } from '@iconify-icon/react';
 import { Button, ButtonOutline, ButtonPrimary } from '@/components/Button.tsx';
 import { cropImage, CropParams, fixImageOrientation } from '@/utils/image.ts';
 import { setProfilePicture } from '@/services/profile.ts';
-import { ProfileSetupStep } from '@/features/profile/setup/ProfileSetupWizard.ts';
 import { Slider } from '@mui/material';
 import { DropEvent, useDropzone } from 'react-dropzone';
 import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
@@ -234,7 +233,7 @@ export default function ProfileSetupProfilePicture() {
     return;
   }, [hideCropper, imagePreviewUrl]);
 
-  const goToNextStep = useCallback(() => swiper.slideTo(ProfileSetupStep.STEP_PROFILE_PICTURE + 1), [swiper]);
+  const goToNextStep = useCallback(() => swiper.slideNext(), [swiper]);
 
   const handleSubmitResponse = useCallback(() => {
     setIsLoading(true);
