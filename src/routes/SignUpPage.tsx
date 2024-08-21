@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import AuthSignUpForm from '@/features/signup/AuthSignUpForm';
 import BusyScreen from '@/components/BusyScreen.tsx';
@@ -8,21 +8,23 @@ import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
 import GoogleSignInButton from '@/features/signin/GoogleSignInButton';
 import { createPortal } from 'react-dom';
 import { usePopupModalManager } from '@/hooks/usePopupModalManager.ts';
+import SignUpSuccess from '@/features/signup/SignUpSuccess';
 
 const BUSY_MODAL = 'SIGNUP_BUSY';
 
 export default function SignUpPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user, updateSessionUser } = useContext(SessionContext);
   const { modals, queueModal, hideModal } = usePopupModalManager();
   const { queueAlertModal } = useAlertPopupModal();
 
   useEffect(() => {
     // If already signed in, redirect to home
-    if (user) {
+    if (user && searchParams.get('complete') !== 'true') {
       navigate('/', { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, navigate, searchParams]);
 
   const showBusyScreenModal = useCallback((show: boolean) => {
     if (show) {
@@ -36,20 +38,31 @@ export default function SignUpPage() {
     showBusyScreenModal(true);
   };
 
-  const onFormSignUpSuccess = useCallback((user: SessionUserMetadata) => {
+  const onFormSignUpSuccess = useCallback((user: Partial<SessionUserMetadata>) => {
     showBusyScreenModal(false);
 
     // Change app's state to signed in
     updateSessionUser({ id: user.id });
 
-    // Go to home page
-    navigate('/', { replace: true });
+    // Show success screen
+    navigate(`.?complete=true`, { replace: true });
   }, [showBusyScreenModal, updateSessionUser, navigate]);
 
   const onFormSignUpError = (err?: string) => {
     showBusyScreenModal(false);
     queueAlertModal(err || 'Sign up failed');
   };
+
+  if (searchParams.get('complete') === 'true') {
+    return (
+      <>
+        <Helmet>
+          <title>Sign Up Success!</title>
+        </Helmet>
+        <SignUpSuccess />
+      </>
+    );
+  }
 
   return (
     <>

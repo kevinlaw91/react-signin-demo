@@ -43,7 +43,7 @@ const responseErrorSignUpRejected: SignUpFailureResponse = { success: false, mes
 
 export default function AuthSignUpForm(props: {
   onSubmit: () => void;
-  onSuccess: (user: SessionUserMetadata) => void;
+  onSuccess: (user: Partial<SessionUserMetadata>) => void;
   onError: (err?: string) => void;
 }) {
   /* ===== Form controller ===== */
