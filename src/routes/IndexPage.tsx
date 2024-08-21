@@ -1,9 +1,20 @@
-import { useContext, useEffect } from 'react';
+import { SyntheticEvent, useCallback, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { SessionUserMetadata, SessionContext } from '@/contexts/SessionContext';
 
 function UserWelcomeScreen({ user }: { user?: Partial<SessionUserMetadata> }) {
+  const navigate = useNavigate();
+  const { clearSession } = useContext(SessionContext);
+
+  const handleSignOut = useCallback((evt: SyntheticEvent<HTMLAnchorElement>) => {
+    sessionStorage.removeItem('user:1234:username');
+    clearSession();
+    navigate('/', { replace: true });
+    evt.preventDefault();
+    return;
+  }, [clearSession, navigate]);
+
   if (!user) return null;
 
   return (
@@ -14,6 +25,7 @@ function UserWelcomeScreen({ user }: { user?: Partial<SessionUserMetadata> }) {
           <h1>
             Welcome,
             <a href={`/profile/${user.id}`}>{user.username || user.id}</a>
+            <a href="" onClick={handleSignOut}>Sign out</a>
           </h1>
         )
       }

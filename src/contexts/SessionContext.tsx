@@ -1,5 +1,4 @@
-import { ReactNode, createContext, useState, useRef } from 'react';
-import { useSessionStorage } from 'react-use';
+import { ReactNode, createContext, useState, useRef, useCallback } from 'react';
 
 export type SessionUserMetadata = {
   id: string;
@@ -12,38 +11,44 @@ export type SessionUserMetadata = {
 interface ISessionContext {
   user?: Partial<SessionUserMetadata>;
   updateSessionUser: (metadata: Partial<SessionUserMetadata>) => void;
+  clearSession: () => void;
 }
 
 const SessionContext = createContext<ISessionContext>({
   user: undefined,
   updateSessionUser: () => {},
+  clearSession: () => {},
 });
 
 const UserSessionProvider = ({ children }: { children: ReactNode }) => {
-  const [storedSessionUsername] = useSessionStorage<string | undefined>('user:1234:username', '');
-
   const rememberedSession = useRef<Partial<SessionUserMetadata> | undefined>();
+  const storedUsername = sessionStorage.getItem('user:1234:username');
 
-  if (storedSessionUsername?.trim() !== '') {
+  if (storedUsername && storedUsername?.trim() !== '') {
     rememberedSession.current = {
       id: '1234',
-      username: storedSessionUsername?.trim(),
+      username: storedUsername?.trim(),
     };
   }
 
   const [sessionUserMetadata, setSessionUserMetadata] = useState<Partial<SessionUserMetadata> | undefined>(rememberedSession.current);
 
-  const updateSessionUser = (metadata: Partial<SessionUserMetadata>) => {
+  const updateSessionUser = useCallback((metadata: Partial<SessionUserMetadata>) => {
     setSessionUserMetadata(currentUserMetadata => ({
       ...currentUserMetadata,
       ...metadata,
     }));
-  };
+  }, []);
+
+  const clearSession = useCallback(() => {
+    setSessionUserMetadata(undefined);
+  }, []);
 
   return (
     <SessionContext.Provider value={{
       user: sessionUserMetadata,
       updateSessionUser,
+      clearSession,
     }}
     >
       {children}
