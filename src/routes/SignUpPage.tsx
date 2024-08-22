@@ -43,6 +43,7 @@ export default function SignUpPage() {
 
     // Change app's state to signed in
     updateSessionUser({ id: user.id });
+    sessionStorage.removeItem('user:1234:username');
 
     // Show success screen
     navigate(`.?complete=true`, { replace: true });
