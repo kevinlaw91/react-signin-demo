@@ -95,7 +95,10 @@ export default function AuthSignInForm(props: {
         .then((res: SignInResponse) => {
           if (res.success) {
             // Success, tell the parent component sign in success
-            onSuccessCallback({ id: res.data.id });
+            onSuccessCallback({
+              id: res.data.id,
+              username: data.email.split('@')[0],
+            });
             return;
           }
 

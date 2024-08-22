@@ -39,7 +39,11 @@ export default function SignInPage() {
   const onFormSignInSuccess = useCallback((user: Partial<SessionUserMetadata>) => {
     showBusyScreenModal(false);
     // Change app's state to signed in
-    updateSessionUser({ id: user.id });
+    updateSessionUser({
+      id: user.id ?? '1234',
+      username: user.username ?? user.id ?? 'User',
+    });
+    sessionStorage.setItem('user:1234:username', user.username ?? user.id ?? 'User');
     // Go to home page
     navigate('/', { replace: true });
   }, [showBusyScreenModal, updateSessionUser, navigate]);
