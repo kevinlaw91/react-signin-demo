@@ -46,8 +46,8 @@ function ProfilePictureEditor({ src, onApply, onCancel }: {
   const handleSliderChange = (_evt: Event, val: number | number[]) => setZoom(val as number);
 
   return (
-    <section className="flex flex-col gap-8 items-center justify-center w-full h-svh overflow-hidden">
-      <div className="relative h-full max-h-[512px] w-full overflow-visible" data-testid="cropper-container">
+    <section className="flex flex-col gap-8 items-center justify-center w-full h-full overflow-hidden">
+      <div className="relative h-full min-h-[384px] max-h-[512px] w-full overflow-visible" data-testid="cropper-container">
         <Cropper
           image={src}
           crop={crop}

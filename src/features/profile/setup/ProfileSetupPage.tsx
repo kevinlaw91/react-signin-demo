@@ -63,7 +63,7 @@ export default function ProfileSetupPage() {
           {/* STEP_USERNAME */}
           <ProfileSetupUsername />
         </SwiperSlide>
-        <SwiperSlide>
+        <SwiperSlide className="h-auto">
           {/* STEP_PROFILE_PICTURE */}
           <ProfileSetupProfilePicture />
         </SwiperSlide>
