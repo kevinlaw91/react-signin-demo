@@ -30,6 +30,7 @@ export default function ProfileSetupPage() {
 
       if (typeof stepUsernameIndex !== 'undefined') {
         swiperRef.current?.removeSlide(stepUsernameIndex);
+        swiperRef.current?.update();
       }
     }
 
