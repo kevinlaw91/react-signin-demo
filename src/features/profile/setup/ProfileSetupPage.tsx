@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperClass from 'swiper';
 import { Manipulation } from 'swiper/modules';
@@ -7,13 +7,20 @@ import ProfileSetupUsername from '@/features/profile/setup/ProfileSetupUsername.
 import ProfileSetupProfilePicture from '@/features/profile/setup/ProfileSetupProfilePicture.tsx';
 import ProfileSetupComplete from '@/features/profile/setup/ProfileSetupComplete.tsx';
 import { IndeterminateProgressBar } from '@/components/IndeterminateProgressBar.tsx';
+import { SessionContext } from '@/contexts/SessionContext.tsx';
 
 export default function ProfileSetupPage() {
   const swiperRef = useRef<SwiperClass | null>(null);
   const [hideLoader, setHideLoader] = useState(false);
+  const { updateSessionUser } = useContext(SessionContext);
 
   useEffect(() => {
-    const usernameStepCompleted = false;
+    let usernameStepCompleted = false;
+    updateSessionUser({ id: '1234' });
+
+    if (sessionStorage.getItem('user:1234:username')) {
+      usernameStepCompleted = true;
+    }
 
     // Username already set, skip this step
     if (usernameStepCompleted) {
@@ -34,7 +41,7 @@ export default function ProfileSetupPage() {
     return () => {
       clearTimeout(timer);
     };
-  }, []);
+  }, [updateSessionUser]);
 
   return (
     <section className="isolate min-h-svh min-w-svw bg-neutral-100 bg-[url('/assets/images/bg-gradient-subtle-light.jpg')] bg-cover bg-no-repeat">
