@@ -1,62 +1,60 @@
-import { SyntheticEvent, useCallback, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { SessionContext } from '@/contexts/SessionContext';
 import { Button } from '@/components/Button.tsx';
-import { IconButton } from '@mui/material';
+import { Drawer, IconButton } from '@mui/material';
 import { Icon } from '@iconify-icon/react';
+import SidebarMenu from '@/components/SidebarMenu.tsx';
 
 function UserWelcomeScreen() {
-  const navigate = useNavigate();
-  const { user, clearSession } = useContext(SessionContext);
+  const { user } = useContext(SessionContext);
+  const [open, setOpen] = useState(false);
 
-  const handleSignOut = useCallback((evt: SyntheticEvent) => {
-    sessionStorage.removeItem('user:1234:username');
-    clearSession();
-    navigate('/', { replace: true });
-    evt.preventDefault();
-    return;
-  }, [clearSession, navigate]);
+  const toggleDrawer = (newOpen: boolean) => () => {
+    setOpen(newOpen);
+  };
 
   if (!user) return null;
 
   const profileLink = `/profile/${user.id}`;
 
   return (
-    <section>
-      <style>
-        {`
-        body {
-        background: #111;
-      }
-      `}
-      </style>
+    <section className="min-h-svh bg-neutral-50">
       <section className="flex content-start flex-wrap justify-end bg-gradient-to-r from-orange-300 to-rose-300 rounded-b-2xl h-32">
-        <IconButton aria-label="Menu" size="large">
+        <IconButton aria-label="Menu" size="large" onClick={toggleDrawer(true)}>
           <Icon icon="solar:menu-dots-bold" className="text-white" />
         </IconButton>
+        <Drawer
+          open={open}
+          onClose={toggleDrawer(false)}
+          anchor="right"
+          classes={{
+            paper: '!bg-neutral-800/80 backdrop-blur-lg',
+          }}
+        >
+          <SidebarMenu />
+        </Drawer>
       </section>
-      <section className="-mt-12">
+      <section className="-mt-12 md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl mx-auto">
         <div className="flex content-end flex-wrap justify-between">
           <div className="ml-6">
             <a href={profileLink}>
               <img
                 src={user.avatarSrc || '/assets/images/profile-picture-blank.jpg'}
                 alt="Profile picture"
-                className="size-24 rounded-full border-2 border-white"
+                className="size-24 md:size-36 rounded-full border-2 border-white shadow-sm"
               />
             </a>
           </div>
           <div className="mr-2 flex content-end flex-wrap">
-            <Button className="text-white text-xs border border-neutral-100/20 hover:border-neutral-100/40">Message</Button>
-            &nbsp;
-            <Button onClick={handleSignOut} className="text-white text-xs border border-neutral-100/20 hover:border-neutral-100/40">Sign Out</Button>
+            <Button className="bg-neutral-50/30 text-neutral-600 hover:text-neutral-500 text-xs border border-neutral-800/20 hover:border-neutral-600/20">Message</Button>
           </div>
         </div>
-        <div className="ml-6 text-white">
-          <h1 className="text-lg my-2">
-            Welcome,&nbsp;
-            <a href={profileLink} className="font-bold">{user.username || user.id}</a>
+        <div className="ml-6 text-neutral-600">
+          <h1 className="my-2">
+            <span className="text-sm md:text-lg">Welcome,&nbsp;</span>
+            <Link to={profileLink} className="text-md md:text-lg font-semibold hover:text-primary">{user.username || user.id}</Link>
           </h1>
         </div>
       </section>
