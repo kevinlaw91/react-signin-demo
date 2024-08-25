@@ -9,6 +9,7 @@ import FormErrorMessage from '@/components/FormErrorMessage.tsx';
 import { ButtonPrimary } from '@/components/Button.tsx';
 import { Checkbox, FormControlLabel } from '@mui/material';
 import { Link } from 'react-router-dom';
+import useShakeOnValidationError from '@/hooks/UseShakeOnValidationError';
 
 /* ===== Types/Schemas ===== */
 const signInSchema = z.object({
@@ -55,6 +56,9 @@ export default function AuthSignInForm(props: {
   });
 
   const { onSubmit: onSubmitCallback, onSuccess: onSuccessCallback, onError: onErrorCallback } = props;
+
+  // Shake the submit button on validation error
+  const shakeRef = useShakeOnValidationError(errors);
 
   const formSignInSubmitHandler: SubmitHandler<SignInFormData> = useCallback(
     (data: SignInFormData) => {
@@ -189,7 +193,10 @@ export default function AuthSignInForm(props: {
             </Link>
           </div>
         </div>
-        <div className="col-span-full">
+        <div
+          ref={shakeRef}
+          className="col-span-full"
+        >
           <ButtonPrimary type="submit" className="w-full">Sign In</ButtonPrimary>
         </div>
         {errors?.root && (

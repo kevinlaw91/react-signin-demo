@@ -10,6 +10,7 @@ import { createUser, AuthErrorCode } from '@/services/auth.ts';
 import { SessionUserMetadata } from '@/contexts/SessionContext.tsx';
 import FormErrorMessage from '@/components/FormErrorMessage.tsx';
 import { ButtonPrimary } from '@/components/Button.tsx';
+import useShakeOnValidationError from '@/hooks/UseShakeOnValidationError';
 
 /* ===== Types/Schemas ===== */
 const signUpSchema = z.object({
@@ -97,7 +98,11 @@ export default function AuthSignUpForm(props: {
     [trigger],
   );
 
+
   const { onSubmit: onSubmitCallback, onSuccess: onSuccessCallback, onError: onErrorCallback } = props;
+
+  // Shake the submit button on validation error
+  const shakeRef = useShakeOnValidationError(errors);
 
   const formSignUpSubmitHandler: SubmitHandler<SignUpFormData> = useCallback(
     (data: SignUpFormData) => {
@@ -276,7 +281,7 @@ export default function AuthSignUpForm(props: {
             <Link to="/privacy" className="px-0.5 py-0.5 text-primary hover:underline outline-none focus:ring-1 focus:ring-primary focus:bg-neutral-100 ring-offset-0 rounded">Privacy Policy</Link>
           </div>
         </div>
-        <div className="col-span-full">
+        <div ref={shakeRef} className="col-span-full">
           <ButtonPrimary type="submit" className="w-full">Create Account</ButtonPrimary>
         </div>
         {errors?.root && (
