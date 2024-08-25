@@ -180,6 +180,14 @@ export default function AuthSignInForm(props: {
               label: 'mt-0.5 text-sm',
             }}
           />
+          <div>
+            <Link
+              to="/recovery"
+              className="text-sm text-primary-500 hover:text-primary-400 font-semibold px-2 py-1 -mr-1 outline-none focus:ring-2 ring-primary ring-offset-0 rounded transition duration-150"
+            >
+              Forgot Password?
+            </Link>
+          </div>
         </div>
         <div className="col-span-full">
           <ButtonPrimary type="submit" className="w-full">Sign In</ButtonPrimary>
