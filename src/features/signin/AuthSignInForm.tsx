@@ -7,11 +7,14 @@ import { authenticateUser, AuthErrorCode } from '@/services/auth.ts';
 import { SessionUserMetadata } from '@/contexts/SessionContext';
 import FormErrorMessage from '@/components/FormErrorMessage.tsx';
 import { ButtonPrimary } from '@/components/Button.tsx';
+import { Checkbox, FormControlLabel } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 /* ===== Types/Schemas ===== */
 const signInSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }),
   password: z.string().min(1, { message: 'Please enter your password' }),
+  remember: z.boolean().default(false),
 });
 
 type SignInFormData = z.infer<typeof signInSchema>;
@@ -168,6 +171,15 @@ export default function AuthSignInForm(props: {
           {errors.password && (
             <FormErrorMessage>{errors?.password?.message}</FormErrorMessage>
           )}
+        </div>
+        <div className="flex flex-row items-center justify-between text-neutral-600">
+          <FormControlLabel
+            label="Keep me signed in"
+            control={<Checkbox {...register('remember')} />}
+            classes={{
+              label: 'mt-0.5 text-sm',
+            }}
+          />
         </div>
         <div className="col-span-full">
           <ButtonPrimary type="submit" className="w-full">Sign In</ButtonPrimary>
