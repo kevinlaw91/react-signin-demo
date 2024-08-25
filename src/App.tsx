@@ -4,7 +4,7 @@ import { PopupManagerProvider } from '@/contexts/PopupModalManagerContext.tsx';
 import router from '@/router.tsx';
 import { HelmetProvider } from 'react-helmet-async';
 import '@/index.css';
-import { ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { theme } from '@/mui.theme.ts';
 import { ModalOverlay } from '@/components/ModalOverlay.tsx';
 import { ModalsContainer } from '@/components/ModalsContainer.tsx';
@@ -12,15 +12,22 @@ import { ModalsContainer } from '@/components/ModalsContainer.tsx';
 export default function App() {
   return (
     <HelmetProvider>
-      <ThemeProvider theme={theme}>
-        <PopupManagerProvider>
-          <UserSessionProvider>
-            <RouterProvider router={router} />
-            <ModalOverlay />
-            <ModalsContainer />
-          </UserSessionProvider>
-        </PopupManagerProvider>
-      </ThemeProvider>
+      {/*
+      <StyledEngineProvider>
+      Fix CSS injection order so that tailwind classes are applied to MUI without needing setting important
+      See: https://mui.com/material-ui/integrations/interoperability/#setup
+      */}
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <PopupManagerProvider>
+            <UserSessionProvider>
+              <RouterProvider router={router} />
+              <ModalOverlay />
+              <ModalsContainer />
+            </UserSessionProvider>
+          </PopupManagerProvider>
+        </ThemeProvider>
+      </StyledEngineProvider>
     </HelmetProvider>
   );
 }

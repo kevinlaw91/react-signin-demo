@@ -30,7 +30,7 @@ function UserWelcomeScreen() {
           onClose={toggleDrawer(false)}
           anchor="right"
           classes={{
-            paper: '!bg-neutral-800/80 backdrop-blur-lg',
+            paper: 'bg-neutral-800/80 backdrop-blur-lg',
           }}
         >
           <SidebarMenu />
