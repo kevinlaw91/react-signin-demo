@@ -1,10 +1,11 @@
-import { extendTheme } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 import twConfig from '@/utils/twConfig.ts';
 
 const colors = twConfig.theme.colors;
 
 // Integrate tailwind theme into MUI theme
-export const theme = extendTheme({
+export const theme = createTheme({
+  cssVariables: true,
   colorSchemes: {
     light: {
       palette: {
