@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import fetchMock from 'fetch-mock';
 import { z } from 'zod';
@@ -9,7 +9,7 @@ import FormErrorMessage from '@/components/FormErrorMessage.tsx';
 import { ButtonPrimary } from '@/components/Button.tsx';
 import { Checkbox, FormControlLabel } from '@mui/material';
 import { Link } from 'react-router-dom';
-import useShakeOnValidationError from '@/hooks/UseShakeOnValidationError';
+import useShakeAnimation from '@/hooks/useShakeAnimation';
 
 /* ===== Types/Schemas ===== */
 const signInSchema = z.object({
@@ -58,7 +58,12 @@ export default function AuthSignInForm(props: {
   const { onSubmit: onSubmitCallback, onSuccess: onSuccessCallback, onError: onErrorCallback } = props;
 
   // Shake the submit button on validation error
-  const shakeRef = useShakeOnValidationError(errors);
+  const [shakeRef, playShakeAnimation] = useShakeAnimation();
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      playShakeAnimation();
+    }
+  }, [errors, playShakeAnimation]);
 
   const formSignInSubmitHandler: SubmitHandler<SignInFormData> = useCallback(
     (data: SignInFormData) => {

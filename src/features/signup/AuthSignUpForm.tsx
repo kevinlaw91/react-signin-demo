@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { arrow, autoUpdate, flip, FloatingArrow, FloatingPortal, offset, shift, useDismiss, useFloating, useFocus, useHover, useInteractions, useRole } from '@floating-ui/react';
 import { Link } from 'react-router-dom';
@@ -10,7 +10,7 @@ import { createUser, AuthErrorCode } from '@/services/auth.ts';
 import { SessionUserMetadata } from '@/contexts/SessionContext.tsx';
 import FormErrorMessage from '@/components/FormErrorMessage.tsx';
 import { ButtonPrimary } from '@/components/Button.tsx';
-import useShakeOnValidationError from '@/hooks/UseShakeOnValidationError';
+import useShakeAnimation from '@/hooks/useShakeAnimation';
 
 /* ===== Types/Schemas ===== */
 const signUpSchema = z.object({
@@ -98,11 +98,15 @@ export default function AuthSignUpForm(props: {
     [trigger],
   );
 
-
   const { onSubmit: onSubmitCallback, onSuccess: onSuccessCallback, onError: onErrorCallback } = props;
 
   // Shake the submit button on validation error
-  const shakeRef = useShakeOnValidationError(errors);
+  const [shakeRef, playShakeAnimation] = useShakeAnimation();
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      playShakeAnimation();
+    }
+  }, [errors, playShakeAnimation]);
 
   const formSignUpSubmitHandler: SubmitHandler<SignUpFormData> = useCallback(
     (data: SignUpFormData) => {
