@@ -41,17 +41,21 @@ export function Button(props: IButtonProps) {
 
   const contents = (
     <span className={twMerge('flex w-full items-stretch justify-items-stretch gap-3 mx-4 my-3', iconCentered ? 'justify-center' : 'justify-between')}>
-      {typeof leftIcon === 'string' && (
-        <span className="flex h-full min-w-6 shrink-0 items-center aspect-square">
-          <Icon icon={leftIcon} className="h-full text-current" height="unset" />
-        </span>
-      )}
+      <span className="flex h-full min-w-6 shrink-0 items-center aspect-square">
+        {
+          typeof leftIcon === 'string'
+            ? <Icon icon={leftIcon} className="h-full text-current" height="unset" />
+            : leftIcon
+        }
+      </span>
       {children}
-      {typeof rightIcon === 'string' && (
-        <span className="flex h-full min-w-6 shrink-0 items-center aspect-square">
-          <Icon icon={rightIcon} className="h-full text-current" height="unset" />
-        </span>
-      )}
+      <span className="flex h-full min-w-6 shrink-0 items-center aspect-square">
+        {
+          typeof rightIcon === 'string'
+            ? <Icon icon={rightIcon} className="h-full text-current" height="unset" />
+            : rightIcon
+        }
+      </span>
     </span>
   );
 
