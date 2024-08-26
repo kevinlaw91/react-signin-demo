@@ -1,35 +1,26 @@
-import { ReactNode, ComponentPropsWithoutRef } from 'react';
+import { ButtonHTMLAttributes, ComponentPropsWithRef, ForwardedRef, forwardRef, ReactNode } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { LoaderPulsingDotsLinear } from '@/components/loaders/LoaderPulsingDots.tsx';
 import { Icon } from '@iconify-icon/react';
-import { Link, type LinkProps } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-interface IButtonBaseProps {
-  /**
-   * Icon rendered on the left side
-   */
+interface IconButtonProps {
+  // Icon rendered on the left side
   leftIcon?: string | ReactNode;
-  /**
-   * Icon rendered on the right side
-   */
+  // Icon rendered on the right side
   rightIcon?: string | ReactNode;
   /**
    * Icon rendered in center along with text or on button edges
    * @default true
    */
   iconCentered?: boolean;
-  children?: ReactNode;
-  className?: string;
-  [key: string]: unknown;
 }
 
-interface IButton extends IButtonBaseProps, ComponentPropsWithoutRef<'button'> {}
+interface ButtonProps extends IconButtonProps, ButtonHTMLAttributes<HTMLButtonElement> {}
 
-interface ILinkButton extends IButtonBaseProps, LinkProps {}
+interface LinkButtonProps extends IconButtonProps, ComponentPropsWithRef<typeof Link> {}
 
-type IButtonProps = IButton | ILinkButton;
-
-export function Button(props: IButtonProps) {
+export const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, ButtonProps | LinkButtonProps>((props: ButtonProps | LinkButtonProps, ref) => {
   const {
     children,
     className,
@@ -63,25 +54,37 @@ export function Button(props: IButtonProps) {
 
   if ('to' in remainingProps) {
     return (
-      <Link className={mergedClassName}{...remainingProps as ILinkButton}>{contents}</Link>
+      <Link
+        ref={ref as ForwardedRef<HTMLAnchorElement>}
+        className={mergedClassName}
+        {...remainingProps}
+      >
+        {contents}
+      </Link>
     );
   } else {
     return (
-      <button className={mergedClassName}{...remainingProps}>{contents}</button>
+      <button
+        ref={ref as ForwardedRef<HTMLButtonElement>}
+        className={mergedClassName}
+        {...remainingProps}
+      >
+        {contents}
+      </button>
     );
   }
-}
+});
+Button.displayName = 'Button';
 
-export function ButtonBusy({ className, ...otherProps }: IButtonProps) {
-  return (
-    <Button
-      className={twMerge('bg-neutral-200 text-neutral-50', className)}
-      disabled
-      {...otherProps}
-    >
-      <LoaderPulsingDotsLinear className="w-[48px] h-full inline-block" />
-    </Button>
-  );
+export function ButtonBusy({ className, ...otherProps }: ButtonProps | LinkButtonProps) {
+  const btnClasses = twMerge('bg-neutral-200 text-neutral-50', className);
+  const loadingAnimation = <LoaderPulsingDotsLinear className="w-[48px] h-full inline-block" />;
+
+  if ('to' in otherProps) {
+    return <Button className={btnClasses} {...otherProps}>{loadingAnimation}</Button>;
+  } else {
+    return <Button className={btnClasses} {...otherProps} disabled>{loadingAnimation}</Button>;
+  }
 }
 
 /**
@@ -90,16 +93,18 @@ export function ButtonBusy({ className, ...otherProps }: IButtonProps) {
  * @param variantClasses Classes to inject to the custom button
  */
 function createCustomButton(name: string, variantClasses: string) {
-  const btn = function ({ children, className, ...otherProps }: IButtonProps) {
+  const btn = forwardRef((props: ButtonProps | LinkButtonProps, ref: ForwardedRef<HTMLButtonElement | HTMLAnchorElement>) => {
+    const { children, className, ...otherProps } = props;
     return (
       <Button
+        ref={ref}
         className={twMerge(variantClasses, className)}
         {...otherProps}
       >
         {children}
       </Button>
     );
-  };
+  });
 
   btn.displayName = name;
   return btn;
