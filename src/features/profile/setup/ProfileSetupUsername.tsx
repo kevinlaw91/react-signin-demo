@@ -18,6 +18,7 @@ import {
 } from '@/services/profile.ts';
 import { SessionContext } from '@/contexts/SessionContext';
 import Swiper from 'swiper';
+import useShakeAnimation from '@/hooks/useShakeAnimation';
 
 // Username awaiting availability check
 const usernameSchema = z.object({
@@ -131,7 +132,12 @@ export default function ProfileSetupUsername() {
   const swiperSlide = useSwiperSlide();
 
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
+
   const runningUsernameCheck = useRef<AbortController | null>(null);
+
+  // Shake animation should run once only for each failed username check
+  // Re-renders should not trigger the shake
+  const [lastShakeId, setLastShakeId] = useState<string | undefined>();
 
   const { updateSessionUser } = useContext(SessionContext);
 
@@ -187,6 +193,9 @@ export default function ProfileSetupUsername() {
           // Reselect input field if username is not available
           frmCheckUsername.setFocus('username');
           frmClaimUsername.setValue('candidate', '');
+
+          // Reset shake animation
+          setLastShakeId(Date.now().toString());
         }
 
         setIsAvailable(available);
@@ -216,6 +225,19 @@ export default function ProfileSetupUsername() {
     onChange: _, // Not used by IMaskInput
     ...otherFieldProps
   } = frmCheckUsername.register('username');
+
+  // Shake the submit button on validation error
+  const [shakeRef, playShakeAnimation] = useShakeAnimation();
+  useEffect(() => {
+    if (frmCheckUsername.formState.isSubmitSuccessful && !isAvailable) {
+      if (lastShakeId) {
+        playShakeAnimation();
+
+        // Animation handled. Reset the lastShakeId
+        setLastShakeId(undefined);
+      }
+    }
+  }, [frmCheckUsername.formState.isSubmitSuccessful, isAvailable, playShakeAnimation, lastShakeId]);
 
   const doClaimUsername: SubmitHandler<CandidateFormData> = useCallback(async (data: CandidateFormData) => {
     const profileId = '1234';
@@ -351,7 +373,7 @@ export default function ProfileSetupUsername() {
               )
             }
             {isAvailable !== null && <UsernameCheckResultMessage isAvailable={isAvailable} />}
-            <div className="pt-3">
+            <div ref={shakeRef} className="pt-3">
               {
                 (frmCheckUsername.formState.isSubmitting || frmClaimUsername.formState.isSubmitting)
                 && <ButtonBusy className="w-full" />
