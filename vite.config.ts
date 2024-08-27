@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 import path from 'path';
 import { defineConfig } from 'vite';
+import legacy from '@vitejs/plugin-legacy';
 import react from '@vitejs/plugin-react-swc';
 
 // https://vitejs.dev/config/
@@ -16,6 +17,7 @@ export default defineConfig({
   },
   plugins: [
     react(),
+    legacy(),
   ],
   test: {
     globals: true,
