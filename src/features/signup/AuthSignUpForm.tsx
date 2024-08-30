@@ -37,6 +37,7 @@ export type SignUpResponse = SignUpSuccessResponse | SignUpFailureResponse;
 /* ===== Constants ===== */
 const MSG_ERR_GENERIC = 'Unable to create account. Please try again later';
 const MSG_ERR_REJECTED = 'This email and password combination cannot be used';
+const MSG_WARN_PASSWORD_WHITESPACE = 'Your password may contain leading or trailing spaces\\nResubmit if you\'re certain you want to proceed';
 
 /* ===== Mock data ===== */
 const responseSuccess: SignUpSuccessResponse = { success: true, data: { id: '1234' } };
@@ -116,7 +117,7 @@ export default function AuthSignUpForm(props: {
       // Warn once if password field has leading or trailing spaces
       if (!alertedAboutLeadingTrailingSpace.current && data.password !== data.password.trim()) {
         alertedAboutLeadingTrailingSpace.current = true;
-        onErrorCallback('Your password may contain leading or trailing spaces\nResubmit if you\'re certain you want to proceed');
+        onErrorCallback(MSG_WARN_PASSWORD_WHITESPACE);
         return;
       }
 
@@ -160,14 +161,9 @@ export default function AuthSignUpForm(props: {
         })
         .catch((err) => {
           // Error: Unable to create user account
-          if (err instanceof Error) {
-            if (err.message && err.message as AuthErrorCode === AuthErrorCode.ERR_ACCOUNT_SIGNUP_REJECTED) {
-              setError('root', { type: 'api', message: MSG_ERR_REJECTED });
-              onErrorCallback(MSG_ERR_REJECTED);
-            } else {
-              setError('root', { type: 'api', message: MSG_ERR_GENERIC });
-              onErrorCallback(MSG_ERR_GENERIC);
-            }
+          if (err instanceof Error && err.message && err.message as AuthErrorCode === AuthErrorCode.ERR_ACCOUNT_SIGNUP_REJECTED) {
+            setError('root', { type: 'api', message: MSG_ERR_REJECTED });
+            onErrorCallback(MSG_ERR_REJECTED);
           } else {
             setError('root', { type: 'api', message: MSG_ERR_GENERIC });
             onErrorCallback(MSG_ERR_GENERIC);
