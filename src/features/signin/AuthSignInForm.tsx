@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { type SubmitErrorHandler, type SubmitHandler, useForm } from 'react-hook-form';
 import fetchMock from 'fetch-mock';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -60,11 +60,6 @@ export default function AuthSignInForm(props: {
 
   // Shake the submit button on validation error
   const [shakeRef, playShakeAnimation] = useShakeAnimation();
-  useEffect(() => {
-    if (Object.keys(errors).length > 0) {
-      playShakeAnimation();
-    }
-  }, [errors, playShakeAnimation]);
 
   const formSignInSubmitHandler: SubmitHandler<SignInFormData> = useCallback(
     (data: SignInFormData) => {
@@ -141,8 +136,15 @@ export default function AuthSignInForm(props: {
     [onSubmitCallback, onSuccessCallback, onErrorCallback, setValue, setError],
   );
 
+  const formValidationErrorHandler = useCallback<SubmitErrorHandler<SignInFormData>>((errors) => {
+    // Shake the submit button on validation returns error
+    if (Object.keys(errors).length > 0) {
+      playShakeAnimation();
+    }
+  }, [playShakeAnimation]);
+
   return (
-    <form onSubmit={handleSubmit(formSignInSubmitHandler)}>
+    <form onSubmit={handleSubmit(formSignInSubmitHandler, formValidationErrorHandler)}>
       <div className="space-y-3">
         <div>
           <label

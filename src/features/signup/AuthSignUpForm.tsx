@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useCallback, useRef, useState } from 'react';
+import { type SubmitErrorHandler, type SubmitHandler, useForm } from 'react-hook-form';
 import { arrow, autoUpdate, flip, FloatingArrow, FloatingPortal, offset, shift, useDismiss, useFloating, useFocus, useHover, useInteractions, useRole } from '@floating-ui/react';
 import { Link } from 'react-router-dom';
 import fetchMock from 'fetch-mock';
@@ -103,11 +103,6 @@ export default function AuthSignUpForm(props: {
 
   // Shake the submit button on validation error
   const [shakeRef, playShakeAnimation] = useShakeAnimation();
-  useEffect(() => {
-    if (Object.keys(errors).length > 0) {
-      playShakeAnimation();
-    }
-  }, [errors, playShakeAnimation]);
 
   const formSignUpSubmitHandler: SubmitHandler<SignUpFormData> = useCallback(
     (data: SignUpFormData) => {
@@ -177,8 +172,15 @@ export default function AuthSignUpForm(props: {
     [onSubmitCallback, onErrorCallback, onSuccessCallback, setError],
   );
 
+  const formValidationErrorHandler = useCallback<SubmitErrorHandler<SignUpFormData>>((errors) => {
+    // Shake the submit button on validation returns error
+    if (Object.keys(errors).length > 0) {
+      playShakeAnimation();
+    }
+  }, [playShakeAnimation]);
+
   return (
-    <form onSubmit={handleSubmit(formSignUpSubmitHandler)}>
+    <form onSubmit={handleSubmit(formSignUpSubmitHandler, formValidationErrorHandler)}>
       <div className="space-y-3">
         <div>
           <label
