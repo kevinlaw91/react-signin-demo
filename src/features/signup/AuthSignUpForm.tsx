@@ -104,7 +104,7 @@ export default function AuthSignUpForm(props: {
   // Shake the submit button on validation error
   const [shakeRef, playShakeAnimation] = useShakeAnimation();
 
-  const formSignUpSubmitHandler: SubmitHandler<SignUpFormData> = useCallback(
+  const formSubmitHandler = useCallback<SubmitHandler<SignUpFormData>>(
     (data: SignUpFormData) => {
       // Mask the password field during form submission
       setIsPasswordVisible(false);
@@ -180,7 +180,7 @@ export default function AuthSignUpForm(props: {
   }, [playShakeAnimation]);
 
   return (
-    <form onSubmit={handleSubmit(formSignUpSubmitHandler, formValidationErrorHandler)}>
+    <form onSubmit={handleSubmit(formSubmitHandler, formValidationErrorHandler)}>
       <div className="space-y-3">
         <div>
           <label

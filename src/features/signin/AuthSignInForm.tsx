@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { type SubmitErrorHandler, type SubmitHandler, useForm } from 'react-hook-form';
 import fetchMock from 'fetch-mock';
 import { z } from 'zod';
@@ -61,7 +61,7 @@ export default function AuthSignInForm(props: {
   // Shake the submit button on validation error
   const [shakeRef, playShakeAnimation] = useShakeAnimation();
 
-  const formSignInSubmitHandler: SubmitHandler<SignInFormData> = useCallback(
+  const formSubmitHandler: SubmitHandler<SignInFormData> = useCallback(
     (data: SignInFormData) => {
       // Clear password field for safety
       setValue('password', '', { shouldValidate: false });
@@ -101,28 +101,18 @@ export default function AuthSignInForm(props: {
 
       return authenticateUser(data)
         .then((res: SignInResponse) => {
-          if (res.success) {
-            // Success, tell the parent component sign in success
-            onSuccessCallback({
-              id: res.data.id,
-              username: data.email.split('@')[0],
-            });
-            return;
-          }
+          if (!res.success) throw new Error(AuthErrorCode.ERR_UNEXPECTED_ERROR);
 
-          // Malformed response?
-          throw new Error(AuthErrorCode.ERR_UNEXPECTED_ERROR);
+          // Success, tell the parent component sign in success
+          return onSuccessCallback({
+            id: res.data.id,
+            username: data.email.split('@')[0],
+          });
         })
         .catch((err) => {
-          if (err instanceof Error) {
-            // Failure, tell the parent component sign in failed
-            if (err.message && err.message as AuthErrorCode === AuthErrorCode.ERR_INVALID_CREDENTIALS) {
-              setError('password', { type: 'api', message: MSG_ERR_INVALID_CREDENTIALS }, { shouldFocus: true });
-              onErrorCallback(MSG_ERR_INVALID_CREDENTIALS);
-            } else {
-              setError('root', { type: 'api', message: MSG_ERR_SIGN_IN });
-              onErrorCallback(MSG_ERR_SIGN_IN);
-            }
+          if (err instanceof Error && err.message && err.message as AuthErrorCode === AuthErrorCode.ERR_INVALID_CREDENTIALS) {
+            setError('password', { type: 'api', message: MSG_ERR_INVALID_CREDENTIALS }, { shouldFocus: true });
+            onErrorCallback(MSG_ERR_INVALID_CREDENTIALS);
           } else {
             setError('root', { type: 'api', message: MSG_ERR_SIGN_IN });
             onErrorCallback(MSG_ERR_SIGN_IN);
@@ -144,7 +134,7 @@ export default function AuthSignInForm(props: {
   }, [playShakeAnimation]);
 
   return (
-    <form onSubmit={handleSubmit(formSignInSubmitHandler, formValidationErrorHandler)}>
+    <form onSubmit={handleSubmit(formSubmitHandler, formValidationErrorHandler)}>
       <div className="space-y-3">
         <div>
           <label
