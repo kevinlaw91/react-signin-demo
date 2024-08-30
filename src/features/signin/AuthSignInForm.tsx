@@ -10,6 +10,7 @@ import { ButtonPrimary } from '@/components/Button.tsx';
 import { Checkbox, FormControlLabel } from '@mui/material';
 import { Link } from 'react-router-dom';
 import useShakeAnimation from '@/hooks/useShakeAnimation';
+import { Icon } from '@iconify-icon/react';
 
 /* ===== Types/Schemas ===== */
 const signInSchema = z.object({
@@ -198,17 +199,17 @@ export default function AuthSignInForm(props: {
             </Link>
           </div>
         </div>
+        {errors?.root && (
+          <FormErrorMessage icon={<Icon icon="ion:warning" inline width="24" className="align-bottom mr-1" />}>
+            {errors?.root?.message}
+          </FormErrorMessage>
+        )}
         <div
           ref={shakeRef}
           className="col-span-full"
         >
           <ButtonPrimary type="submit" className="w-full">Sign In</ButtonPrimary>
         </div>
-        {errors?.root && (
-          <FormErrorMessage>
-            {errors?.root?.message}
-          </FormErrorMessage>
-        )}
       </div>
     </form>
   );
