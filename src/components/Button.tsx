@@ -30,23 +30,29 @@ export const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, ButtonPr
     ...remainingProps
   } = props;
 
+  const iconLeft = (typeof leftIcon === 'string')
+    ? <Icon icon={leftIcon} className="h-full text-current" height="unset" />
+    : (leftIcon ?? undefined)
+  ;
+
+  const iconRight = (typeof rightIcon === 'string')
+    ? <Icon icon={rightIcon} className="h-full text-current" height="unset" />
+    : (rightIcon ?? undefined)
+  ;
+
   const contents = (
     <span className={twMerge('flex w-full items-stretch justify-items-stretch gap-3 mx-4 my-3', iconCentered ? 'justify-center' : 'justify-between')}>
-      <span className="flex h-full min-w-6 shrink-0 items-center aspect-square">
-        {
-          typeof leftIcon === 'string'
-            ? <Icon icon={leftIcon} className="h-full text-current" height="unset" />
-            : leftIcon
-        }
-      </span>
+      {iconLeft && (
+        <span className="flex h-full min-w-6 shrink-0 items-center aspect-square">
+          {iconLeft}
+        </span>
+      )}
       {children}
-      <span className="flex h-full min-w-6 shrink-0 items-center aspect-square">
-        {
-          typeof rightIcon === 'string'
-            ? <Icon icon={rightIcon} className="h-full text-current" height="unset" />
-            : rightIcon
-        }
-      </span>
+      {iconRight && (
+        <span className="flex h-full min-w-6 shrink-0 items-center aspect-square">
+          {iconLeft}
+        </span>
+      )}
     </span>
   );
 
