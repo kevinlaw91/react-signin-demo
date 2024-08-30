@@ -4,10 +4,11 @@ import { Helmet } from 'react-helmet-async';
 import AuthSignInForm from '@/features/signin/AuthSignInForm';
 import BusyScreen from '@/components/BusyScreen.tsx';
 import { SessionContext, SessionUserMetadata } from '@/contexts/SessionContext';
-import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
 import GoogleSignInButton from '@/features/signin/GoogleSignInButton';
 import { createPortal } from 'react-dom';
 import { usePopupModalManager } from '@/hooks/usePopupModalManager.ts';
+import AlertDialog from '@/components/AlertDialog';
+import { useDialogManager } from '@/hooks/useDialogManager';
 
 const BUSY_MODAL = 'SIGNIN_BUSY';
 
@@ -15,7 +16,7 @@ export default function SignInPage() {
   const navigate = useNavigate();
   const { user, updateSessionUser } = useContext(SessionContext);
   const { modals, queueModal, hideModal } = usePopupModalManager();
-  const { queueAlertModal } = useAlertPopupModal();
+  const dialog = useDialogManager();
 
   useEffect(() => {
     // If already signed in, skip sign in screen and redirect to home
@@ -50,8 +51,9 @@ export default function SignInPage() {
 
   const onFormSignInError = (err?: string) => {
     showBusyScreenModal(false);
-    queueAlertModal(err || 'An error occurred during sign in');
+    dialog.show('API_RESPONSE_ERROR', err);
   };
+
   return (
     <>
       <Helmet>
@@ -96,6 +98,7 @@ export default function SignInPage() {
         </div>
         <div className="row-span-full col-span-full bg-[url('/assets/images/pawel-czerwinski-Zd315A95aqg-unsplash.webp')] bg-cover bg-center bg-no-repeat"></div>
       </div>
+      <AlertDialog ref={ref => dialog.register('API_RESPONSE_ERROR', ref)} defaultMessage="An error occurred during sign in" />
       {modals.some(m => m.id === BUSY_MODAL) && createPortal(<BusyScreen message="Signing In" messageClassName="text-white/90" />, document.body, BUSY_MODAL)}
     </>
   );

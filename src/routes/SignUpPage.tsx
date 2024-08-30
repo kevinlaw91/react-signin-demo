@@ -4,7 +4,8 @@ import { Helmet } from 'react-helmet-async';
 import AuthSignUpForm from '@/features/signup/AuthSignUpForm';
 import BusyScreen from '@/components/BusyScreen.tsx';
 import { SessionContext, SessionUserMetadata } from '@/contexts/SessionContext';
-import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
+import AlertDialog from '@/components/AlertDialog';
+import { useDialogManager } from '@/hooks/useDialogManager';
 import GoogleSignInButton from '@/features/signin/GoogleSignInButton';
 import { createPortal } from 'react-dom';
 import { usePopupModalManager } from '@/hooks/usePopupModalManager.ts';
@@ -17,7 +18,8 @@ export default function SignUpPage() {
   const [searchParams] = useSearchParams();
   const { user, updateSessionUser } = useContext(SessionContext);
   const { modals, queueModal, hideModal } = usePopupModalManager();
-  const { queueAlertModal } = useAlertPopupModal();
+
+  const dialog = useDialogManager();
 
   useEffect(() => {
     // If already signed in, redirect to home
@@ -49,10 +51,10 @@ export default function SignUpPage() {
     navigate(`.?complete=true`, { replace: true });
   }, [showBusyScreenModal, updateSessionUser, navigate]);
 
-  const onFormSignUpError = (err?: string) => {
+  const onFormSignUpError = useCallback((err?: string) => {
     showBusyScreenModal(false);
-    queueAlertModal(err || 'Sign up failed');
-  };
+    dialog.show('API_RESPONSE_ERROR', err);
+  }, [dialog, showBusyScreenModal]);
 
   if (searchParams.get('complete') === 'true') {
     return (
@@ -108,6 +110,7 @@ export default function SignUpPage() {
         </div>
         <div className="row-span-full col-span-full bg-[url('/assets/images/pawel-czerwinski-Zd315A95aqg-unsplash.webp')] bg-cover bg-center bg-no-repeat"></div>
       </div>
+      <AlertDialog ref={ref => dialog.register('API_RESPONSE_ERROR', ref)} defaultMessage="An error occurred during sign up" />
       {modals.some(m => m.id === BUSY_MODAL) && createPortal(<BusyScreen message="Creating account" messageClassName="text-white/90" />, document.body, BUSY_MODAL)}
     </>
   );

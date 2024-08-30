@@ -6,16 +6,13 @@ import { Helmet } from 'react-helmet-async';
 import { IMaskInput } from 'react-imask';
 import clsx from 'clsx';
 import { z } from 'zod';
-import { useForm, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
+import { type SubmitErrorHandler, type SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
-import { ButtonPrimary, ButtonBusy } from '@/components/Button.tsx';
+import AlertDialog from '@/components/AlertDialog';
+import { useDialogManager } from '@/hooks/useDialogManager';
+import { ButtonBusy, ButtonPrimary } from '@/components/Button.tsx';
 import { LoaderPulsingDotsCircular } from '@/components/loaders/LoaderPulsingDots.tsx';
-import {
-  saveUsername,
-  checkUsernameAvailability,
-  ProfileErrorCode,
-} from '@/services/profile.ts';
+import { checkUsernameAvailability, ProfileErrorCode, saveUsername } from '@/services/profile.ts';
 import { SessionContext } from '@/contexts/SessionContext';
 import Swiper from 'swiper';
 import useShakeAnimation from '@/hooks/useShakeAnimation';
@@ -41,8 +38,6 @@ type CandidateFormData = z.infer<typeof candidateSchema>;
 const MSG_USERNAME_AVAILABLE = 'Username is available';
 const MSG_USERNAME_ALREADY_TAKEN = 'Username is already taken';
 const MSG_USERNAME_CLAIM_FAILED = 'This username is unavailable. Try a different one.';
-const MSG_UNEXPECTED_ERROR = 'An error occurred. Please try again later';
-
 const animatedTick = (
   <svg viewBox="0 0 24 24" className="text-lime-600 size-6">
     { /* ci:check */}
@@ -125,7 +120,7 @@ function UsernameCheckResultMessage({ isAvailable }: { isAvailable: boolean }) {
 }
 
 export default function ProfileSetupUsername() {
-  const { queueAlertModal } = useAlertPopupModal();
+  const dialog = useDialogManager();
 
   // Wizard slide
   const swiper = useSwiper();
@@ -151,7 +146,7 @@ export default function ProfileSetupUsername() {
     resolver: zodResolver(candidateSchema),
   });
 
-  const doCheckUsername = useCallback(({ username }: UsernameFormData) => {
+  const handleSubmitCheckUsername = useCallback<SubmitHandler<UsernameFormData>>(({ username }) => {
     // Discard any unfinished checks
     runningUsernameCheck.current?.abort?.();
     runningUsernameCheck.current = new AbortController();
@@ -205,20 +200,20 @@ export default function ProfileSetupUsername() {
         // Aborted requests are not error
         if (err instanceof Error && err.name === 'AbortError') return;
         console.error(err);
-        queueAlertModal(MSG_UNEXPECTED_ERROR);
+        dialog.show('API_RESPONSE_ERROR');
       })
       .finally(() => {
         // Restore fetch mock
         fetchMock.restore();
       });
-  }, [frmCheckUsername, frmClaimUsername, queueAlertModal]);
+  }, [dialog, frmCheckUsername, frmClaimUsername]);
 
-  const frmUsernameValidationFailedHandler: SubmitErrorHandler<UsernameFormData> = useCallback((errors) => {
+  const usernameValidationErrorHandler = useCallback<SubmitErrorHandler<UsernameFormData>>((errors) => {
     // Show error dialog if field is blank
     if (errors.username) {
-      queueAlertModal(errors?.username?.message || '');
+      dialog.show('VALIDATION_ERROR', errors?.username?.message);
     }
-  }, [queueAlertModal]);
+  }, [dialog]);
 
   const {
     ref: setUsernameInputRef, // Needed by setFocus()
@@ -239,7 +234,7 @@ export default function ProfileSetupUsername() {
     }
   }, [frmCheckUsername.formState.isSubmitSuccessful, isAvailable, playShakeAnimation, lastShakeId]);
 
-  const doClaimUsername: SubmitHandler<CandidateFormData> = useCallback(async (data: CandidateFormData) => {
+  const handleSubmitClaimUsername = useCallback<SubmitHandler<CandidateFormData>>(async (data) => {
     const profileId = '1234';
     const _isAvailable = mockIsAvailable(data.candidate);
 
@@ -272,9 +267,9 @@ export default function ProfileSetupUsername() {
     } catch (err) {
       if (err instanceof Error) {
         if (err.message && err.message as ProfileErrorCode === ProfileErrorCode.ERR_PROFILE_USERNAME_TAKEN) {
-          queueAlertModal(MSG_USERNAME_CLAIM_FAILED);
+          dialog.show('API_RESPONSE_ERROR', MSG_USERNAME_CLAIM_FAILED);
         } else {
-          queueAlertModal(MSG_UNEXPECTED_ERROR);
+          dialog.show('API_RESPONSE_ERROR');
         }
       }
     } finally {
@@ -290,21 +285,21 @@ export default function ProfileSetupUsername() {
       goToNextStep();
       return;
     } else {
-      queueAlertModal(MSG_UNEXPECTED_ERROR);
+      dialog.show('API_RESPONSE_ERROR');
       throw new Error(ProfileErrorCode.ERR_UNEXPECTED_ERROR);
     }
-  }, [goToNextStep, queueAlertModal, updateSessionUser]);
+  }, [dialog, goToNextStep, updateSessionUser]);
 
-  const frmCandidateValidationFailedHandler: SubmitErrorHandler<UsernameFormData> = useCallback((errors) => {
+  const candidateValidationErrorHandler = useCallback<SubmitErrorHandler<UsernameFormData>>((errors) => {
     // Show error dialog if field is blank
     if (errors.username) {
-      queueAlertModal(errors?.username?.message || '');
+      dialog.show('VALIDATION_ERROR', errors?.username?.message);
     }
-  }, [queueAlertModal]);
+  }, [dialog]);
 
   const formAction = isAvailable
-    ? frmClaimUsername.handleSubmit(doClaimUsername, frmCandidateValidationFailedHandler)
-    : frmCheckUsername.handleSubmit(doCheckUsername, frmUsernameValidationFailedHandler);
+    ? frmClaimUsername.handleSubmit(handleSubmitClaimUsername, candidateValidationErrorHandler)
+    : frmCheckUsername.handleSubmit(handleSubmitCheckUsername, usernameValidationErrorHandler);
 
   // Autofocus input for first time
   const [focusedUsernameInputOnce, setFocusedUsernameInputOnce] = useState(false);
@@ -403,6 +398,8 @@ export default function ProfileSetupUsername() {
           </form>
         </div>
       </section>
+      <AlertDialog ref={ref => dialog.register('VALIDATION_ERROR', ref)} />
+      <AlertDialog ref={ref => dialog.register('API_RESPONSE_ERROR', ref)} defaultMessage="An error occurred. Please try again later" />
     </>
   );
 }

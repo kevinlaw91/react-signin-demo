@@ -20,6 +20,7 @@
     "@hookform/resolvers": "^3.9.0",
     "@lottiefiles/react-lottie-player": "^3.5.4",
     "@mui/material": "6.0.0",
+    "@radix-ui/react-dialog": "^1.1.1",
     "clsx": "^2.1.1",
     "exif-rotate-js": "^1.5.0",
     "fetch-mock": "^11.1.1",

@@ -9,7 +9,8 @@ import { cropImage, CropParams, fixImageOrientation } from '@/utils/image.ts';
 import { setProfilePicture } from '@/services/profile.ts';
 import { Slider } from '@mui/material';
 import { DropEvent, useDropzone } from 'react-dropzone';
-import { useAlertPopupModal } from '@/hooks/useAlertPopupModal.ts';
+import AlertDialog from '@/components/AlertDialog';
+import { useDialogManager } from '@/hooks/useDialogManager';
 import { SessionContext } from '@/contexts/SessionContext';
 import { useSwiper } from 'swiper/react';
 import { IndeterminateProgressBar } from '@/components/IndeterminateProgressBar.tsx';
@@ -183,11 +184,7 @@ export default function ProfileSetupProfilePicture() {
   const croppedImage = useRef<Blob>();
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string>();
 
-  const { queueAlertModal } = useAlertPopupModal();
-
-  const showAlert = useCallback((msg: string) => {
-    queueAlertModal(msg);
-  }, [queueAlertModal]);
+  const dialog = useDialogManager();
 
   const { updateSessionUser } = useContext(SessionContext);
 
@@ -212,12 +209,12 @@ export default function ProfileSetupProfilePicture() {
         return;
       })
       .catch((_err) => {
-        showAlert('Unable to read image file');
+        dialog.show('EDITOR_ERROR', 'Unable to read image file');
       })
       .finally(() => {
         setIsLoading(false);
       });
-  }, [showAlert]);
+  }, [dialog]);
 
   const handleFileDropAccepted = (files: FileList | File[], _dropEvt: DropEvent) => handleFileSelect(files);
 
@@ -286,13 +283,13 @@ export default function ProfileSetupProfilePicture() {
         return;
       })
       .catch((_err: Error) => {
-        showAlert('Failed to update profile picture');
+        dialog.show('EDITOR_ERROR', 'Failed to update profile picture');
         setIsLoading(false);
       })
       .finally(() => {
         fetchMock.restore();
       });
-  }, [goToNextStep, imagePreviewUrl, updateSessionUser, showAlert]);
+  }, [dialog, goToNextStep, imagePreviewUrl, updateSessionUser]);
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
     accept: {
@@ -306,7 +303,7 @@ export default function ProfileSetupProfilePicture() {
     useFsAccessApi: false,
     maxFiles: 1,
     onDropAccepted: handleFileDropAccepted,
-    onDropRejected: () => showAlert('Please select a valid image file'),
+    onDropRejected: () => dialog.show('EDITOR_ERROR', 'Please select a valid image file'),
   });
 
   return (
@@ -362,6 +359,7 @@ export default function ProfileSetupProfilePicture() {
           </section>
         )
       }
+      <AlertDialog ref={ref => dialog.register('EDITOR_ERROR', ref)} />
     </>
   );
 }

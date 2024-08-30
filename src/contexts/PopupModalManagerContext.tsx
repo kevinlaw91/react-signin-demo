@@ -1,6 +1,11 @@
 import { createContext, ReactNode, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Modal } from '@/types/PopupModalManager';
+
+export interface Modal {
+  id: string;
+  type: 'placeholder';
+  props?: { [key: string]: unknown };
+}
 
 export interface IPopupModalManager {
   modals: Modal[];

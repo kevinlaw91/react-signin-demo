@@ -7,7 +7,6 @@ import '@/index.css';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { theme } from '@/mui.theme.ts';
 import { ModalOverlay } from '@/components/ModalOverlay.tsx';
-import { ModalsContainer } from '@/components/ModalsContainer.tsx';
 
 export default function App() {
   return (
@@ -23,7 +22,6 @@ export default function App() {
             <UserSessionProvider>
               <RouterProvider router={router} />
               <ModalOverlay />
-              <ModalsContainer />
             </UserSessionProvider>
           </PopupManagerProvider>
         </ThemeProvider>
