@@ -185,7 +185,7 @@ export default function AuthSignInForm(props: {
           <div>
             <Link
               to="/recovery"
-              className="text-sm text-primary-500 hover:text-primary-400 font-semibold px-2 py-1 -mr-1 outline-none focus:ring-2 ring-primary ring-offset-0 rounded transition duration-150"
+              className="text-sm text-primary-500 hover:text-primary-400 font-semibold whitespace-nowrap px-2 py-1 -mr-1 outline-none focus:ring-2 ring-primary ring-offset-0 rounded transition duration-150"
             >
               Forgot Password?
             </Link>
