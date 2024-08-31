@@ -20,7 +20,7 @@ function UserWelcomeScreen() {
   const profileLink = `/profile/${user.id}`;
 
   return (
-    <section className="min-h-svh bg-neutral-50">
+    <section className="min-h-full min-w-[320px] bg-neutral-50">
       <section className="flex content-start flex-wrap justify-end bg-gradient-to-r from-orange-300 to-rose-300 rounded-b-2xl h-32">
         <IconButton aria-label="Menu" size="large" onClick={toggleDrawer(true)}>
           <Icon icon="solar:menu-dots-bold" className="text-white" />
@@ -36,7 +36,7 @@ function UserWelcomeScreen() {
           <SidebarMenu />
         </Drawer>
       </section>
-      <section className="-mt-12 md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl mx-auto">
+      <section className="-mt-12 mx-auto md:mx-16">
         <div className="flex content-end flex-wrap justify-between">
           <div className="ml-6">
             <a href={profileLink}>
