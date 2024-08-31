@@ -1,9 +1,9 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import AuthSignInForm from '@/features/signin/AuthSignInForm';
+import { AuthSignInForm } from '@/features/account/signin/AuthSignInForm';
 import { SessionContext, SessionUserMetadata } from '@/contexts/SessionContext';
-import GoogleSignInButton from '@/features/signin/GoogleSignInButton';
+import { GoogleSignInButton } from '@/features/account/signin/GoogleSignInButton';
 import AlertDialog from '@/components/AlertDialog';
 import { useDialogManager } from '@/hooks/useDialogManager';
 import { InProgressScreen } from '@/features/account/InProgressScreen';

@@ -1,12 +1,12 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import AuthSignUpForm from '@/features/signup/AuthSignUpForm';
+import { AuthSignUpForm } from '@/features/account/signup/AuthSignUpForm';
 import { SessionContext, SessionUserMetadata } from '@/contexts/SessionContext';
 import AlertDialog from '@/components/AlertDialog';
 import { useDialogManager } from '@/hooks/useDialogManager';
-import GoogleSignInButton from '@/features/signin/GoogleSignInButton';
-import SignUpSuccess from '@/features/signup/SignUpSuccess';
+import { GoogleSignInButton } from '@/features/account/signin/GoogleSignInButton';
+import { SignUpSuccess } from '@/features/account/signup/SignUpSuccess';
 import { InProgressScreen } from '@/features/account/InProgressScreen';
 
 export default function SignUpPage() {

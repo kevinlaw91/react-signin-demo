@@ -26,7 +26,7 @@ function mockCredentialResponse(): Promise<CredentialResponse> {
   });
 }
 
-export default function GoogleSignInButton(): ReactElement {
+export function GoogleSignInButton(): ReactElement {
   const navigate = useNavigate();
   const { updateSessionUser } = useContext(SessionContext);
 

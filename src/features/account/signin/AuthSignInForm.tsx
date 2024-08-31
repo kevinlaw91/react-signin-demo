@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { authenticateUser, AuthErrorCode } from '@/services/auth.ts';
 import { SessionUserMetadata } from '@/contexts/SessionContext';
-import FormErrorMessage from '@/components/FormErrorMessage.tsx';
+import { FormErrorMessage } from '@/features/account/FormErrorMessage';
 import { ButtonPrimary } from '@/components/Button.tsx';
 import { Checkbox, FormControlLabel } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -41,7 +41,7 @@ const MSG_ERR_INVALID_CREDENTIALS = 'Incorrect email or password';
 const responseSuccess: SignInSuccessResponse = { success: true, data: { id: '1234' } };
 const responseErrorUnauthorized: SignInFailureResponse = { success: false, message: 'INVALID_CREDENTIALS' };
 
-export default function AuthSignInForm(props: {
+export function AuthSignInForm(props: {
   onSubmit: () => void;
   onSuccess: (userMetadata: Partial<SessionUserMetadata>) => void;
   onError: (err?: string) => void;

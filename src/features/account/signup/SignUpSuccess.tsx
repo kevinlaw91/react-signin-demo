@@ -1,8 +1,8 @@
 import { Player } from '@lottiefiles/react-lottie-player';
-import animation from '@/features/signup/verify_email_sent.lottie.json';
+import animation from '@/features/account/signup/verify_email_sent.lottie.json';
 import { ButtonPrimary } from '@/components/Button.tsx';
 
-export default function SignUpSuccess() {
+export function SignUpSuccess() {
   return (
     <div className="flex h-full min-h-svh flex-col items-center justify-center py-12 gap-12">
       <div className="flex flex-col items-center justify-center text-center">

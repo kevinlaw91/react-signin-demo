@@ -8,7 +8,7 @@ import { Icon } from '@iconify-icon/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createUser, AuthErrorCode } from '@/services/auth.ts';
 import { SessionUserMetadata } from '@/contexts/SessionContext.tsx';
-import FormErrorMessage from '@/components/FormErrorMessage.tsx';
+import { FormErrorMessage } from '@/features/account/FormErrorMessage';
 import { ButtonPrimary } from '@/components/Button.tsx';
 import useShakeAnimation from '@/hooks/useShakeAnimation';
 
@@ -43,7 +43,7 @@ const MSG_WARN_PASSWORD_WHITESPACE = 'Your password may contain leading or trail
 const responseSuccess: SignUpSuccessResponse = { success: true, data: { id: '1234' } };
 const responseErrorSignUpRejected: SignUpFailureResponse = { success: false, message: AuthErrorCode.ERR_ACCOUNT_SIGNUP_REJECTED };
 
-export default function AuthSignUpForm(props: {
+export function AuthSignUpForm(props: {
   onSubmit: () => void;
   onSuccess: (user: Partial<SessionUserMetadata>) => void;
   onError: (err?: string) => void;

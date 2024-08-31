@@ -1,22 +1,22 @@
 import { render } from '@testing-library/react';
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import userEvent from '@testing-library/user-event';
-import AuthSignInForm from '@/features/signin/AuthSignInForm';
+import { AuthSignUpForm } from '@/features/account/signup/AuthSignUpForm';
 import * as Auth from '@/services/auth.ts';
 import { MemoryRouter } from 'react-router-dom';
 
-describe('AuthSignInForm', () => {
+describe('AuthSignUpForm', () => {
   let apiCall;
 
   beforeAll(() => {
-    apiCall = vi.spyOn(Auth, 'authenticateUser');
+    apiCall = vi.spyOn(Auth, 'createUser');
   });
 
   afterAll(() => {
     apiCall.mockRestore();
   });
 
-  describe('submit valid user credentials', () => {
+  describe('submit valid email and password', () => {
     let onSubmit, onSuccess, onError;
     let user;
     let form;
@@ -29,7 +29,7 @@ describe('AuthSignInForm', () => {
       user = userEvent.setup();
       form = render(
         <MemoryRouter>
-          <AuthSignInForm
+          <AuthSignUpForm
             onSubmit={onSubmit}
             onSuccess={onSuccess}
             onError={onError}
@@ -38,9 +38,9 @@ describe('AuthSignInForm', () => {
       );
 
       // Simulate form submission
-      await user.type(form.getByLabelText(/email/i), 'test@example.com');
-      await user.type(form.getByLabelText(/password/i), 'success');
-      await user.click(form.getByRole('button', { name: /sign in/i }));
+      await user.type(form.getByLabelText('Email'), 'test@example.com');
+      await user.type(form.getByLabelText('Password'), 'atleast8characters');
+      await user.click(form.getByRole('button', { name: /create account/i }));
     });
 
     afterAll(() => {
@@ -49,9 +49,7 @@ describe('AuthSignInForm', () => {
 
     it('should submit the form with correct data', async () => {
       expect(onSubmit).toHaveBeenCalled();
-      expect(apiCall).toHaveBeenCalledWith(
-        expect.objectContaining({ email: 'test@example.com', password: 'success' }),
-      );
+      expect(apiCall).toHaveBeenCalledWith({ email: 'test@example.com', password: 'atleast8characters' });
     });
 
     it('api call resolves', async () => {
@@ -59,7 +57,6 @@ describe('AuthSignInForm', () => {
         () => apiCall.mock.results[0],
         { timeout: 2000 },
       );
-
       await expect(apiCall.mock.results[0].value).resolves.toBeDefined();
     });
 
@@ -72,7 +69,7 @@ describe('AuthSignInForm', () => {
     });
   });
 
-  describe('submit invalid user credentials', () => {
+  describe('Email or password rejected', () => {
     let onSubmit, onSuccess, onError;
     let user;
     let form;
@@ -85,7 +82,7 @@ describe('AuthSignInForm', () => {
       user = userEvent.setup();
       form = render(
         <MemoryRouter>
-          <AuthSignInForm
+          <AuthSignUpForm
             onSubmit={onSubmit}
             onSuccess={onSuccess}
             onError={onError}
@@ -94,9 +91,9 @@ describe('AuthSignInForm', () => {
       );
 
       // Simulate form submission
-      await user.type(form.getByLabelText(/email/i), 'test@example.com');
-      await user.type(form.getByLabelText(/password/i), 'notthepassword');
-      await user.click(form.getByRole('button', { name: /sign in/i }));
+      await user.type(form.getByLabelText('Email'), 'registered@example.com');
+      await user.type(form.getByLabelText('Password'), 'atleast8characters');
+      await user.click(form.getByRole('button', { name: /create account/i }));
     });
 
     afterAll(() => {
@@ -105,20 +102,18 @@ describe('AuthSignInForm', () => {
 
     it('should submit the form with correct data', async () => {
       expect(onSubmit).toHaveBeenCalled();
-      expect(apiCall).toHaveBeenCalledWith(
-        expect.objectContaining({ email: 'test@example.com', password: 'notthepassword' }),
-      );
+      expect(apiCall).toHaveBeenCalledWith({ email: 'registered@example.com', password: 'atleast8characters' });
     });
 
-    it('api call throws invalid credentials error', async () => {
+    it('calls onError on unsuccessful sign in', async () => {
       await vi.waitUntil(
-        () => apiCall.mock.results[0],
+        () => apiCall.mock.settledResults[0],
         { timeout: 2000 },
       );
 
       await expect(apiCall.mock.results[0].value)
         .rejects
-        .toThrow(Auth.AuthErrorCode.ERR_INVALID_CREDENTIALS);
+        .toThrow(Auth.AuthErrorCode.ERR_ACCOUNT_SIGNUP_REJECTED);
     });
 
     it('should not call onSuccess', () => {
