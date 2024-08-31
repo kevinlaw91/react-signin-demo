@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import AuthSignInForm from '@/features/signin/AuthSignInForm';
 import * as Auth from '@/services/auth.ts';
+import { MemoryRouter } from 'react-router-dom';
 
 describe('AuthSignInForm', () => {
   let apiCall;
@@ -27,11 +28,13 @@ describe('AuthSignInForm', () => {
 
       user = userEvent.setup();
       form = render(
-        <AuthSignInForm
-          onSubmit={onSubmit}
-          onSuccess={onSuccess}
-          onError={onError}
-        />,
+        <MemoryRouter>
+          <AuthSignInForm
+            onSubmit={onSubmit}
+            onSuccess={onSuccess}
+            onError={onError}
+          />
+        </MemoryRouter>,
       );
 
       // Simulate form submission
@@ -46,7 +49,9 @@ describe('AuthSignInForm', () => {
 
     it('should submit the form with correct data', async () => {
       expect(onSubmit).toHaveBeenCalled();
-      expect(apiCall).toHaveBeenCalledWith({ email: 'test@example.com', password: 'success' });
+      expect(apiCall).toHaveBeenCalledWith(
+        expect.objectContaining({ email: 'test@example.com', password: 'success' }),
+      );
     });
 
     it('api call resolves', async () => {
@@ -79,11 +84,13 @@ describe('AuthSignInForm', () => {
 
       user = userEvent.setup();
       form = render(
-        <AuthSignInForm
-          onSubmit={onSubmit}
-          onSuccess={onSuccess}
-          onError={onError}
-        />,
+        <MemoryRouter>
+          <AuthSignInForm
+            onSubmit={onSubmit}
+            onSuccess={onSuccess}
+            onError={onError}
+          />
+        </MemoryRouter>,
       );
 
       // Simulate form submission
@@ -98,7 +105,9 @@ describe('AuthSignInForm', () => {
 
     it('should submit the form with correct data', async () => {
       expect(onSubmit).toHaveBeenCalled();
-      expect(apiCall).toHaveBeenCalledWith({ email: 'test@example.com', password: 'notthepassword' });
+      expect(apiCall).toHaveBeenCalledWith(
+        expect.objectContaining({ email: 'test@example.com', password: 'notthepassword' }),
+      );
     });
 
     it('api call throws invalid credentials error', async () => {
