@@ -1,24 +1,19 @@
-import { useCallback, useContext, useEffect } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import AuthSignUpForm from '@/features/signup/AuthSignUpForm';
-import BusyScreen from '@/components/BusyScreen.tsx';
 import { SessionContext, SessionUserMetadata } from '@/contexts/SessionContext';
 import AlertDialog from '@/components/AlertDialog';
 import { useDialogManager } from '@/hooks/useDialogManager';
 import GoogleSignInButton from '@/features/signin/GoogleSignInButton';
-import { createPortal } from 'react-dom';
-import { usePopupModalManager } from '@/hooks/usePopupModalManager.ts';
 import SignUpSuccess from '@/features/signup/SignUpSuccess';
-
-const BUSY_MODAL = 'SIGNUP_BUSY';
+import { InProgressScreen } from '@/features/account/InProgressScreen';
 
 export default function SignUpPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user, updateSessionUser } = useContext(SessionContext);
-  const { modals, queueModal, hideModal } = usePopupModalManager();
-
+  const [apiRequestPending, setApiRequestPending] = useState(false);
   const dialog = useDialogManager();
 
   useEffect(() => {
@@ -28,20 +23,14 @@ export default function SignUpPage() {
     }
   }, [user, navigate, searchParams]);
 
-  const showBusyScreenModal = useCallback((show: boolean) => {
-    if (show) {
-      queueModal({ id: BUSY_MODAL, type: 'placeholder' });
-    } else {
-      hideModal(BUSY_MODAL);
-    }
-  }, [queueModal, hideModal]);
+  const showSigningUpScreen = useCallback((show: boolean) => {
+    setApiRequestPending(show);
+  }, []);
 
-  const onFormSignUpSubmit = () => {
-    showBusyScreenModal(true);
-  };
+  const onFormSignUpSubmit = useCallback(() => setApiRequestPending(true), []);
 
   const onFormSignUpSuccess = useCallback((user: Partial<SessionUserMetadata>) => {
-    showBusyScreenModal(false);
+    showSigningUpScreen(false);
 
     // Change app's state to signed in
     updateSessionUser({ id: user.id });
@@ -49,12 +38,12 @@ export default function SignUpPage() {
 
     // Show success screen
     navigate(`.?complete=true`, { replace: true });
-  }, [showBusyScreenModal, updateSessionUser, navigate]);
+  }, [showSigningUpScreen, updateSessionUser, navigate]);
 
   const onFormSignUpError = useCallback((err?: string) => {
-    showBusyScreenModal(false);
+    showSigningUpScreen(false);
     dialog.show('API_RESPONSE_ERROR', err);
-  }, [dialog, showBusyScreenModal]);
+  }, [dialog, showSigningUpScreen]);
 
   if (searchParams.get('complete') === 'true') {
     return (
@@ -111,7 +100,7 @@ export default function SignUpPage() {
         <div className="row-span-full col-span-full bg-[url('/assets/images/pawel-czerwinski-Zd315A95aqg-unsplash.webp')] bg-cover bg-center bg-no-repeat"></div>
       </div>
       <AlertDialog ref={ref => dialog.register('API_RESPONSE_ERROR', ref)} defaultMessage="An error occurred during sign up" />
-      {modals.some(m => m.id === BUSY_MODAL) && createPortal(<BusyScreen message="Creating account" messageClassName="text-white/90" />, document.body, BUSY_MODAL)}
+      <InProgressScreen isOpen={apiRequestPending} title="Creating account" />
     </>
   );
 }

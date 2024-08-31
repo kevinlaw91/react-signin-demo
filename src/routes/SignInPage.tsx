@@ -1,21 +1,17 @@
-import { useCallback, useContext, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import AuthSignInForm from '@/features/signin/AuthSignInForm';
-import BusyScreen from '@/components/BusyScreen.tsx';
 import { SessionContext, SessionUserMetadata } from '@/contexts/SessionContext';
 import GoogleSignInButton from '@/features/signin/GoogleSignInButton';
-import { createPortal } from 'react-dom';
-import { usePopupModalManager } from '@/hooks/usePopupModalManager.ts';
 import AlertDialog from '@/components/AlertDialog';
 import { useDialogManager } from '@/hooks/useDialogManager';
-
-const BUSY_MODAL = 'SIGNIN_BUSY';
+import { InProgressScreen } from '@/features/account/InProgressScreen';
 
 export default function SignInPage() {
   const navigate = useNavigate();
   const { user, updateSessionUser } = useContext(SessionContext);
-  const { modals, queueModal, hideModal } = usePopupModalManager();
+  const [apiRequestPending, setApiRequestPending] = useState(false);
   const dialog = useDialogManager();
 
   useEffect(() => {
@@ -25,20 +21,14 @@ export default function SignInPage() {
     }
   }, [user, navigate]);
 
-  const showBusyScreenModal = useCallback((show: boolean) => {
-    if (show) {
-      queueModal({ id: BUSY_MODAL, type: 'placeholder' });
-    } else {
-      hideModal(BUSY_MODAL);
-    }
-  }, [queueModal, hideModal]);
+  const showSigningInScreen = useCallback((show: boolean) => {
+    setApiRequestPending(show);
+  }, []);
 
-  const onFormSignInSubmit = () => {
-    showBusyScreenModal(true);
-  };
+  const onFormSignInSubmit = useCallback(() => showSigningInScreen(true), [showSigningInScreen]);
 
   const onFormSignInSuccess = useCallback((user: Partial<SessionUserMetadata>) => {
-    showBusyScreenModal(false);
+    showSigningInScreen(false);
     // Change app's state to signed in
     updateSessionUser({
       id: user.id ?? '1234',
@@ -47,12 +37,12 @@ export default function SignInPage() {
     sessionStorage.setItem('user:1234:username', user.username ?? user.id ?? 'User');
     // Go to home page
     navigate('/', { replace: true });
-  }, [showBusyScreenModal, updateSessionUser, navigate]);
+  }, [showSigningInScreen, updateSessionUser, navigate]);
 
-  const onFormSignInError = (err?: string) => {
-    showBusyScreenModal(false);
+  const onFormSignInError = useCallback((err?: string) => {
+    showSigningInScreen(false);
     dialog.show('API_RESPONSE_ERROR', err);
-  };
+  }, [showSigningInScreen, dialog]);
 
   return (
     <>
@@ -99,7 +89,7 @@ export default function SignInPage() {
         <div className="row-span-full col-span-full bg-[url('/assets/images/pawel-czerwinski-Zd315A95aqg-unsplash.webp')] bg-cover bg-center bg-no-repeat"></div>
       </div>
       <AlertDialog ref={ref => dialog.register('API_RESPONSE_ERROR', ref)} defaultMessage="An error occurred during sign in" />
-      {modals.some(m => m.id === BUSY_MODAL) && createPortal(<BusyScreen message="Signing In" messageClassName="text-white/90" />, document.body, BUSY_MODAL)}
+      <InProgressScreen isOpen={apiRequestPending} title="Signing In" />
     </>
   );
 }

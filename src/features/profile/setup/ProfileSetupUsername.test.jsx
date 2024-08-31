@@ -4,7 +4,6 @@ import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import ProfileSetupUsername from '@/features/profile/setup/ProfileSetupUsername.tsx';
 import userEvent from '@testing-library/user-event';
 import * as Profile from '@/services/profile.ts';
-import { PopupManagerProvider } from '@/contexts/PopupModalManagerContext.tsx';
 
 const useSwiper = vi.hoisted(() => vi.fn());
 const useSwiperSlide = vi.hoisted(() => vi.fn());
@@ -43,9 +42,7 @@ describe('ProfileSetupUsername', () => {
 
       container = render(
         <HelmetProvider>
-          <PopupManagerProvider>
-            <ProfileSetupUsername />
-          </PopupManagerProvider>
+          <ProfileSetupUsername />
         </HelmetProvider>,
       );
 
@@ -89,9 +86,7 @@ describe('ProfileSetupUsername', () => {
 
       container = render(
         <HelmetProvider>
-          <PopupManagerProvider>
-            <ProfileSetupUsername />
-          </PopupManagerProvider>
+          <ProfileSetupUsername />
         </HelmetProvider>,
       );
 

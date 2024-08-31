@@ -6,7 +6,6 @@ import { HelmetProvider } from 'react-helmet-async';
 import ProfileSetupProfilePicture from '@/features/profile/setup/ProfileSetupProfilePicture.tsx';
 import * as imageUtils from '@/utils/image.ts';
 import * as Profile from '@/services/profile.ts';
-import { PopupManagerProvider } from '@/contexts/PopupModalManagerContext.tsx';
 
 const useSwiper = vi.hoisted(() => vi.fn());
 
@@ -55,9 +54,7 @@ describe('ProfileSetupProfilePicture', () => {
 
       container = render(
         <HelmetProvider>
-          <PopupManagerProvider>
-            <ProfileSetupProfilePicture />
-          </PopupManagerProvider>
+          <ProfileSetupProfilePicture />
         </HelmetProvider>,
       );
 
@@ -103,9 +100,7 @@ describe('ProfileSetupProfilePicture', () => {
     beforeEach(() => {
       container = render(
         <HelmetProvider>
-          <PopupManagerProvider>
-            <ProfileSetupProfilePicture />
-          </PopupManagerProvider>
+          <ProfileSetupProfilePicture />
         </HelmetProvider>,
       );
     });
@@ -149,9 +144,7 @@ describe('ProfileSetupProfilePicture', () => {
 
       container = render(
         <HelmetProvider>
-          <PopupManagerProvider>
-            <ProfileSetupProfilePicture />
-          </PopupManagerProvider>
+          <ProfileSetupProfilePicture />
         </HelmetProvider>,
       );
 
