@@ -20,7 +20,7 @@ function mockCredentialResponse(): Promise<CredentialResponse> {
     setTimeout(() => {
       // Google will return CredentialResponse to the callback
       resolve({
-        credential: 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzMTQxNTkyNjUzNTg5NzkzMjM4IiwiZW1haWwiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWV9.3YqxhAifZHg4kN11IX5mg9v9lVOLg9VkUThYURlZxEo',
+        credential: 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzMTQxNTkyNjUzNTg5NzkzMjM4IiwiZW1haWwiOiJHb29nbGVVc2VyQGV4YW1wbGUuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWV9.CW0m8eA-2O024AefPgBrrc42Z4fk4-d-W3tbUTznPEA',
       });
     }, 1000);
   });
@@ -44,17 +44,17 @@ export function GoogleSignInButton(): ReactElement {
     Sample decoded jwt payload:
     {
       sub: '3141592653589793238', // The unique ID of the user's Google Account
-      email: 'test@example.com', // The user's email address
+      email: 'GoogleUser@example.com', // The user's email address
       email_verified: true,
       ...
     }
     */
-    const jwtPayload = decodeJwt(response.credential);
+    const jwtPayload = decodeJwt<{ email: string }>(response.credential);
     const { email } = jwtPayload;
 
     const demoUserAccount = {
-      id: '1234', // User id of our app
-      email: 'test@example.com', // Registered email address of the user
+      id: '1234', // User id within our app
+      email: 'GoogleUser@example.com', // Registered email address of the user
     };
 
     const match = (email === demoUserAccount.email) ? demoUserAccount : null;
@@ -62,23 +62,13 @@ export function GoogleSignInButton(): ReactElement {
     if (match) {
       // Already registered
       // Change app's state to signed in
-      updateSessionUser({ id: match.id });
+      updateSessionUser({ id: match.id, username: email.split('@')[0] });
       // Redirect to home page
       navigate('/', { replace: true });
     } else {
-      // Not a registered user
-      // Ideally we go to profile setup page, but we don't have that yet,
-      // so we just redirect to home
-
-      // Pretend user completed profile setup
-      const newAccount = {
-        id: '1234',
-      };
-
-      // Change app's state to signed in
-      updateSessionUser({ id: newAccount.id });
-      // Redirect to home page
-      navigate('/', { replace: true });
+      // Not a registered user or profile not complete
+      // Redirect to setup
+      navigate('/setup', { replace: true });
     }
     return;
   }, [navigate, updateSessionUser]);
