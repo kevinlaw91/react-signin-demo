@@ -147,7 +147,7 @@ export function AuthSignInForm(props: {
             id="email"
             type="email"
             maxLength={254}
-            placeholder="Your email"
+            placeholder="Use any fake email. Nothing send to the server"
             className="block w-full h-12 px-4 py-2 text-neutral-700 rounded-lg appearance-none bg-neutral-200 placeholder-neutral-400 outline-none focus:ring-1 focus:ring-neutral-400/50 ring-offset-0 text-sm transition duration-150"
             {...register('email', { setValueAs: (value: string) => value.trim() })}
           />
