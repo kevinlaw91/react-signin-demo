@@ -20,7 +20,7 @@ function SidebarMenuProfileCard() {
         <div>
           <Link to={user?.id ? `/profile/${user.id}` : ''} className="text-md text-white leading-8 font-semibold">{user?.username || user?.id}</Link>
         </div>
-        <div className="text-xs leading-none dark:text-neutral-400">Basic Member</div>
+        <div className="text-xs leading-none dark:text-neutral-400">Basic Plan</div>
       </div>
     </div>
   );
@@ -64,7 +64,7 @@ function SidebarMenuItem({ to, href, icon, label, onClick }: {
   );
 }
 
-export default function SidebarMenu() {
+export function SidebarMenu() {
   const { clearSession } = useContext(SessionContext);
   const navigate = useNavigate();
 
@@ -80,9 +80,18 @@ export default function SidebarMenu() {
     <div className="h-full w-[70svw] min-w-[200px] max-w-[350px]">
       <SidebarMenuProfileCard />
       <ul>
-        <SidebarMenuItem to="/settings" icon="icon-park-solid:setting-two" label="Settings" />
+        <SidebarMenuItem icon="icon-park-solid:setting-two" label="Settings" />
         <SidebarMenuItem onClick={handleSignOut} icon="ic:twotone-logout" label="Sign Out" />
       </ul>
+      <div className="mt-16 px-8 text-neutral-300 text-sm">
+        <p>Made by Kevin Law</p>
+        <a href="https://www.github.com/kevinlaw91" title="GitHub" target="_blank" rel="noreferrer" className="inline-block m-1 leading-[0] text-neutral-500 hover:text-neutral-300">
+          <Icon icon="mdi:github" className="transition-colors" width="24" />
+        </a>
+        <a href="https://www.linkedin.com/in/kevinlawchinhao/" title="LinkedIn" target="_blank" rel="noreferrer" className="inline-block m-1 leading-[0] text-neutral-500 hover:text-neutral-300">
+          <Icon icon="mdi:linkedin" className="transition-colors" width="24" />
+        </a>
+      </div>
     </div>
   );
 }

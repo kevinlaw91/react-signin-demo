@@ -5,7 +5,7 @@ import { SessionContext } from '@/contexts/SessionContext';
 import { Button } from '@/components/Button.tsx';
 import { Drawer, IconButton } from '@mui/material';
 import { Icon } from '@iconify-icon/react';
-import SidebarMenu from '@/components/SidebarMenu.tsx';
+import { SidebarMenu } from '@/components/SidebarMenu';
 import { motion } from 'framer-motion';
 
 function UserWelcomeScreen() {
@@ -26,16 +26,6 @@ function UserWelcomeScreen() {
         <IconButton aria-label="Menu" size="large" onClick={toggleDrawer(true)}>
           <Icon icon="solar:menu-dots-bold" className="text-white" />
         </IconButton>
-        <Drawer
-          open={open}
-          onClose={toggleDrawer(false)}
-          anchor="right"
-          classes={{
-            paper: 'bg-neutral-800/80 backdrop-blur-lg',
-          }}
-        >
-          <SidebarMenu />
-        </Drawer>
       </section>
       <section className="-mt-12 mx-auto md:mx-16">
         <div className="flex content-end flex-wrap justify-between">
@@ -96,8 +86,30 @@ function UserWelcomeScreen() {
           ))}
         </motion.div>
       </section>
+      <section className="mx-2 md:mx-8 my-16 text-center text-neutral-500">
+        <p className="text-sm">
+          <>Made by </>
+          <span className="font-semibold">Kevin Law</span>
+        </p>
+        <div className="my-2">
+          <a href="https://www.github.com/kevinlaw91" title="GitHub" target="_blank" rel="noreferrer">
+            <Icon icon="mdi:github" className="text-neutral-500 hover:text-[#181717] transition-colors" width="36" />
+          </a>
+          <a href="https://www.linkedin.com/in/kevinlawchinhao/" title="LinkedIn" target="_blank" rel="noreferrer">
+            <Icon icon="mdi:linkedin" className="text-neutral-500 hover:text-[#0077B5] transition-colors" width="36" />
+          </a>
         </div>
       </section>
+      <Drawer
+        open={open}
+        onClose={toggleDrawer(false)}
+        anchor="right"
+        classes={{
+          paper: 'bg-neutral-800/80 backdrop-blur-lg',
+        }}
+      >
+        <SidebarMenu />
+      </Drawer>
     </section>
   );
 }
