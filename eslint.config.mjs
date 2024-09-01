@@ -14,6 +14,7 @@ import pluginReactRefresh from 'eslint-plugin-react-refresh';
 import pluginReactHooks from 'eslint-plugin-react-hooks';
 import configReactRecommended from 'eslint-plugin-react/configs/recommended.js';
 import configReactJSXRuntime from 'eslint-plugin-react/configs/jsx-runtime.js';
+import compat from 'eslint-plugin-compat';
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -76,6 +77,7 @@ export default tseslint.config(
       },
     },
   },
+  compat.configs['flat/recommended'],
   {
     files: [
       '**/*.test.ts',
