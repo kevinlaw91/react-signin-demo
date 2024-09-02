@@ -114,7 +114,7 @@ function UserWelcomeScreen() {
   );
 }
 
-export default function IndexPage() {
+export function Component() {
   const navigate = useNavigate();
   const { user } = useContext(SessionContext);
 
@@ -135,3 +135,5 @@ export default function IndexPage() {
     </>
   );
 }
+
+Component.displayName = 'IndexPage';

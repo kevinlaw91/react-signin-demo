@@ -9,7 +9,7 @@ import ProfileSetupComplete from '@/features/profile/setup/ProfileSetupComplete.
 import { IndeterminateProgressBar } from '@/components/IndeterminateProgressBar.tsx';
 import { SessionContext } from '@/contexts/SessionContext.tsx';
 
-export default function ProfileSetupPage() {
+export function Component() {
   const swiperRef = useRef<SwiperClass | null>(null);
   const [hideLoader, setHideLoader] = useState(false);
   const { updateSessionUser } = useContext(SessionContext);
@@ -76,3 +76,5 @@ export default function ProfileSetupPage() {
     </section>
   );
 }
+
+Component.displayName = 'ProfileSetupPage';

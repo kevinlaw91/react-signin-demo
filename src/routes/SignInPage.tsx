@@ -8,7 +8,7 @@ import AlertDialog from '@/components/AlertDialog';
 import { useDialogManager } from '@/hooks/useDialogManager';
 import { InProgressScreen } from '@/features/account/InProgressScreen';
 
-export default function SignInPage() {
+export function Component() {
   const navigate = useNavigate();
   const { user, updateSessionUser } = useContext(SessionContext);
   const [apiRequestPending, setApiRequestPending] = useState(false);
@@ -93,3 +93,5 @@ export default function SignInPage() {
     </>
   );
 }
+
+Component.displayName = 'SignInPage';

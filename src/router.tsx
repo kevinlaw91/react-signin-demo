@@ -1,32 +1,27 @@
 import { createBrowserRouter } from 'react-router-dom';
-import IndexPage from '@/routes/IndexPage.tsx';
-import SignInPage from '@/routes/SignInPage.tsx';
-import SignUpPage from '@/routes/SignUpPage.tsx';
-import NotFoundPage from '@/routes/NotFoundPage.tsx';
-import ProfileSetupPage from '@/routes/ProfileSetupPage';
 
 const router = createBrowserRouter(
   [
     {
       path: '/',
-      element: <IndexPage />,
+      lazy: () => import('@/routes/IndexPage'),
     },
     {
       path: '/signin',
-      element: <SignInPage />,
+      lazy: () => import('@/routes/SignInPage'),
     },
     {
       path: '/signup',
-      element: <SignUpPage />,
+      lazy: () => import('@/routes/SignUpPage'),
     },
     {
       path: '/setup',
-      element: <ProfileSetupPage />,
+      lazy: () => import('@/routes/ProfileSetupPage'),
     },
     {
       // 404 page
       path: '*',
-      element: <NotFoundPage />,
+      lazy: () => import('@/routes/NotFoundPage'),
     },
   ],
   {

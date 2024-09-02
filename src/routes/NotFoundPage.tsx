@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
 
-export default function NotFoundPage() {
+export function Component() {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -44,3 +44,5 @@ export default function NotFoundPage() {
     </>
   );
 }
+
+Component.displayName = 'NotFoundPage';

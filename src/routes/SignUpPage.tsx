@@ -9,7 +9,7 @@ import { GoogleSignInButton } from '@/features/account/signin/GoogleSignInButton
 import { SignUpSuccess } from '@/features/account/signup/SignUpSuccess';
 import { InProgressScreen } from '@/features/account/InProgressScreen';
 
-export default function SignUpPage() {
+export function Component() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user, updateSessionUser } = useContext(SessionContext);
@@ -104,3 +104,5 @@ export default function SignUpPage() {
     </>
   );
 }
+
+Component.displayName = 'SignUpPage';
