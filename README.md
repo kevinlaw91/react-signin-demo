@@ -6,7 +6,7 @@ The app is built using a modern tech stack and provides a simple and intuitive u
 ## Tech Stack
 
 * Vite (vanilla)
-* React 18
+* React 18 + TypeScript
 * React Router 6
 * Material UI 6
 * Radix Primitives
