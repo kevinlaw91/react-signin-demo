@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { twMerge } from 'tailwind-merge';
 import style from '@/components/loaders/LoaderPulsingDots.module.css';
 
 interface ILoaderPulsingDotsLinearProps {
@@ -25,7 +25,7 @@ export function LoaderPulsingDotsCircular(props: ILoaderPulsingDotsCircularProps
   const { className } = props;
 
   return (
-    <div className={clsx(style.circular, className)}>
+    <div className={twMerge(style.circular, className)}>
       <div></div>
       <div></div>
       <div></div>

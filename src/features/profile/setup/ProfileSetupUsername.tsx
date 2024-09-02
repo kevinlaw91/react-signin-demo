@@ -4,7 +4,6 @@ import { useSwiper, useSwiperSlide } from 'swiper/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { IMaskInput } from 'react-imask';
-import clsx from 'clsx';
 import { z } from 'zod';
 import { type SubmitErrorHandler, type SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -16,6 +15,7 @@ import { checkUsernameAvailability, ProfileErrorCode, saveUsername } from '@/ser
 import { SessionContext } from '@/contexts/SessionContext';
 import Swiper from 'swiper';
 import useShakeAnimation from '@/hooks/useShakeAnimation';
+import { twMerge } from 'tailwind-merge';
 
 // Username awaiting availability check
 const usernameSchema = z.object({
@@ -112,7 +112,7 @@ function UsernameCheckResultMessage({ isAvailable }: { isAvailable: boolean }) {
       <div className="flex justify-center ">
         {isAvailable ? animatedTick : animatedError}
       </div>
-      <div className={clsx('text-xs font-semibold', isAvailable ? 'text-lime-600' : 'text-red-500')}>
+      <div className={twMerge('text-xs font-semibold', isAvailable ? 'text-lime-600' : 'text-red-500')}>
         {isAvailable ? MSG_USERNAME_AVAILABLE : MSG_USERNAME_ALREADY_TAKEN}
       </div>
     </div>

@@ -22,7 +22,6 @@
     "@mui/material": "6.0.1",
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-portal": "^1.1.1",
-    "clsx": "^2.1.1",
     "eslint-plugin-compat": "^6.0.0",
     "exif-rotate-js": "^1.5.0",
     "fetch-mock": "^11.1.3",
