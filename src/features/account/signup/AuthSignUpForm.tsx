@@ -121,27 +121,33 @@ export function AuthSignUpForm(props: {
 
       // Mock API
       if (data.email !== 'registered@example.com') {
-        fetchMock.post('path:/api/account/create',
-          {
-            status: 200,
-            body: responseSuccess,
-            headers: {
-              'Content-Type': 'application/json',
+        fetchMock
+          .mockGlobal()
+          .post(
+            'path:/api/account/create',
+            {
+              status: 200,
+              body: responseSuccess,
+              headers: {
+                'Content-Type': 'application/json',
+              },
             },
-          },
-          { delay: 1000 },
-        );
+            { delay: 1000 },
+          );
       } else {
-        fetchMock.post('path:/api/account/create',
-          {
-            status: 403,
-            body: responseErrorSignUpRejected,
-            headers: {
-              'Content-Type': 'application/json',
+        fetchMock
+          .mockGlobal()
+          .post(
+            'path:/api/account/create',
+            {
+              status: 403,
+              body: responseErrorSignUpRejected,
+              headers: {
+                'Content-Type': 'application/json',
+              },
             },
-          },
-          { delay: 1000 },
-        );
+            { delay: 1000 },
+          );
       }
 
       return createUser(data)
@@ -166,7 +172,7 @@ export function AuthSignUpForm(props: {
         })
         .finally(() => {
           // Restore fetch mock
-          fetchMock.restore();
+          fetchMock.hardReset();
         });
     },
     [onSubmitCallback, onErrorCallback, onSuccessCallback, setError],

@@ -156,27 +156,29 @@ export default function ProfileSetupUsername() {
     frmClaimUsername.setValue('candidate', '');
 
     // Mock request response
-    fetchMock.get(
-      {
-        url: `path:/api/profile`,
-        query: {
-          action: 'check-username',
-        },
-      },
-      {
-        status: 200,
-        body: {
-          data: {
-            username: username,
-            isAvailable: mockIsAvailable(username),
+    fetchMock
+      .mockGlobal()
+      .get(
+        'path:/api/profile',
+        {
+          status: 200,
+          body: {
+            data: {
+              username: username,
+              isAvailable: mockIsAvailable(username),
+            },
+          },
+          headers: {
+            'Content-Type': 'application/json',
           },
         },
-        headers: {
-          'Content-Type': 'application/json',
+        {
+          delay: 1000,
+          query: {
+            action: 'check-username',
+          },
         },
-      },
-      { delay: 1000 },
-    );
+      );
 
     return checkUsernameAvailability(username, runningUsernameCheck.current.signal)
       .then((res) => {
@@ -204,7 +206,7 @@ export default function ProfileSetupUsername() {
       })
       .finally(() => {
         // Restore fetch mock
-        fetchMock.restore();
+        fetchMock.hardReset();
       });
   }, [dialog, frmCheckUsername, frmClaimUsername]);
 
@@ -239,26 +241,29 @@ export default function ProfileSetupUsername() {
     const _isAvailable = mockIsAvailable(data.candidate);
 
     // Mock request response
-    fetchMock.patch(`path:/api/profile/${profileId}/username`,
-      {
-        status: _isAvailable ? 200 : 409,
-        body: _isAvailable
-          ? {
-              success: true,
-              data: {
-                id: profileId,
-                username: data.candidate,
+    fetchMock
+      .mockGlobal()
+      .patch(
+        'express:/api/profile/:profileId/username',
+        {
+          status: _isAvailable ? 200 : 409,
+          body: _isAvailable
+            ? {
+                success: true,
+                data: {
+                  id: profileId,
+                  username: data.candidate,
+                },
+              }
+            : {
+                success: false,
               },
-            }
-          : {
-              success: false,
-            },
-        headers: {
-          'Content-Type': 'application/json',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-      },
-      { delay: 1000 },
-    );
+        { delay: 1000 },
+      );
 
     // Claim the username
     let res;
@@ -274,7 +279,7 @@ export default function ProfileSetupUsername() {
       }
     } finally {
       // Restore fetch mock
-      fetchMock.restore();
+      fetchMock.hardReset();
     }
 
     // Success

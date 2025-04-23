@@ -76,27 +76,33 @@ export function AuthSignInForm(props: {
       // Fail: password = 'error'
 
       if (data.password === 'success') {
-        fetchMock.post('path:/api/signin',
-          {
-            status: 200,
-            body: responseSuccess,
-            headers: {
-              'Content-Type': 'application/json',
+        fetchMock
+          .mockGlobal()
+          .post(
+            'path:/api/signin',
+            {
+              status: 200,
+              body: responseSuccess,
+              headers: {
+                'Content-Type': 'application/json',
+              },
             },
-          },
-          { delay: 1000 },
-        );
+            { delay: 1000 },
+          );
       } else {
-        fetchMock.post('path:/api/signin',
-          {
-            status: 401,
-            body: responseErrorUnauthorized,
-            headers: {
-              'Content-Type': 'application/json',
+        fetchMock
+          .mockGlobal()
+          .post(
+            'path:/api/signin',
+            {
+              status: 401,
+              body: responseErrorUnauthorized,
+              headers: {
+                'Content-Type': 'application/json',
+              },
             },
-          },
-          { delay: 1000 },
-        );
+            { delay: 1000 },
+          );
       }
 
       return authenticateUser(data)
@@ -120,7 +126,7 @@ export function AuthSignInForm(props: {
         })
         .finally(() => {
           // Restore fetch mock
-          fetchMock.restore();
+          fetchMock.hardReset();
         });
     },
     [onSubmitCallback, onSuccessCallback, onErrorCallback, setValue, setError],

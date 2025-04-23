@@ -236,24 +236,24 @@ export default function ProfileSetupProfilePicture() {
     setIsLoading(true);
 
     // Mock request response
-    fetchMock.post(
-      {
-        url: `express:/api/profile/:profileId/picture`,
-      },
-      {
-        status: 200,
-        body: {
-          success: true,
-          data: {
-            src: 'profilepicture.png',
+    fetchMock
+      .mockGlobal()
+      .post(
+        'express:/api/profile/:profileId/picture',
+        {
+          status: 200,
+          body: {
+            success: true,
+            data: {
+              src: 'profilepicture.png',
+            },
+          },
+          headers: {
+            'Content-Type': 'application/json',
           },
         },
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-      { delay: 1000 },
-    );
+        { delay: 1000 },
+      );
 
     if (!croppedImage.current) {
       throw new Error('No image data to submit');
@@ -287,7 +287,7 @@ export default function ProfileSetupProfilePicture() {
         setIsLoading(false);
       })
       .finally(() => {
-        fetchMock.restore();
+        fetchMock.hardReset();
       });
   }, [dialog, goToNextStep, imagePreviewUrl, updateSessionUser]);
 
