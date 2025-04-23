@@ -138,11 +138,11 @@ export default function ProfileSetupUsername() {
 
   const goToNextStep = useCallback(() => swiper.slideNext(), [swiper]);
 
-  const frmCheckUsername = useForm<UsernameFormData>({
+  const frmCheckUsername = useForm({
     resolver: zodResolver(usernameSchema),
   });
 
-  const frmClaimUsername = useForm<CandidateFormData>({
+  const frmClaimUsername = useForm({
     resolver: zodResolver(candidateSchema),
   });
 

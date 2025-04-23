@@ -56,7 +56,7 @@ export function AuthSignUpForm(props: {
     setError,
     getFieldState,
     formState: { errors },
-  } = useForm<SignUpFormData>({
+  } = useForm({
     resolver: zodResolver(signUpSchema),
   });
   const alertedAboutLeadingTrailingSpace = useRef(false);

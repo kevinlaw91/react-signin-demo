@@ -52,7 +52,7 @@ export function AuthSignInForm(props: {
     setValue,
     setError,
     formState: { errors },
-  } = useForm<SignInFormData>({
+  } = useForm({
     resolver: zodResolver(signInSchema),
   });
 
