@@ -70,7 +70,19 @@ function ProfilePictureEditor({ src, onApply, onCancel }: {
       </div>
       <div className="flex gap-6 w-full max-w-[300px] items-center isolate">
         <Icon icon="gg:zoom-in" width="24" className="text-white" />
-        <Slider aria-label="Zoom" value={zoom} min={1} max={3} step={0.05} onChange={handleSliderChange} />
+        <Slider
+          aria-label="Zoom"
+          value={zoom}
+          min={1}
+          max={3}
+          step={0.05}
+          onChange={handleSliderChange}
+          classes={{
+            rail: 'text-white/50',
+            track: 'text-white',
+            thumb: 'text-white',
+          }}
+        />
         <Icon icon="gg:zoom-out" width="24" className="text-white" />
       </div>
       <div className="flex flex-col gap-2 w-full max-w-64 my-6 z-10 justify-items-stretch content-center">

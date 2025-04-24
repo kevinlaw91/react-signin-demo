@@ -79,7 +79,7 @@ export function Component() {
             <div className="text-center mt-3">
               <Link
                 to="/signup"
-                className="text-sm text-neutral-800 font-semibold hover:text-primary-500 px-6 py-2 outline-hidden focus:ring-2 ring-primary ring-offset-0 rounded-sm transition duration-150"
+                className="text-sm text-neutral-800 font-semibold hover:text-neutral-500 px-6 py-2 outline-hidden focus:ring-2 ring-primary ring-offset-0 rounded-sm"
               >
                 Create Account
               </Link>

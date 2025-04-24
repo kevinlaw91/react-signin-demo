@@ -64,7 +64,7 @@ export function Component() {
           {/* STEP_USERNAME */}
           <ProfileSetupUsername />
         </SwiperSlide>
-        <SwiperSlide className="h-auto">
+        <SwiperSlide className="!h-dvh">
           {/* STEP_PROFILE_PICTURE */}
           <ProfileSetupProfilePicture />
         </SwiperSlide>

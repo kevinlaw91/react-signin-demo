@@ -4,17 +4,14 @@ import router from '@/router.tsx';
 import { HelmetProvider } from 'react-helmet-async';
 import '@/index.css';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
+import GlobalStyles from '@mui/material/GlobalStyles';
 import { theme } from '@/mui.theme.ts';
 
 export default function App() {
   return (
     <HelmetProvider>
-      {/*
-      <StyledEngineProvider>
-      Fix CSS injection order so that tailwind classes are applied to MUI without needing setting important
-      See: https://mui.com/material-ui/integrations/interoperability/#setup
-      */}
-      <StyledEngineProvider injectFirst>
+      <StyledEngineProvider enableCssLayer>
+        <GlobalStyles styles="@layer theme, base, mui, components, utilities;" />
         <ThemeProvider theme={theme}>
           <UserSessionProvider>
             <RouterProvider router={router} />

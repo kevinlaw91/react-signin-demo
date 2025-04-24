@@ -141,7 +141,7 @@ export function AuthSignInForm(props: {
 
   return (
     <form onSubmit={handleSubmit(formSubmitHandler, formValidationErrorHandler)}>
-      <div className="space-y-3">
+      <div className="space-y-5">
         <div>
           <label
             htmlFor="email"
@@ -153,7 +153,7 @@ export function AuthSignInForm(props: {
             id="email"
             type="email"
             maxLength={254}
-            placeholder="Use any fake email. Nothing send to the server"
+            placeholder="For demo only, use any email"
             className="block w-full h-12 px-4 py-2 text-neutral-700 rounded-lg appearance-none bg-neutral-200 placeholder-neutral-400 outline-hidden focus:ring-1 focus:ring-neutral-400/50 ring-offset-0 text-sm transition duration-150"
             {...register('email', { setValueAs: (value: string) => value.trim() })}
           />
@@ -170,7 +170,7 @@ export function AuthSignInForm(props: {
           </label>
           <input
             className="block w-full h-12 px-4 py-2 text-neutral-700 rounded-lg appearance-none bg-neutral-200 placeholder-neutral-400 outline-hidden focus:ring-1 focus:ring-neutral-400/50 ring-offset-0 text-sm transition duration-150"
-            placeholder="Try &quot;success&quot;"
+            placeholder="Try &quot;success&quot; as password"
             id="password"
             maxLength={255}
             type="password"
@@ -180,12 +180,13 @@ export function AuthSignInForm(props: {
             <FormErrorMessage>{errors?.password?.message}</FormErrorMessage>
           )}
         </div>
-        <div className="flex flex-row items-center justify-between text-neutral-600">
+        <div className="flex flex-row items-center justify-between text-neutral-500">
           <FormControlLabel
             label="Keep me signed in"
             control={<Checkbox {...register('remember')} />}
             classes={{
-              label: 'mt-0.5 text-sm',
+              root: 'text-primary',
+              label: 'mt-0.5 text-sm text-neutral-600',
             }}
           />
           <div>
