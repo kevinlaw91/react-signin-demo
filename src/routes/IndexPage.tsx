@@ -21,8 +21,8 @@ function UserWelcomeScreen() {
   const profileLink = `/profile/${user.id}`;
 
   return (
-    <section className="min-h-svh min-w-[320px] bg-gradient-to-b from-neutral-50 to-amber-50">
-      <section className="flex content-start flex-wrap justify-end bg-gradient-to-r from-orange-800 via-orange-500 to-amber-500 rounded-b-2xl h-32">
+    <section className="min-h-svh min-w-[320px] bg-linear-to-b from-neutral-50 to-amber-50">
+      <section className="flex content-start flex-wrap justify-end bg-linear-to-r from-orange-800 via-orange-500 to-amber-500 rounded-b-2xl h-32">
         <IconButton aria-label="Menu" size="large" onClick={toggleDrawer(true)}>
           <Icon icon="solar:menu-dots-bold" className="text-white" />
         </IconButton>
@@ -34,7 +34,7 @@ function UserWelcomeScreen() {
               <img
                 src={user.avatarSrc || '/assets/images/profile-picture-blank.jpg'}
                 alt="Profile picture"
-                className="size-24 md:size-36 rounded-full border-2 border-white shadow-sm"
+                className="size-24 md:size-36 rounded-full border-2 border-white shadow-xs"
               />
             </a>
           </div>
@@ -50,19 +50,19 @@ function UserWelcomeScreen() {
         </div>
       </section>
       <section className="mx-2 md:mx-8">
-        <section className="relative h-[300px] my-6 px-8 py-12 rounded-lg shadow-lg bg-gradient-to-tr from-neutral-800 via-neutral-950 via-70% to-orange-950 overflow-hidden">
+        <section className="relative h-[300px] my-6 px-8 py-12 rounded-lg shadow-lg bg-linear-to-tr from-neutral-800 via-neutral-950 via-70% to-orange-950 overflow-hidden">
           <div className="h-[100px] w-[100px] border-2 border-white/10 absolute right-[5%] -bottom-[30px] rotate-45" role="presentation"></div>
           <h2 className="font-bold text-3xl text-white">Basic Plan</h2>
           <div className="my-6">
             <Button className="text-white hover:text-white text-xs border border-white/20 hover:border-white/50">Upgrade</Button>
           </div>
           <div className="my-6">
-            <div className="h-[1px] bg-gradient-to-r from-neutral-200/30 to-neutral-200/10" />
+            <div className="h-[1px] bg-linear-to-r from-neutral-200/30 to-neutral-200/10" />
           </div>
         </section>
       </section>
       <section className="mt-16 mb-24 mx-2 md:mx-8">
-        <h2 className="inline-block font-bold text-3xl bg-clip-text text-transparent bg-gradient-to-r from-amber-800 to-orange-600 px-6">Discover</h2>
+        <h2 className="inline-block font-bold text-3xl bg-clip-text text-transparent bg-linear-to-r from-amber-800 to-orange-600 px-6">Discover</h2>
         <motion.div
           variants={{
             hidden: { opacity: 0 },

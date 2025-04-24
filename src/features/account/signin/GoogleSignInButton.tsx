@@ -84,7 +84,7 @@ export function GoogleSignInButton(): ReactElement {
   return (
     <button
       type="button"
-      className="inline-flex items-center justify-center w-full h-12 gap-3 px-5 py-3 font-semibold text-neutral-600 border border-neutral-200 rounded-xl hover:bg-gray-200/50 outline-none focus:ring-2 ring-primary ring-offset-1 duration-150"
+      className="inline-flex items-center justify-center w-full h-12 gap-3 px-5 py-3 font-semibold text-neutral-600 border border-neutral-200 rounded-xl hover:bg-gray-200/50 outline-hidden focus:ring-2 ring-primary ring-offset-1 duration-150"
       aria-label="Continue with Google"
       onClick={handleClick}
     >

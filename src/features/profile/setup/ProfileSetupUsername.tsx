@@ -346,7 +346,7 @@ export default function ProfileSetupUsername() {
               <IMaskInput
                 inputRef={setUsernameInputRef}
                 mask={/^[a-zA-Z0-9_]*$/}
-                className="block w-full h-12 px-4 py-2 text-neutral-700 text-center rounded-lg appearance-none bg-neutral-200 placeholder-neutral-400 outline-none focus:ring-1 focus:ring-neutral-400 ring-offset-0 sm:text-sm transition duration-150"
+                className="block w-full h-12 px-4 py-2 text-neutral-700 text-center rounded-lg appearance-none bg-neutral-200 placeholder-neutral-400 outline-hidden focus:ring-1 focus:ring-neutral-400 ring-offset-0 sm:text-sm transition duration-150"
                 maxLength={32}
                 prepareChar={str => str.trim().toLowerCase()}
                 onAccept={(value) => {

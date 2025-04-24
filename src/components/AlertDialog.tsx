@@ -81,7 +81,7 @@ const AlertDialog = forwardRef<AlertDialogRef, AlertDialogProps>(({ icon, defaul
                   </div>
                 </Dialog.Description>
                 <div className="mt-4">
-                  <Dialog.Close className="bg-neutral-400/40 hover:bg-neutral-400/60 text-neutral-700 text-sm font-semibold px-4 py-2 outline-none focus:ring-2 ring-neutral-500/70 rounded-lg">
+                  <Dialog.Close className="bg-neutral-400/40 hover:bg-neutral-400/60 text-neutral-700 text-sm font-semibold px-4 py-2 outline-hidden focus:ring-2 ring-neutral-500/70 rounded-lg">
                     Close
                   </Dialog.Close>
                 </div>

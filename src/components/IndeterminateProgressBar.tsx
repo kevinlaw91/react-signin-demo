@@ -1,10 +1,9 @@
 import { twMerge } from 'tailwind-merge';
-import twConfig from '@/utils/twConfig.ts';
 import styles from '@/components/IndeterminateProgressBar.module.css';
 
 export function IndeterminateProgressBar({
   className,
-  progressValueColor = twConfig.theme.colors.primary.DEFAULT,
+  progressValueColor = 'var(--color-primary)',
   progressBarColor = '#eee',
 }: {
   className?: string;

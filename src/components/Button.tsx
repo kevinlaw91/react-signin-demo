@@ -117,4 +117,4 @@ function createCustomButton(name: string, variantClasses: string) {
 }
 
 export const ButtonPrimary = createCustomButton('ButtonPrimary', 'bg-primary hover:bg-primary-500 outline-offset-1 outline-primary text-white');
-export const ButtonOutline = createCustomButton('ButtonOutline', 'border-2 border-current focus:outline-neutral-500 focus:outline-1 focus:border-neutral-500');
+export const ButtonOutline = createCustomButton('ButtonOutline', 'border-2 border-current focus:outline-neutral-500 focus:outline focus:border-neutral-500');

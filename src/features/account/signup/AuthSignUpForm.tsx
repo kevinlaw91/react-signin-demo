@@ -200,7 +200,7 @@ export function AuthSignUpForm(props: {
             type="email"
             maxLength={254}
             placeholder="Your email"
-            className="block w-full h-12 px-4 py-2 text-neutral-700 rounded-lg appearance-none bg-neutral-200 placeholder-neutral-400 outline-none focus:ring-1 focus:ring-neutral-400 ring-offset-0 text-sm transition duration-150"
+            className="block w-full h-12 px-4 py-2 text-neutral-700 rounded-lg appearance-none bg-neutral-200 placeholder-neutral-400 outline-hidden focus:ring-1 focus:ring-neutral-400 ring-offset-0 text-sm transition duration-150"
             {...register('email', { setValueAs: (value: string) => value.trim() })}
           />
           {errors?.email && (
@@ -259,7 +259,7 @@ export function AuthSignUpForm(props: {
           </FloatingPortal>
           <div className="relative flex items-center">
             <input
-              className="block w-full h-12 px-4 py-2 pr-12 text-neutral-700 rounded-lg appearance-none bg-chalk bg-neutral-200 placeholder-neutral-400 outline-none focus:ring-1 focus:ring-neutral-400 ring-offset-0 text-sm transition duration-150"
+              className="block w-full h-12 px-4 py-2 pr-12 text-neutral-700 rounded-lg appearance-none bg-chalk bg-neutral-200 placeholder-neutral-400 outline-hidden focus:ring-1 focus:ring-neutral-400 ring-offset-0 text-sm transition duration-150"
               placeholder="At least 8 characters"
               id="password"
               maxLength={255}
@@ -268,7 +268,7 @@ export function AuthSignUpForm(props: {
             />
             <button
               type="button"
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 rounded-lg outline-none focus:ring-1 ring-neutral-400"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 rounded-lg outline-hidden focus:ring-1 ring-neutral-400"
               onClick={togglePasswordVisibility}
               title={isPasswordVisible ? 'Hide password' : 'Show password'}
               aria-label={isPasswordVisible ? 'Hide password' : 'Show password'}
@@ -284,9 +284,9 @@ export function AuthSignUpForm(props: {
         <div className="text-xs text-neutral-600 text-center py-1">
           <span>By clicking &quot;Create Account&quot; you agree to our </span>
           <div>
-            <Link to="/terms" className="px-1 py-0.5 text-primary hover:underline outline-none focus:ring-1 focus:ring-primary focus:bg-neutral-100 ring-offset-0 rounded">Terms of Service</Link>
+            <Link to="/terms" className="px-1 py-0.5 text-primary hover:underline outline-hidden focus:ring-1 focus:ring-primary focus:bg-neutral-100 ring-offset-0 rounded-sm">Terms of Service</Link>
             <span> and </span>
-            <Link to="/privacy" className="px-0.5 py-0.5 text-primary hover:underline outline-none focus:ring-1 focus:ring-primary focus:bg-neutral-100 ring-offset-0 rounded">Privacy Policy</Link>
+            <Link to="/privacy" className="px-0.5 py-0.5 text-primary hover:underline outline-hidden focus:ring-1 focus:ring-primary focus:bg-neutral-100 ring-offset-0 rounded-sm">Privacy Policy</Link>
           </div>
         </div>
         <div ref={shakeRef} className="col-span-full">
