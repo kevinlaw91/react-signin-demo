@@ -71,7 +71,7 @@ export function SidebarMenu() {
   const handleSignOut = useCallback((evt: SyntheticEvent) => {
     sessionStorage.removeItem('user:1234:username');
     clearSession();
-    navigate('/', { replace: true });
+    void navigate('/', { replace: true });
     evt.preventDefault();
     return;
   }, [clearSession, navigate]);

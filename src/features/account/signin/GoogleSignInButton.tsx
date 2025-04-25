@@ -64,11 +64,11 @@ export function GoogleSignInButton(): ReactElement {
       // Change app's state to signed in
       updateSessionUser({ id: match.id, username: email.split('@')[0] });
       // Redirect to home page
-      navigate('/', { replace: true });
+      void navigate('/', { replace: true });
     } else {
       // Not a registered user or profile not complete
       // Redirect to setup
-      navigate('/setup', { replace: true });
+      void navigate('/setup', { replace: true });
     }
     return;
   }, [navigate, updateSessionUser]);

@@ -9,7 +9,7 @@ export function Component() {
       window.history.back();
     } else {
       // Go to home page if back is not available
-      navigate('/');
+      void navigate('/');
     }
   };
 

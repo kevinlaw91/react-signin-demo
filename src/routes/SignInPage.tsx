@@ -17,7 +17,7 @@ export function Component() {
   useEffect(() => {
     // If already signed in, skip sign in screen and redirect to home
     if (user) {
-      navigate('/', { replace: true });
+      void navigate('/', { replace: true });
     }
   }, [user, navigate]);
 
@@ -36,7 +36,7 @@ export function Component() {
     });
     sessionStorage.setItem('user:1234:username', user.username ?? user.id ?? 'User');
     // Go to home page
-    navigate('/', { replace: true });
+    void navigate('/', { replace: true });
   }, [showSigningInScreen, updateSessionUser, navigate]);
 
   const onFormSignInError = useCallback((err?: string) => {

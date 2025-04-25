@@ -11,7 +11,7 @@ import { InProgressScreen } from '@/features/account/InProgressScreen';
 
 export function Component() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { user, updateSessionUser } = useContext(SessionContext);
   const [apiRequestPending, setApiRequestPending] = useState(false);
   const dialog = useDialogManager();
@@ -19,7 +19,7 @@ export function Component() {
   useEffect(() => {
     // If already signed in, redirect to home
     if (user && searchParams.get('complete') !== 'true') {
-      navigate('/', { replace: true });
+      void navigate('/', { replace: true });
     }
   }, [user, navigate, searchParams]);
 
@@ -37,8 +37,11 @@ export function Component() {
     sessionStorage.removeItem('user:1234:username');
 
     // Show success screen
-    navigate(`.?complete=true`, { replace: true });
-  }, [showSigningUpScreen, updateSessionUser, navigate]);
+    setSearchParams((params) => {
+      params.set('complete', 'true');
+      return params;
+    });
+  }, [showSigningUpScreen, updateSessionUser, setSearchParams]);
 
   const onFormSignUpError = useCallback((err?: string) => {
     showSigningUpScreen(false);

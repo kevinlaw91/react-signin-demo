@@ -120,7 +120,7 @@ export function Component() {
 
   useEffect(() => {
     // Redirect to sign in form if not signed in
-    if (!user) navigate('/signin', { replace: true });
+    if (!user) void navigate('/signin', { replace: true });
   }, [navigate, user]);
 
   return (
