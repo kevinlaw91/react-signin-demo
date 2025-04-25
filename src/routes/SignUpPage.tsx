@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 import { Helmet } from 'react-helmet-async';
 import { AuthSignUpForm } from '@/features/account/signup/AuthSignUpForm';
 import { SessionContext, SessionUserMetadata } from '@/contexts/SessionContext';

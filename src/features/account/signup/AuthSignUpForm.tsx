@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
 import { type SubmitErrorHandler, type SubmitHandler, useForm } from 'react-hook-form';
 import { arrow, autoUpdate, flip, FloatingArrow, FloatingPortal, offset, shift, useDismiss, useFloating, useFocus, useHover, useInteractions, useRole } from '@floating-ui/react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import fetchMock from 'fetch-mock';
 import { z } from 'zod';
 import { Icon } from '@iconify-icon/react';

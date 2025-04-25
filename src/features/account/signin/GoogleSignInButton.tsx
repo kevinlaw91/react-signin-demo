@@ -1,7 +1,7 @@
 import { ReactElement, useCallback, useContext } from 'react';
 import { decodeJwt } from 'jose';
 import { SessionContext } from '@/contexts/SessionContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 // Improvement: Implement custom button using GSI
 // Google disallow using custom button to trigger GSI

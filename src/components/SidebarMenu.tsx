@@ -1,6 +1,6 @@
 import { SyntheticEvent, MouseEventHandler, useCallback, useContext } from 'react';
 import { SessionContext } from '@/contexts/SessionContext.tsx';
-import { Link, type LinkProps, useNavigate } from 'react-router-dom';
+import { Link, type LinkProps, useNavigate } from 'react-router';
 import { Icon, IconifyIconProperties } from '@iconify-icon/react';
 import { twMerge } from 'tailwind-merge';
 

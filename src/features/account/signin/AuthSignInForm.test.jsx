@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { AuthSignInForm } from '@/features/account/signin/AuthSignInForm';
 import * as Auth from '@/services/auth.ts';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 
 describe('AuthSignInForm', () => {
   let apiCall;

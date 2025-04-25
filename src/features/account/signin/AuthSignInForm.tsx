@@ -8,7 +8,7 @@ import { SessionUserMetadata } from '@/contexts/SessionContext';
 import { FormErrorMessage } from '@/features/account/FormErrorMessage';
 import { ButtonPrimary } from '@/components/Button.tsx';
 import { Checkbox, FormControlLabel } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import useShakeAnimation from '@/hooks/useShakeAnimation';
 import { Icon } from '@iconify-icon/react';
 

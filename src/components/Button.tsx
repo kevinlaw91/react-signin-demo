@@ -2,7 +2,7 @@ import { ButtonHTMLAttributes, ComponentPropsWithRef, ForwardedRef, forwardRef, 
 import { twMerge } from 'tailwind-merge';
 import { LoaderPulsingDotsLinear } from '@/components/loaders/LoaderPulsingDots.tsx';
 import { Icon } from '@iconify-icon/react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 interface IconButtonProps {
   // Icon rendered on the left side

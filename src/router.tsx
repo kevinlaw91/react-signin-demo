@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router';
 
 // Show nothing during hydration
 const hydrateFallbackComponent = () => null;
@@ -32,14 +32,6 @@ const router = createBrowserRouter(
       HydrateFallback: hydrateFallbackComponent,
     },
   ],
-  {
-    future: {
-      v7_relativeSplatPath: true,
-      v7_fetcherPersist: true,
-      v7_normalizeFormMethod: true,
-      v7_partialHydration: true,
-    },
-  },
 );
 
 export default router;
