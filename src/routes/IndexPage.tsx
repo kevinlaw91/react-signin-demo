@@ -123,6 +123,8 @@ export function Component() {
     if (!user) void navigate('/signin', { replace: true });
   }, [navigate, user]);
 
+  if (!user) return null;
+
   return (
     <>
       <Helmet>

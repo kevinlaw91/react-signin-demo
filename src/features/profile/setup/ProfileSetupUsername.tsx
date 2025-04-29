@@ -403,8 +403,8 @@ export default function ProfileSetupUsername() {
           </form>
         </div>
       </section>
-      <AlertDialog ref={ref => dialog.register('VALIDATION_ERROR', ref)} />
-      <AlertDialog ref={ref => dialog.register('API_RESPONSE_ERROR', ref)} defaultMessage="An error occurred. Please try again later" />
+      <AlertDialog ref={(ref) => { dialog.register('VALIDATION_ERROR', ref); }} />
+      <AlertDialog ref={(ref) => { dialog.register('API_RESPONSE_ERROR', ref); }} defaultMessage="An error occurred. Please try again later" />
     </>
   );
 }

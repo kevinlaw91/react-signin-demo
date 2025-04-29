@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode, useImperativeHandle, useMemo, useState } from 'react';
+import { ReactNode, RefCallback, useImperativeHandle, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Icon } from '@iconify-icon/react';
@@ -6,6 +6,7 @@ import { Icon } from '@iconify-icon/react';
 interface AlertDialogProps {
   icon?: ReactNode;
   defaultMessage?: string;
+  ref: RefCallback<AlertDialogRef>;
 }
 
 export interface AlertDialogRef {
@@ -20,7 +21,7 @@ const defaultIcon = (
   />
 );
 
-const AlertDialog = forwardRef<AlertDialogRef, AlertDialogProps>(({ icon, defaultMessage }: AlertDialogProps, ref) => {
+const AlertDialog = ({ icon, defaultMessage, ref }: AlertDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState(defaultMessage);
 
@@ -92,7 +93,7 @@ const AlertDialog = forwardRef<AlertDialogRef, AlertDialogProps>(({ icon, defaul
       </AnimatePresence>
     </Dialog.Root>
   );
-});
+};
 
 AlertDialog.displayName = 'Alert';
 

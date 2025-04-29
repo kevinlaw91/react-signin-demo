@@ -5,23 +5,23 @@ export type SessionUserMetadata = {
   username: string;
   avatarSrc: string;
   // BELOW ARE DEMO ONLY - DO NOT USE
-  _avatarBlob: Blob;
+  _avatarBlob: Blob | null;
 };
 
 interface ISessionContext {
-  user?: Partial<SessionUserMetadata>;
+  user: Partial<SessionUserMetadata> | null;
   updateSessionUser: (metadata: Partial<SessionUserMetadata>) => void;
   clearSession: () => void;
 }
 
 const SessionContext = createContext<ISessionContext>({
-  user: undefined,
+  user: null,
   updateSessionUser: () => {},
   clearSession: () => {},
 });
 
 const UserSessionProvider = ({ children }: { children: ReactNode }) => {
-  const rememberedSession = useRef<Partial<SessionUserMetadata> | undefined>();
+  const rememberedSession = useRef<Partial<SessionUserMetadata>>(null);
   const storedUsername = sessionStorage.getItem('user:1234:username');
 
   if (storedUsername && storedUsername?.trim() !== '') {
@@ -31,7 +31,7 @@ const UserSessionProvider = ({ children }: { children: ReactNode }) => {
     };
   }
 
-  const [sessionUserMetadata, setSessionUserMetadata] = useState<Partial<SessionUserMetadata> | undefined>(rememberedSession.current);
+  const [sessionUserMetadata, setSessionUserMetadata] = useState<Partial<SessionUserMetadata> | null>(rememberedSession.current);
 
   const updateSessionUser = useCallback((metadata: Partial<SessionUserMetadata>) => {
     setSessionUserMetadata(currentUserMetadata => ({
@@ -41,7 +41,7 @@ const UserSessionProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const clearSession = useCallback(() => {
-    setSessionUserMetadata(undefined);
+    setSessionUserMetadata(null);
   }, []);
 
   return (

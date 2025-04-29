@@ -24,7 +24,12 @@ function ProfilePictureEditor({ src, onApply, onCancel }: {
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [rotation, setRotation] = useState(0);
   const [zoom, setZoom] = useState(1);
-  const avatarCropParam = useRef<CropParams>();
+  const avatarCropParam = useRef<CropParams>({
+    width: 0,
+    height: 0,
+    x: 0,
+    y: 0,
+  });
 
   const onCropComplete = (_newCroppedArea: Area, newCroppedAreaPixels: Area) => {
     avatarCropParam.current = {
@@ -193,7 +198,7 @@ export default function ProfileSetupProfilePicture() {
   const [isLoading, setIsLoading] = useState(false);
   const [imageFileSrc, setImageFileSrc] = useState<string>();
   const [isCropEditorVisible, setIsCropEditorVisible] = useState<boolean>(false);
-  const croppedImage = useRef<Blob>();
+  const croppedImage = useRef<Blob>(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string>();
 
   const dialog = useDialogManager();
@@ -371,7 +376,7 @@ export default function ProfileSetupProfilePicture() {
           </section>
         )
       }
-      <AlertDialog ref={ref => dialog.register('EDITOR_ERROR', ref)} />
+      <AlertDialog ref={(ref) => { dialog.register('EDITOR_ERROR', ref); }} />
     </>
   );
 }

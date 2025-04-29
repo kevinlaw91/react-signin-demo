@@ -12,7 +12,7 @@ export function useDialogManager() {
    * @example
    * const dialog = useDialogManager();
    *
-   * <Dialog ref={ref => dialog.register('DIALOG_ID', ref)} />
+   * <Dialog ref={ref => { dialog.register('DIALOG_ID', ref); }} />
    */
   const register = (id: string, dialog: AlertDialogRef | null) => {
     if (dialog) {

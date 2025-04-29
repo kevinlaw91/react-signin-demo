@@ -88,7 +88,7 @@ export function Component() {
         </div>
         <div className="row-span-full col-span-full bg-[url('/assets/images/pawel-czerwinski-Zd315A95aqg-unsplash.webp')] bg-cover bg-center bg-no-repeat"></div>
       </div>
-      <AlertDialog ref={ref => dialog.register('API_RESPONSE_ERROR', ref)} defaultMessage="An error occurred during sign in" />
+      <AlertDialog ref={(ref) => { dialog.register('API_RESPONSE_ERROR', ref); }} defaultMessage="An error occurred during sign in" />
       <InProgressScreen isOpen={apiRequestPending} title="Signing In" />
     </>
   );

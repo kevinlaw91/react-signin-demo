@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, ComponentPropsWithRef, ForwardedRef, forwardRef, ReactNode } from 'react';
+import { ComponentPropsWithRef, ReactNode, Ref } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { LoaderPulsingDotsLinear } from '@/components/loaders/LoaderPulsingDots.tsx';
 import { Icon } from '@iconify-icon/react';
@@ -16,12 +16,13 @@ interface IconButtonProps {
   iconCentered?: boolean;
 }
 
-interface ButtonProps extends IconButtonProps, ButtonHTMLAttributes<HTMLButtonElement> {}
+interface ButtonProps extends IconButtonProps, ComponentPropsWithRef<'button'> {}
 
 interface LinkButtonProps extends IconButtonProps, ComponentPropsWithRef<typeof Link> {}
 
-export const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, ButtonProps | LinkButtonProps>((props: ButtonProps | LinkButtonProps, ref) => {
+export const Button = (props: ButtonProps | LinkButtonProps) => {
   const {
+    ref,
     children,
     className,
     leftIcon,
@@ -61,7 +62,7 @@ export const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, ButtonPr
   if ('to' in remainingProps) {
     return (
       <Link
-        ref={ref as ForwardedRef<HTMLAnchorElement>}
+        ref={props.ref as Ref<HTMLAnchorElement>}
         className={mergedClassName}
         {...remainingProps}
       >
@@ -71,7 +72,7 @@ export const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, ButtonPr
   } else {
     return (
       <button
-        ref={ref as ForwardedRef<HTMLButtonElement>}
+        ref={ref as Ref<HTMLButtonElement>}
         className={mergedClassName}
         {...remainingProps}
       >
@@ -79,7 +80,8 @@ export const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, ButtonPr
       </button>
     );
   }
-});
+};
+
 Button.displayName = 'Button';
 
 export function ButtonBusy({ className, ...otherProps }: ButtonProps | LinkButtonProps) {
@@ -99,18 +101,31 @@ export function ButtonBusy({ className, ...otherProps }: ButtonProps | LinkButto
  * @param variantClasses Classes to inject to the custom button
  */
 function createCustomButton(name: string, variantClasses: string) {
-  const btn = forwardRef((props: ButtonProps | LinkButtonProps, ref: ForwardedRef<HTMLButtonElement | HTMLAnchorElement>) => {
-    const { children, className, ...otherProps } = props;
-    return (
-      <Button
-        ref={ref}
-        className={twMerge(variantClasses, className)}
-        {...otherProps}
-      >
-        {children}
-      </Button>
-    );
-  });
+  const btn = (props: ButtonProps | LinkButtonProps) => {
+    const { ref, children, className, ...otherProps } = props;
+
+    if ('to' in otherProps) {
+      return (
+        <Button
+          ref={ref as Ref<HTMLAnchorElement>}
+          className={twMerge(variantClasses, className)}
+          {...otherProps}
+        >
+          {children}
+        </Button>
+      );
+    } else {
+      return (
+        <Button
+          ref={ref as Ref<HTMLButtonElement>}
+          className={twMerge(variantClasses, className)}
+          {...otherProps}
+        >
+          {children}
+        </Button>
+      );
+    }
+  };
 
   btn.displayName = name;
   return btn;
