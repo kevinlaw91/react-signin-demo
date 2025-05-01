@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { twMerge } from 'tailwind-merge';
 import fetchMock from 'fetch-mock';
-import { ChangeEvent, useCallback, useContext, useRef, useState } from 'react';
+import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import Cropper, { Area, Point } from 'react-easy-crop';
 import { Icon } from '@iconify-icon/react';
 import { Button, ButtonOutline, ButtonPrimary } from '@/components/Button.tsx';
@@ -14,6 +14,7 @@ import { useDialogManager } from '@/hooks/useDialogManager';
 import { SessionContext } from '@/contexts/SessionContext';
 import { useSwiper } from 'swiper/react';
 import { IndeterminateProgressBar } from '@/components/IndeterminateProgressBar.tsx';
+import { INDEXEDDB_DBNAME, INDEXEDDB_VERSION } from '@/config.ts';
 
 function ProfilePictureEditor({ src, onApply, onCancel }: {
   // Image source url
@@ -192,14 +193,66 @@ export function ProfileSetupProfilePictureForm(props: {
   );
 }
 
+const handleDbUpgradeNeeded = (event: IDBVersionChangeEvent) => {
+  const db = (event.target as IDBOpenDBRequest).result;
+  db.createObjectStore('blobs');
+};
+
 export default function ProfileSetupProfilePicture() {
+  // Avatar preview
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string>();
+  const croppedImage = useRef<Blob>(null);
+  const updatePreview = useCallback((blob: Blob) => {
+    croppedImage.current = blob;
+
+    // Generate object url for newly cropped image
+    if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
+    setImagePreviewUrl(URL.createObjectURL(blob));
+  }, [imagePreviewUrl]);
+
+  // IndexedDB handle
+  const dbRef = useRef<IDBDatabase>(null);
+
+  const handleDbConnectSuccess = useCallback((event: Event) => {
+    const db = (event.target as IDBOpenDBRequest).result;
+    dbRef.current = db;
+    const transaction = db.transaction('blobs', 'readonly');
+    const store = transaction.objectStore('blobs');
+    const req = store.get('avatar');
+    req.onsuccess = (_event) => {
+      const blob = req.result as Blob;
+      // If avatar was saved previously, load it to preview
+      if (blob) updatePreview(blob);
+    };
+  }, [updatePreview]);
+
+  useEffect(() => {
+    // Check IndexedDB support
+    if (!indexedDB) return;
+
+    // Do not connect again
+    if (dbRef.current) return;
+
+    const dbHandle = indexedDB.open(INDEXEDDB_DBNAME, INDEXEDDB_VERSION);
+    dbHandle.onupgradeneeded = handleDbUpgradeNeeded;
+    dbHandle.onsuccess = handleDbConnectSuccess;
+  }, [handleDbConnectSuccess]);
+
+  useEffect(() => {
+    // Disconnect IndexedDB on unmount
+    return () => {
+      if (dbRef.current) {
+        dbRef.current.close();
+      }
+    };
+  }, []);
+
+  // Swiper handle
   const swiper = useSwiper();
 
   const [isLoading, setIsLoading] = useState(false);
   const [imageFileSrc, setImageFileSrc] = useState<string>();
   const [isCropEditorVisible, setIsCropEditorVisible] = useState<boolean>(false);
-  const croppedImage = useRef<Blob>(null);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState<string>();
 
   const dialog = useDialogManager();
 
@@ -236,18 +289,24 @@ export default function ProfileSetupProfilePicture() {
   const handleFileDropAccepted = (files: FileList | File[], _dropEvt: DropEvent) => handleFileSelect(files);
 
   const handleCropConfirm = useCallback((blob: Blob) => {
-    croppedImage.current = blob;
-
-    // Generate object url for newly cropped image
-    if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
-    setImagePreviewUrl(URL.createObjectURL(blob));
+    // Update avatar preview
+    updatePreview(blob);
 
     // Hide cropper
     hideCropper();
-    return;
-  }, [hideCropper, imagePreviewUrl]);
+  }, [hideCropper, updatePreview]);
 
-  const goToNextStep = useCallback(() => swiper.slideNext(), [swiper]);
+  const goToNextStep = useCallback(() => {
+    // Save into IndexedDB if available
+    if (dbRef.current) {
+      const transaction = dbRef.current.transaction('blobs', 'readwrite');
+      const store = transaction.objectStore('blobs');
+      store.put(croppedImage.current, 'avatar');
+    }
+
+    // Move to next step
+    swiper.slideNext();
+  }, [swiper]);
 
   const handleSubmitResponse = useCallback(() => {
     setIsLoading(true);
@@ -281,22 +340,22 @@ export default function ProfileSetupProfilePicture() {
       image: croppedImage.current,
     })
       .then((res) => {
-        if (res.success) {
-          // Update avatar in session
-          updateSessionUser({
-            // Store blob in context only for demo purpose.
-            // Not used in real life as file is loaded from cdn
-            _avatarBlob: croppedImage.current,
-            // Should be res.data.src in real life
-            // For demo purpose we re-use the generated data url instead
-            avatarSrc: imagePreviewUrl!,
-          });
-
-          // Proceed to next step
-          goToNextStep();
-        } else {
+        if (!res.success) {
           throw new Error('Failed to update profile picture');
         }
+
+        // Update avatar in session
+        updateSessionUser({
+          // Store avatar blob in memory for demo
+          // In real life implementation image is loaded from cdn
+          _avatarBlob: croppedImage.current,
+          // Should be res.data.src in real life
+          // For demo purpose we re-use the generated data url instead
+          avatarSrc: imagePreviewUrl!,
+        });
+
+        // Proceed to next step
+        goToNextStep();
         return;
       })
       .catch((_err: Error) => {
