@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Helmet } from 'react-helmet-async';
 import { SessionContext } from '@/contexts/SessionContext';
@@ -7,14 +7,44 @@ import { Drawer, IconButton } from '@mui/material';
 import { Icon } from '@iconify-icon/react';
 import { SidebarMenu } from '@/components/SidebarMenu';
 import { motion } from 'framer-motion';
+import { INDEXEDDB_DBNAME, INDEXEDDB_VERSION } from '@/config.ts';
 
 function UserWelcomeScreen() {
-  const { user } = useContext(SessionContext);
+  const { user, updateSessionUser } = useContext(SessionContext);
   const [open, setOpen] = useState(false);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
   };
+
+  const handleDbConnectSuccess = useCallback((event: Event) => {
+    const db = (event.target as IDBOpenDBRequest).result;
+    const transaction = db.transaction('blobs', 'readonly');
+    const store = transaction.objectStore('blobs');
+    const req = store.get('avatar');
+    req.onsuccess = (_event) => {
+      const blob = req.result as Blob;
+      // If avatar was saved previously, load it to preview
+      if (blob) {
+        // Generate object url for loaded image blob
+        // Update avatar in session
+        updateSessionUser({
+          _avatarBlob: blob,
+          avatarSrc: URL.createObjectURL(blob),
+        });
+      }
+    };
+  }, [updateSessionUser]);
+
+  useEffect(() => {
+    // Load saved avatar from IndexedDB
+    if (!user?.avatarSrc) {
+      // Check IndexedDB support
+      if (!indexedDB) return;
+      const dbHandle = indexedDB.open(INDEXEDDB_DBNAME, INDEXEDDB_VERSION);
+      dbHandle.onsuccess = handleDbConnectSuccess;
+    }
+  }, [handleDbConnectSuccess, user?.avatarSrc]);
 
   if (!user) return null;
 
