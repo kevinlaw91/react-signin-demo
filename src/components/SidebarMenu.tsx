@@ -3,6 +3,7 @@ import { SessionContext } from '@/contexts/SessionContext.tsx';
 import { Link, type LinkProps, useNavigate } from 'react-router';
 import { Icon, IconifyIconProperties } from '@iconify-icon/react';
 import { twMerge } from 'tailwind-merge';
+import { INDEXEDDB_DBNAME, INDEXEDDB_VERSION } from '@/config.ts';
 
 function SidebarMenuProfileCard() {
   const { user } = useContext(SessionContext);
@@ -68,13 +69,29 @@ export function SidebarMenu() {
   const { clearSession } = useContext(SessionContext);
   const navigate = useNavigate();
 
+  const handleDbConnectSuccess = useCallback((event: Event) => {
+    const db = (event.target as IDBOpenDBRequest).result;
+    const transaction = db.transaction('blobs', 'readwrite');
+    const store = transaction.objectStore('blobs');
+    store.delete('avatar');
+  }, []);
+
   const handleSignOut = useCallback((evt: SyntheticEvent) => {
+    // Remove saved browser session
     sessionStorage.removeItem('user:1234:username');
+
+    // Remove saved avatar
+    if (indexedDB) {
+      const dbHandle = indexedDB.open(INDEXEDDB_DBNAME, INDEXEDDB_VERSION);
+      dbHandle.onsuccess = handleDbConnectSuccess;
+    }
+
+    // Clear app in memory session
     clearSession();
     void navigate('/', { replace: true });
     evt.preventDefault();
     return;
-  }, [clearSession, navigate]);
+  }, [clearSession, handleDbConnectSuccess, navigate]);
 
   return (
     <div className="h-full w-[70svw] min-w-[200px] max-w-[350px]">
