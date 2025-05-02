@@ -8,6 +8,8 @@ import { useDialogManager } from '@/hooks/useDialogManager';
 import { GoogleSignInButton } from '@/features/account/signin/GoogleSignInButton';
 import { SignUpSuccess } from '@/features/account/signup/SignUpSuccess';
 import { InProgressScreen } from '@/features/account/InProgressScreen';
+import { INDEXEDDB_DBNAME, INDEXEDDB_VERSION } from '@/config.ts';
+import { clearSavedAvatar } from '@/features/profile/avatar.ts';
 
 export function Component() {
   const navigate = useNavigate();
@@ -35,6 +37,12 @@ export function Component() {
     // Change app's state to signed in
     updateSessionUser({ id: user.id });
     sessionStorage.removeItem('user:1234:username');
+
+    // Clear saved avatar
+    if (indexedDB) {
+      const dbHandle = indexedDB.open(INDEXEDDB_DBNAME, INDEXEDDB_VERSION);
+      dbHandle.onsuccess = clearSavedAvatar;
+    }
 
     // Show success screen
     setSearchParams((params) => {
