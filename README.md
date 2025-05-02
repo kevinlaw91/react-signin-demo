@@ -33,6 +33,17 @@ To run the app, follow these simple steps:
 
 1. Open your web browser and navigate to `http://localhost:3000`
 
+## Build
+
+To build the app, run the following command:
+
+* `pnpm run build`
+
+Then to preview the bundle:
+NOTE: Preview purpose only, do not use this in production server!
+
+* `pnpm run preview`
+
 ## Testing
 
 To run the tests, use the following command:
