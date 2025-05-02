@@ -1,7 +1,9 @@
 {
   "name": "react-signin-demo",
+  "version": "1.1.0",
   "private": true,
-  "version": "1.0.0",
+  "license": "MIT",
+  "repository": "github:kevinlaw91/react-signin-demo",
   "type": "module",
   "engines": {
     "node": ">=22.0.0"
