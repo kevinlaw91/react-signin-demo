@@ -7,7 +7,7 @@ import { Drawer, IconButton } from '@mui/material';
 import { Icon } from '@iconify-icon/react';
 import { SidebarMenu } from '@/components/SidebarMenu';
 import { motion } from 'framer-motion';
-import { INDEXEDDB_DBNAME, INDEXEDDB_VERSION } from '@/config.ts';
+import { handleDbUpgrade, INDEXEDDB_DBNAME, INDEXEDDB_VERSION } from '@/services/indexeddb.ts';
 
 function UserWelcomeScreen() {
   const { user, updateSessionUser } = useContext(SessionContext);
@@ -17,7 +17,7 @@ function UserWelcomeScreen() {
     setOpen(newOpen);
   };
 
-  const handleDbConnectSuccess = useCallback((event: Event) => {
+  const loadAvatar = useCallback((event: Event) => {
     const db = (event.target as IDBOpenDBRequest).result;
     const transaction = db.transaction('blobs', 'readonly');
     const store = transaction.objectStore('blobs');
@@ -42,9 +42,10 @@ function UserWelcomeScreen() {
       // Check IndexedDB support
       if (!indexedDB) return;
       const dbHandle = indexedDB.open(INDEXEDDB_DBNAME, INDEXEDDB_VERSION);
-      dbHandle.onsuccess = handleDbConnectSuccess;
+      dbHandle.onupgradeneeded = handleDbUpgrade;
+      dbHandle.onsuccess = loadAvatar;
     }
-  }, [handleDbConnectSuccess, user?.avatarSrc]);
+  }, [loadAvatar, user?.avatarSrc]);
 
   if (!user) return null;
 

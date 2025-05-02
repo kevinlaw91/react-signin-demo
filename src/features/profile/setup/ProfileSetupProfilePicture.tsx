@@ -14,7 +14,7 @@ import { useDialogManager } from '@/hooks/useDialogManager';
 import { SessionContext } from '@/contexts/SessionContext';
 import { useSwiper } from 'swiper/react';
 import { IndeterminateProgressBar } from '@/components/IndeterminateProgressBar.tsx';
-import { INDEXEDDB_DBNAME, INDEXEDDB_VERSION } from '@/config.ts';
+import { handleDbUpgrade, INDEXEDDB_DBNAME, INDEXEDDB_VERSION } from '@/services/indexeddb.ts';
 
 function ProfilePictureEditor({ src, onApply, onCancel }: {
   // Image source url
@@ -193,11 +193,6 @@ export function ProfileSetupProfilePictureForm(props: {
   );
 }
 
-const handleDbUpgradeNeeded = (event: IDBVersionChangeEvent) => {
-  const db = (event.target as IDBOpenDBRequest).result;
-  db.createObjectStore('blobs');
-};
-
 export default function ProfileSetupProfilePicture() {
   // Avatar preview
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string>();
@@ -213,7 +208,7 @@ export default function ProfileSetupProfilePicture() {
   // IndexedDB handle
   const dbRef = useRef<IDBDatabase>(null);
 
-  const handleDbConnectSuccess = useCallback((event: Event) => {
+  const loadAvatar = useCallback((event: Event) => {
     const db = (event.target as IDBOpenDBRequest).result;
     dbRef.current = db;
     const transaction = db.transaction('blobs', 'readonly');
@@ -234,9 +229,9 @@ export default function ProfileSetupProfilePicture() {
     if (dbRef.current) return;
 
     const dbHandle = indexedDB.open(INDEXEDDB_DBNAME, INDEXEDDB_VERSION);
-    dbHandle.onupgradeneeded = handleDbUpgradeNeeded;
-    dbHandle.onsuccess = handleDbConnectSuccess;
-  }, [handleDbConnectSuccess]);
+    dbHandle.onupgradeneeded = handleDbUpgrade;
+    dbHandle.onsuccess = loadAvatar;
+  }, [loadAvatar]);
 
   useEffect(() => {
     // Disconnect IndexedDB on unmount

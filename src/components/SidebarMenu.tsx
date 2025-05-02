@@ -3,8 +3,8 @@ import { SessionContext } from '@/contexts/SessionContext.tsx';
 import { Link, type LinkProps, useNavigate } from 'react-router';
 import { Icon, IconifyIconProperties } from '@iconify-icon/react';
 import { twMerge } from 'tailwind-merge';
-import { INDEXEDDB_DBNAME, INDEXEDDB_VERSION } from '@/config.ts';
 import { clearSavedAvatar } from '@/features/profile/avatar.ts';
+import { INDEXEDDB_DBNAME, INDEXEDDB_VERSION } from '@/services/indexeddb.ts';
 
 function SidebarMenuProfileCard() {
   const { user } = useContext(SessionContext);

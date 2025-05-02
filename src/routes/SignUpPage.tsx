@@ -8,8 +8,8 @@ import { useDialogManager } from '@/hooks/useDialogManager';
 import { GoogleSignInButton } from '@/features/account/signin/GoogleSignInButton';
 import { SignUpSuccess } from '@/features/account/signup/SignUpSuccess';
 import { InProgressScreen } from '@/features/account/InProgressScreen';
-import { INDEXEDDB_DBNAME, INDEXEDDB_VERSION } from '@/config.ts';
 import { clearSavedAvatar } from '@/features/profile/avatar.ts';
+import { INDEXEDDB_DBNAME, INDEXEDDB_VERSION } from '@/services/indexeddb.ts';
 
 export function Component() {
   const navigate = useNavigate();
