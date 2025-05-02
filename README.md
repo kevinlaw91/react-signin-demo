@@ -5,14 +5,14 @@ The app is built using a modern tech stack and provides a simple and intuitive u
 
 ## Tech Stack
 
-* Vite (vanilla)
-* React 18 + TypeScript
-* React Router 6
-* Material UI 6
-* Radix Primitives
+* Vite
+* TypeScript
+* React 19
+* React Router
+* Material UI + Radix Primitives
 * Tailwind CSS
-* Vitest 2
-* ESLint 9
+* Vitest
+* ESLint
 
 ## Getting Started
 
@@ -21,7 +21,7 @@ To run the app, follow these simple steps:
 ### Prerequisites
 
 * Node.js
-* pnpm (this codebase uses pnpm. You can use npm as well)
+* pnpm
 
 ### Installation
 
