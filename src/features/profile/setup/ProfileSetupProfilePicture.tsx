@@ -15,6 +15,7 @@ import { SessionContext } from '@/contexts/SessionContext';
 import { useSwiper } from 'swiper/react';
 import { IndeterminateProgressBar } from '@/components/IndeterminateProgressBar.tsx';
 import { handleDbUpgrade, INDEXEDDB_DBNAME, INDEXEDDB_VERSION } from '@/services/indexeddb.ts';
+import { loadSavedAvatar } from '@/features/profile/avatar.ts';
 
 function ProfilePictureEditor({ src, onApply, onCancel }: {
   // Image source url
@@ -209,16 +210,15 @@ export default function ProfileSetupProfilePicture() {
   const dbRef = useRef<IDBDatabase>(null);
 
   const loadAvatar = useCallback((event: Event) => {
-    const db = (event.target as IDBOpenDBRequest).result;
-    dbRef.current = db;
-    const transaction = db.transaction('blobs', 'readonly');
-    const store = transaction.objectStore('blobs');
-    const req = store.get('avatar');
-    req.onsuccess = (_event) => {
-      const blob = req.result as Blob;
-      // If avatar was saved previously, load it to preview
-      if (blob) updatePreview(blob);
-    };
+    loadSavedAvatar(event)
+      .then((blob) => {
+        // If avatar was saved previously, load it to preview
+        updatePreview(blob);
+        return;
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }, [updatePreview]);
 
   useEffect(() => {

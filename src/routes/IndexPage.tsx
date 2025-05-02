@@ -8,6 +8,7 @@ import { Icon } from '@iconify-icon/react';
 import { SidebarMenu } from '@/components/SidebarMenu';
 import { motion } from 'framer-motion';
 import { handleDbUpgrade, INDEXEDDB_DBNAME, INDEXEDDB_VERSION } from '@/services/indexeddb.ts';
+import { loadSavedAvatar } from '@/features/profile/avatar.ts';
 
 function UserWelcomeScreen() {
   const { user, updateSessionUser } = useContext(SessionContext);
@@ -18,22 +19,19 @@ function UserWelcomeScreen() {
   };
 
   const loadAvatar = useCallback((event: Event) => {
-    const db = (event.target as IDBOpenDBRequest).result;
-    const transaction = db.transaction('blobs', 'readonly');
-    const store = transaction.objectStore('blobs');
-    const req = store.get('avatar');
-    req.onsuccess = (_event) => {
-      const blob = req.result as Blob;
-      // If avatar was saved previously, load it to preview
-      if (blob) {
-        // Generate object url for loaded image blob
+    loadSavedAvatar(event)
+      .then((blob) => {
         // Update avatar in session
         updateSessionUser({
           _avatarBlob: blob,
+          // Generate object url for loaded image blob
           avatarSrc: URL.createObjectURL(blob),
         });
-      }
-    };
+        return;
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }, [updateSessionUser]);
 
   useEffect(() => {
