@@ -19,7 +19,10 @@ export function Component() {
     if (user) {
       void navigate('/', { replace: true });
     }
-  }, [user, navigate]);
+
+    // Check during onmount only
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const showSigningInScreen = useCallback((show: boolean) => {
     setApiRequestPending(show);

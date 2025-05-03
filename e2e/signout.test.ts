@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 
 test('sign out', async ({ page }) => {
   await page.goto('/signin');
@@ -27,5 +27,5 @@ test('sign out', async ({ page }) => {
     .click();
 
   // Sign out and redirect to sign in
-  await expect(page).toHaveURL('/signin');
+  await page.waitForURL('/signin', { timeout: 3000 });
 });
