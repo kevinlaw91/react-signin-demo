@@ -11,6 +11,7 @@ const __dirname = path.dirname(__filename);
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/react-signin-demo/',
   server: {
     port: 3000,
     watch: {
