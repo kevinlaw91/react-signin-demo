@@ -4,6 +4,7 @@
   "private": true,
   "license": "MIT",
   "repository": "github:kevinlaw91/react-signin-demo",
+  "homepage": "https://kevinlaw91.github.io/react-signin-demo/",
   "type": "module",
   "engines": {
     "node": ">=22.0.0"
