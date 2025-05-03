@@ -88,7 +88,7 @@ export function SidebarMenu() {
   }, [clearSession, navigate]);
 
   return (
-    <div className="h-full w-[70svw] min-w-[200px] max-w-[350px]">
+    <div className="h-full w-[70svw] min-w-[200px] max-w-[350px]" data-testid="off-canvas-menu">
       <SidebarMenuProfileCard />
       <ul>
         <SidebarMenuItem icon="icon-park-solid:setting-two" label="Settings" />
