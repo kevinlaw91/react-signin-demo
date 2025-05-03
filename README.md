@@ -11,7 +11,7 @@ The app is built using a modern tech stack and provides a simple and intuitive u
 * React Router
 * Material UI + Radix Primitives
 * Tailwind CSS
-* Vitest
+* Vitest + Playwright
 * ESLint
 
 ## Getting Started
@@ -46,9 +46,13 @@ NOTE: Preview purpose only, do not use this in production server!
 
 ## Testing
 
-To run the tests, use the following command:
+To run unit tests, use the following command:
 
 * `pnpm run test`
+
+To run e2e tests, use the following command:
+
+* `pnpm run test:e2e`
 
 
 ## License
