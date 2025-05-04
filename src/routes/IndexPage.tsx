@@ -9,6 +9,7 @@ import { SidebarMenu } from '@/components/SidebarMenu';
 import { motion } from 'framer-motion';
 import { handleDbUpgrade, INDEXEDDB_DBNAME, INDEXEDDB_VERSION } from '@/services/indexeddb.ts';
 import { loadSavedAvatar } from '@/features/profile/avatar.ts';
+import srcBlankProfileImage from '/assets/images/profile-picture-blank.jpg';
 
 function UserWelcomeScreen() {
   const { user, updateSessionUser } = useContext(SessionContext);
@@ -61,7 +62,7 @@ function UserWelcomeScreen() {
           <div className="ml-6">
             <a href={profileLink}>
               <img
-                src={user.avatarSrc || '/assets/images/profile-picture-blank.jpg'}
+                src={user.avatarSrc || srcBlankProfileImage}
                 alt="Profile picture"
                 className="size-24 md:size-36 rounded-full border-2 border-white shadow-xs"
               />

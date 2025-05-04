@@ -5,6 +5,7 @@ import { Icon, IconifyIconProperties } from '@iconify-icon/react';
 import { twMerge } from 'tailwind-merge';
 import { clearSavedAvatar } from '@/features/profile/avatar.ts';
 import { INDEXEDDB_DBNAME, INDEXEDDB_VERSION } from '@/services/indexeddb.ts';
+import srcBlankProfileImage from '/assets/images/profile-picture-blank.jpg';
 
 function SidebarMenuProfileCard() {
   const { user } = useContext(SessionContext);
@@ -13,7 +14,7 @@ function SidebarMenuProfileCard() {
     <div className="flex m-2 bg-neutral-100/10 rounded-lg">
       <div className="flex content-center justify-center flex-wrap">
         <img
-          src={user?.avatarSrc || '/assets/images/profile-picture-blank.jpg'}
+          src={user?.avatarSrc || srcBlankProfileImage}
           alt="Profile picture"
           className="m-4 object-cover object-center rounded-full h-12 aspect-square"
         />

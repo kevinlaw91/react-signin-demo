@@ -16,6 +16,7 @@ import { useSwiper } from 'swiper/react';
 import { IndeterminateProgressBar } from '@/components/IndeterminateProgressBar.tsx';
 import { handleDbUpgrade, INDEXEDDB_DBNAME, INDEXEDDB_VERSION } from '@/services/indexeddb.ts';
 import { loadSavedAvatar } from '@/features/profile/avatar.ts';
+import srcBlankProfileImage from '/assets/images/profile-picture-blank.jpg';
 
 function ProfilePictureEditor({ src, onApply, onCancel }: {
   // Image source url
@@ -119,7 +120,7 @@ function ProfilePicturePreview({ src, className, ...otherProps }: {
     <section data-testid="avatar_preview" className={twMerge('aspect-square', className)} role="button" {...otherProps}>
       <div className="rounded-full w-full aspect-square overflow-hidden flex items-center justify-center border-4 border-white">
         <img
-          src={src ? src : '/assets/images/profile-picture-blank.jpg'}
+          src={src ? src : srcBlankProfileImage}
           alt="Preview of profile picture"
           className="w-full h-full object-cover"
         />

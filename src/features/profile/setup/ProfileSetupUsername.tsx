@@ -16,6 +16,7 @@ import { SessionContext } from '@/contexts/SessionContext';
 import Swiper from 'swiper';
 import useShakeAnimation from '@/hooks/useShakeAnimation';
 import { twMerge } from 'tailwind-merge';
+import srcBrandLogoSvg from '/assets/svg/logo.svg';
 
 // Username awaiting availability check
 const usernameSchema = z.object({
@@ -332,7 +333,7 @@ export default function ProfileSetupUsername() {
         <div>
           <div className="py-6">
             <img
-              src="/assets/svg/logo.svg"
+              src={srcBrandLogoSvg}
               alt="Logo"
               className="w-24 h-24 mx-auto"
             />

@@ -10,6 +10,7 @@ import { SignUpSuccess } from '@/features/account/signup/SignUpSuccess';
 import { InProgressScreen } from '@/features/account/InProgressScreen';
 import { clearSavedAvatar } from '@/features/profile/avatar.ts';
 import { INDEXEDDB_DBNAME, INDEXEDDB_VERSION } from '@/services/indexeddb.ts';
+import srcBrandLogoSvg from '/assets/svg/logo.svg';
 
 export function Component() {
   const navigate = useNavigate();
@@ -76,7 +77,7 @@ export function Component() {
         <div className="row-span-full col-span-full md:col-span-3 md:col-start-2 lg:col-start-1  lg:col-span-2 flex place-items-center px-4 py-6 z-10 bg-neutral-100 lg:border-r">
           <div className="w-full max-w-md mx-auto px-4">
             <img
-              src="/assets/svg/logo.svg"
+              src={srcBrandLogoSvg}
               alt="Logo"
               className="w-32 h-32 mx-auto my-6"
             />

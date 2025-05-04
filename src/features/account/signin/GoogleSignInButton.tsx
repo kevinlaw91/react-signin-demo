@@ -2,6 +2,7 @@ import { ReactElement, useCallback, useContext } from 'react';
 import { decodeJwt } from 'jose';
 import { SessionContext } from '@/contexts/SessionContext';
 import { useNavigate } from 'react-router';
+import srcGoogleLogoSvg from '/assets/svg/logo-google.svg';
 
 // Improvement: Implement custom button using GSI
 // Google disallow using custom button to trigger GSI
@@ -88,7 +89,7 @@ export function GoogleSignInButton(): ReactElement {
       aria-label="Continue with Google"
       onClick={handleClick}
     >
-      <img src="/assets/svg/logo-google.svg" height="24" width="24" alt="Google logo" />
+      <img src={srcGoogleLogoSvg} height="24" width="24" alt="Google logo" />
       <span>Continue with Google</span>
     </button>
   );
