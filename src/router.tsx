@@ -32,6 +32,10 @@ const router = createBrowserRouter(
       HydrateFallback: hydrateFallbackComponent,
     },
   ],
+  {
+    // Pass vite base public path to react router
+    basename: import.meta.env.BASE_URL,
+  },
 );
 
 export default router;
