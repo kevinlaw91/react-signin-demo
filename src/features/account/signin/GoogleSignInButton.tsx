@@ -54,7 +54,7 @@ export function GoogleSignInButton(): ReactElement {
     const { email } = jwtPayload;
 
     const demoUserAccount = {
-      id: '1234', // User id within our app
+      id: 'google', // User id within our app
       email: 'GoogleUser@example.com', // Registered email address of the user
     };
 
@@ -62,8 +62,17 @@ export function GoogleSignInButton(): ReactElement {
 
     if (match) {
       // Already registered
+      localStorage.setItem('SESSION_USER_ID', demoUserAccount.id);
+
+      // Save username to local storage
+      const calculatedUsername = demoUserAccount.email.split('@')[0];
+      localStorage.setItem('demo:username', calculatedUsername);
+
       // Change app's state to signed in
-      updateSessionUser({ id: match.id, username: email.split('@')[0] });
+      updateSessionUser({
+        id: match.id,
+        username: calculatedUsername,
+      });
       // Redirect to home page
       void navigate('/', { replace: true });
     } else {

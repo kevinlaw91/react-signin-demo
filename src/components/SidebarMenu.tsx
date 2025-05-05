@@ -3,8 +3,6 @@ import { SessionContext } from '@/contexts/SessionContext.tsx';
 import { Link, type LinkProps, useNavigate } from 'react-router';
 import { Icon, IconifyIconProperties } from '@iconify-icon/react';
 import { twMerge } from 'tailwind-merge';
-import { clearSavedAvatar } from '@/features/profile/avatar.ts';
-import { INDEXEDDB_DBNAME, INDEXEDDB_VERSION } from '@/services/indexeddb.ts';
 import srcBlankProfileImage from '/assets/images/profile-picture-blank.jpg';
 
 function SidebarMenuProfileCard() {
@@ -72,15 +70,6 @@ export function SidebarMenu() {
   const navigate = useNavigate();
 
   const handleSignOut = useCallback((evt: SyntheticEvent) => {
-    // Remove saved browser session
-    sessionStorage.removeItem('user:1234:username');
-
-    // Clear saved avatar
-    if (indexedDB) {
-      const dbHandle = indexedDB.open(INDEXEDDB_DBNAME, INDEXEDDB_VERSION);
-      dbHandle.onsuccess = clearSavedAvatar;
-    }
-
     // Clear app in memory session
     clearSession();
     void navigate('/', { replace: true });

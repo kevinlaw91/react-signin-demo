@@ -1,4 +1,6 @@
-import { ReactNode, createContext, useState, useRef, useCallback } from 'react';
+import { createContext, ReactNode, useCallback, useState } from 'react';
+import { clearUserData } from '@/features/profile/userdata.ts';
+import { clearBrowserSession } from '@/features/account/signin/utils.ts';
 
 export type SessionUserMetadata = {
   id: string;
@@ -21,17 +23,22 @@ const SessionContext = createContext<ISessionContext>({
 });
 
 const UserSessionProvider = ({ children }: { children: ReactNode }) => {
-  const rememberedSession = useRef<Partial<SessionUserMetadata>>(null);
-  const storedUsername = sessionStorage.getItem('user:1234:username');
+  // Load saved username
+  const username = localStorage.getItem('demo:username');
 
-  if (storedUsername && storedUsername?.trim() !== '') {
-    rememberedSession.current = {
-      id: '1234',
-      username: storedUsername?.trim(),
-    };
-  }
+  // Load session data from browser storage
+  // For offline demo only
+  // In real world session will be passed in http-only cookie
+  const sessionUser = localStorage.getItem('SESSION_USER_ID');
 
-  const [sessionUserMetadata, setSessionUserMetadata] = useState<Partial<SessionUserMetadata> | null>(rememberedSession.current);
+  const activeSession = sessionUser
+    ? {
+        id: sessionUser,
+        username: username?.trim(),
+      }
+    : null;
+
+  const [sessionUserMetadata, setSessionUserMetadata] = useState<Partial<SessionUserMetadata> | null>(activeSession);
 
   const updateSessionUser = useCallback((metadata: Partial<SessionUserMetadata>) => {
     setSessionUserMetadata(currentUserMetadata => ({
@@ -41,6 +48,13 @@ const UserSessionProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const clearSession = useCallback(() => {
+    // Clear saved user data from local storage
+    clearUserData();
+
+    // Clear SESSION_USER_ID in browser storage to indicate no active session
+    clearBrowserSession();
+
+    // Clear app current session state
     setSessionUserMetadata(null);
   }, []);
 

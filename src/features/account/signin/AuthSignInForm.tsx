@@ -4,7 +4,6 @@ import fetchMock from 'fetch-mock';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { authenticateUser, AuthErrorCode } from '@/services/auth.ts';
-import { SessionUserMetadata } from '@/contexts/SessionContext';
 import { FormErrorMessage } from '@/features/account/FormErrorMessage';
 import { ButtonPrimary } from '@/components/Button.tsx';
 import { Checkbox, FormControlLabel } from '@mui/material';
@@ -23,7 +22,11 @@ type SignInFormData = z.infer<typeof signInSchema>;
 
 export interface SignInSuccessResponse {
   success: true;
-  data: { id: string };
+  data: {
+    id: string;
+    username: string;
+    remember: boolean;
+  };
 }
 
 export interface SignInFailureResponse {
@@ -37,13 +40,9 @@ export type SignInResponse = SignInSuccessResponse | SignInFailureResponse;
 const MSG_ERR_SIGN_IN = 'Sign in error. Please try again later';
 const MSG_ERR_INVALID_CREDENTIALS = 'Incorrect email or password';
 
-/* ===== Mock data ===== */
-const responseSuccess: SignInSuccessResponse = { success: true, data: { id: '1234' } };
-const responseErrorUnauthorized: SignInFailureResponse = { success: false, message: 'INVALID_CREDENTIALS' };
-
 export function AuthSignInForm(props: {
   onSubmit: () => void;
-  onSuccess: (userMetadata: Partial<SessionUserMetadata>) => void;
+  onSuccess: (userMetadata: SignInSuccessResponse['data']) => void;
   onError: (err?: string) => void;
 }) {
   const {
@@ -82,7 +81,15 @@ export function AuthSignInForm(props: {
             'path:/api/signin',
             {
               status: 200,
-              body: responseSuccess,
+              body: {
+                // Successful
+                success: true,
+                data: {
+                  id: 'demo',
+                  username: data.email.split('@')[0],
+                  remember: data.remember,
+                },
+              },
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -96,7 +103,10 @@ export function AuthSignInForm(props: {
             'path:/api/signin',
             {
               status: 401,
-              body: responseErrorUnauthorized,
+              body: {
+                success: false,
+                message: 'INVALID_CREDENTIALS',
+              },
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -112,7 +122,8 @@ export function AuthSignInForm(props: {
           // Success, tell the parent component sign in success
           return onSuccessCallback({
             id: res.data.id,
-            username: data.email.split('@')[0],
+            username: res.data.username,
+            remember: res.data.remember,
           });
         })
         .catch((err) => {

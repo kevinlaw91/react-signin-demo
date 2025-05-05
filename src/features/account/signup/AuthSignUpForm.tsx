@@ -6,8 +6,7 @@ import fetchMock from 'fetch-mock';
 import { z } from 'zod';
 import { Icon } from '@iconify-icon/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { createUser, AuthErrorCode } from '@/services/auth.ts';
-import { SessionUserMetadata } from '@/contexts/SessionContext.tsx';
+import { AuthErrorCode, createUser } from '@/services/auth.ts';
 import { FormErrorMessage } from '@/features/account/FormErrorMessage';
 import { ButtonPrimary } from '@/components/Button.tsx';
 import useShakeAnimation from '@/hooks/useShakeAnimation';
@@ -39,13 +38,9 @@ const MSG_ERR_GENERIC = 'Unable to create account. Please try again later';
 const MSG_ERR_REJECTED = 'This email and password combination cannot be used';
 const MSG_WARN_PASSWORD_WHITESPACE = 'Your password may contain leading or trailing spaces\\nResubmit if you\'re certain you want to proceed';
 
-/* ===== Mock data ===== */
-const responseSuccess: SignUpSuccessResponse = { success: true, data: { id: '1234' } };
-const responseErrorSignUpRejected: SignUpFailureResponse = { success: false, message: AuthErrorCode.ERR_ACCOUNT_SIGNUP_REJECTED };
-
 export function AuthSignUpForm(props: {
   onSubmit: () => void;
-  onSuccess: (user: Partial<SessionUserMetadata>) => void;
+  onSuccess: (user: SignUpSuccessResponse['data']) => void;
   onError: (err?: string) => void;
 }) {
   /* ===== Form controller ===== */
@@ -127,7 +122,12 @@ export function AuthSignUpForm(props: {
             'path:/api/account/create',
             {
               status: 200,
-              body: responseSuccess,
+              body: {
+                success: true,
+                data: {
+                  id: 'demo',
+                },
+              },
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -141,7 +141,10 @@ export function AuthSignUpForm(props: {
             'path:/api/account/create',
             {
               status: 403,
-              body: responseErrorSignUpRejected,
+              body: {
+                success: false,
+                message: AuthErrorCode.ERR_ACCOUNT_SIGNUP_REJECTED,
+              },
               headers: {
                 'Content-Type': 'application/json',
               },

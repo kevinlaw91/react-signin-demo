@@ -8,17 +8,23 @@ import ProfileSetupProfilePicture from '@/features/profile/setup/ProfileSetupPro
 import ProfileSetupComplete from '@/features/profile/setup/ProfileSetupComplete.tsx';
 import { IndeterminateProgressBar } from '@/components/IndeterminateProgressBar.tsx';
 import { SessionContext } from '@/contexts/SessionContext.tsx';
+import { useNavigate } from 'react-router';
 
 export function Component() {
+  const navigate = useNavigate();
   const swiperRef = useRef<SwiperClass | null>(null);
   const [hideLoader, setHideLoader] = useState(false);
-  const { updateSessionUser } = useContext(SessionContext);
+  const { user } = useContext(SessionContext);
 
   useEffect(() => {
-    let usernameStepCompleted = false;
-    updateSessionUser({ id: '1234' });
+    // If no session, redirect to home
+    if (!user) {
+      void navigate('/', { replace: true });
+      return;
+    }
 
-    if (sessionStorage.getItem('user:1234:username')) {
+    let usernameStepCompleted = false;
+    if (localStorage.getItem('demo:username')) {
       usernameStepCompleted = true;
     }
 
@@ -42,7 +48,10 @@ export function Component() {
     return () => {
       clearTimeout(timer);
     };
-  }, [updateSessionUser]);
+
+    // Init wizard only when onmount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <section className="isolate min-h-svh min-w-svw bg-neutral-100 bg-[url('/assets/images/bg-gradient-subtle-light.jpg')] bg-cover bg-no-repeat">

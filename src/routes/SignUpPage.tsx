@@ -1,16 +1,15 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { Helmet } from 'react-helmet-async';
-import { AuthSignUpForm } from '@/features/account/signup/AuthSignUpForm';
-import { SessionContext, SessionUserMetadata } from '@/contexts/SessionContext';
+import { AuthSignUpForm, SignUpSuccessResponse } from '@/features/account/signup/AuthSignUpForm';
+import { SessionContext } from '@/contexts/SessionContext';
 import AlertDialog from '@/components/AlertDialog';
 import { useDialogManager } from '@/hooks/useDialogManager';
 import { GoogleSignInButton } from '@/features/account/signin/GoogleSignInButton';
 import { SignUpSuccess } from '@/features/account/signup/SignUpSuccess';
 import { InProgressScreen } from '@/features/account/InProgressScreen';
-import { clearSavedAvatar } from '@/features/profile/avatar.ts';
-import { INDEXEDDB_DBNAME, INDEXEDDB_VERSION } from '@/services/indexeddb.ts';
 import srcBrandLogoSvg from '/assets/svg/logo.svg';
+import { clearUserData } from '@/features/profile/userdata.ts';
 
 export function Component() {
   const navigate = useNavigate();
@@ -32,18 +31,18 @@ export function Component() {
 
   const onFormSignUpSubmit = useCallback(() => setApiRequestPending(true), []);
 
-  const onFormSignUpSuccess = useCallback((user: Partial<SessionUserMetadata>) => {
+  const onFormSignUpSuccess = useCallback((user: SignUpSuccessResponse['data']) => {
     showSigningUpScreen(false);
+
+    // Clear saved user data from local storage
+    // So that the profile looks new
+    clearUserData();
+
+    // Set session in browser storage
+    localStorage.setItem('SESSION_USER_ID', user.id);
 
     // Change app's state to signed in
     updateSessionUser({ id: user.id });
-    sessionStorage.removeItem('user:1234:username');
-
-    // Clear saved avatar
-    if (indexedDB) {
-      const dbHandle = indexedDB.open(INDEXEDDB_DBNAME, INDEXEDDB_VERSION);
-      dbHandle.onsuccess = clearSavedAvatar;
-    }
 
     // Show success screen
     setSearchParams((params) => {

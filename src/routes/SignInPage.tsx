@@ -1,8 +1,8 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Helmet } from 'react-helmet-async';
-import { AuthSignInForm } from '@/features/account/signin/AuthSignInForm';
-import { SessionContext, SessionUserMetadata } from '@/contexts/SessionContext';
+import { AuthSignInForm, SignInSuccessResponse } from '@/features/account/signin/AuthSignInForm';
+import { SessionContext } from '@/contexts/SessionContext';
 import { GoogleSignInButton } from '@/features/account/signin/GoogleSignInButton';
 import AlertDialog from '@/components/AlertDialog';
 import { useDialogManager } from '@/hooks/useDialogManager';
@@ -31,14 +31,26 @@ export function Component() {
 
   const onFormSignInSubmit = useCallback(() => showSigningInScreen(true), [showSigningInScreen]);
 
-  const onFormSignInSuccess = useCallback((user: Partial<SessionUserMetadata>) => {
+  const onFormSignInSuccess = useCallback((user: SignInSuccessResponse['data']) => {
+    // Hide loading screen
     showSigningInScreen(false);
+
+    // Save session to browser storage for offline demo
+    // In real online app, session is identified by http-only cookie
+    // We don't use sessionStorage here because the key value will not pass to new tab even if under same window
+    // So 'remember' key is effectively ignore
+    localStorage.setItem('SESSION_USER_ID', user.id);
+
+    // Save username to local storage
+    const calculatedUsername = user.username ?? user.id ?? 'User';
+    localStorage.setItem('demo:username', calculatedUsername);
+
     // Change app's state to signed in
     updateSessionUser({
-      id: user.id ?? '1234',
-      username: user.username ?? user.id ?? 'User',
+      id: user.id,
+      username: calculatedUsername,
     });
-    sessionStorage.setItem('user:1234:username', user.username ?? user.id ?? 'User');
+
     // Go to home page
     void navigate('/', { replace: true });
   }, [showSigningInScreen, updateSessionUser, navigate]);

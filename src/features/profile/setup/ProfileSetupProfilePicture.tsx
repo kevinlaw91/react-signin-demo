@@ -332,7 +332,7 @@ export default function ProfileSetupProfilePicture() {
     }
 
     setProfilePicture({
-      profileId: '1234',
+      profileId: 'demo',
       image: croppedImage.current,
     })
       .then((res) => {
