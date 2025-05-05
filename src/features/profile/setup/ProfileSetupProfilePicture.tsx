@@ -214,7 +214,7 @@ export default function ProfileSetupProfilePicture() {
     loadSavedAvatar(event)
       .then((blob) => {
         // If avatar was saved previously, load it to preview
-        updatePreview(blob);
+        if (blob) updatePreview(blob);
         return;
       })
       .catch((err) => {

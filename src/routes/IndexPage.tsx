@@ -23,11 +23,13 @@ function UserWelcomeScreen() {
     loadSavedAvatar(event)
       .then((blob) => {
         // Update avatar in session
-        updateSessionUser({
-          _avatarBlob: blob,
-          // Generate object url for loaded image blob
-          avatarSrc: URL.createObjectURL(blob),
-        });
+        if (blob) {
+          updateSessionUser({
+            _avatarBlob: blob,
+            // Generate object url for loaded image blob
+            avatarSrc: URL.createObjectURL(blob),
+          });
+        }
         return;
       })
       .catch((err) => {
