@@ -1,5 +1,5 @@
 import { ReactNode, RefCallback, useImperativeHandle, useMemo, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Icon } from '@iconify-icon/react';
 

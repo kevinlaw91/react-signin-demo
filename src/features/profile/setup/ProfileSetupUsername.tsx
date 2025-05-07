@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import fetchMock from 'fetch-mock';
 import { useSwiper, useSwiperSlide } from 'swiper/react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import { Helmet } from 'react-helmet-async';
 import { IMaskInput } from 'react-imask';
 import { z } from 'zod';

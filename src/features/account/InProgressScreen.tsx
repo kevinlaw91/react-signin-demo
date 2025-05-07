@@ -1,5 +1,5 @@
 import * as Portal from '@radix-ui/react-portal';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import { IndeterminateProgressBar } from '@/components/IndeterminateProgressBar.tsx';
 
 export function InProgressScreen({ isOpen, title }: { isOpen: boolean; title?: string }) {

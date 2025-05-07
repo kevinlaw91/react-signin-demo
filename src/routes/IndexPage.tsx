@@ -6,7 +6,7 @@ import { Button } from '@/components/Button.tsx';
 import { Drawer, IconButton } from '@mui/material';
 import { Icon } from '@iconify-icon/react';
 import { SidebarMenu } from '@/components/SidebarMenu';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { handleDbUpgrade, INDEXEDDB_DBNAME, INDEXEDDB_VERSION } from '@/services/indexeddb.ts';
 import { loadSavedAvatar } from '@/features/profile/avatar.ts';
 import srcBlankProfileImage from '/assets/images/profile-picture-blank.jpg';
