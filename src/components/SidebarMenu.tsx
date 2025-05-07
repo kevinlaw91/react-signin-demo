@@ -86,12 +86,17 @@ export function SidebarMenu() {
       </ul>
       <div className="mt-16 px-8 text-neutral-300 text-sm">
         <p>Made by Kevin Law</p>
-        <a href="https://www.github.com/kevinlaw91" title="GitHub" target="_blank" rel="noreferrer" className="inline-block m-1 leading-[0] text-neutral-500 hover:text-neutral-300">
-          <Icon icon="mdi:github" className="transition-colors" width="24" />
-        </a>
-        <a href="https://www.linkedin.com/in/kevinlawchinhao/" title="LinkedIn" target="_blank" rel="noreferrer" className="inline-block m-1 leading-[0] text-neutral-500 hover:text-neutral-300">
-          <Icon icon="mdi:linkedin" className="transition-colors" width="24" />
-        </a>
+        <div className="-m-1 mt-2.5">
+          <a href="https://www.github.com/kevinlaw91" title="GitHub" target="_blank" rel="noreferrer" className="inline-block m-1 leading-[0] text-neutral-500 hover:text-neutral-300">
+            <Icon icon="mdi:github" className="transition-colors" width="24" />
+          </a>
+          <a href="https://www.linkedin.com/in/kevinlawchinhao/" title="LinkedIn" target="_blank" rel="noreferrer" className="inline-block m-1 leading-[0] text-neutral-500 hover:text-neutral-300">
+            <Icon icon="mdi:linkedin" className="transition-colors" width="24" />
+          </a>
+        </div>
+        <div className="mt-1.5 text-neutral-500">
+          <Link to="https://github.com/kevinlaw91/react-signin-demo" className="hover:text-neutral-400">[Project Source]</Link>
+        </div>
       </div>
     </div>
   );
