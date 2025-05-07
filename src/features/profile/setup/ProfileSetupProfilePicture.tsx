@@ -118,14 +118,14 @@ function ProfilePicturePreview({ src, className, ...otherProps }: {
 }) {
   return (
     <section data-testid="avatar_preview" className={twMerge('aspect-square', className)} role="button" {...otherProps}>
-      <div className="rounded-full w-full aspect-square overflow-hidden flex items-center justify-center border-4 border-white">
+      <div className="rounded-full cursor-pointer w-full aspect-square overflow-hidden flex items-center justify-center border-4 border-white">
         <img
           src={src ? src : srcBlankProfileImage}
           alt="Preview of profile picture"
           className="w-full h-full object-cover"
         />
       </div>
-      <div className="absolute bottom-0 right-0 w-1/4 box-border p-3 aspect-square bg-primary border-2 border-white rounded-full flex items-center justify-center">
+      <div className="absolute cursor-pointer bottom-0 right-0 w-1/4 box-border p-3 aspect-square bg-primary border-2 border-white rounded-full flex items-center justify-center">
         <Icon icon="ph:camera" className="w-full text-white" width="unset" />
       </div>
     </section>

@@ -57,7 +57,7 @@ export const Button = (props: ButtonProps | LinkButtonProps) => {
     </span>
   );
 
-  const mergedClassName = twMerge('flex items-stretch justify-center font-semibold rounded-xl text-neutral-800 focus:outline focus:outline-2 outline-current transition duration-150', className);
+  const mergedClassName = twMerge('flex items-stretch justify-center cursor-pointer font-semibold rounded-xl text-neutral-800 focus:outline focus:outline-2 outline-current transition duration-150', className);
 
   if ('to' in remainingProps) {
     return (

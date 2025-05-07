@@ -61,12 +61,12 @@ function UserWelcomeScreen() {
       </section>
       <section className="-mt-12 mx-auto md:mx-16">
         <div className="flex content-end flex-wrap justify-between">
-          <div className="ml-6">
+          <div className="ml-6 rounded-full border-4 border-white shadow-xs overflow-hidden">
             <a href={profileLink}>
               <img
                 src={user.avatarSrc || srcBlankProfileImage}
                 alt="Profile picture"
-                className="size-24 md:size-36 rounded-full border-2 border-white shadow-xs"
+                className="size-24 md:size-36"
               />
             </a>
           </div>
