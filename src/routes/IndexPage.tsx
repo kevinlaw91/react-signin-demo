@@ -46,7 +46,10 @@ function UserWelcomeScreen() {
       dbHandle.onupgradeneeded = handleDbUpgrade;
       dbHandle.onsuccess = loadAvatar;
     }
-  }, [loadAvatar, user?.avatarSrc]);
+
+    // Load avatar onmount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!user) return null;
 
