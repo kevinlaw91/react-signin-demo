@@ -166,6 +166,7 @@ export function AuthSignInForm(props: {
             maxLength={254}
             placeholder="For demo only, use any email"
             className="block w-full h-12 px-4 py-2 text-neutral-700 rounded-lg appearance-none bg-neutral-200 placeholder-neutral-400 outline-hidden focus:ring-1 focus:ring-neutral-400/50 ring-offset-0 text-sm transition duration-150"
+            autoComplete="email"
             {...register('email', { setValueAs: (value: string) => value.trim() })}
           />
           {errors?.email && (
@@ -185,6 +186,7 @@ export function AuthSignInForm(props: {
             id="password"
             maxLength={255}
             type="password"
+            autoComplete="current-password"
             {...register('password')}
           />
           {errors.password && (

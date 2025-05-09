@@ -204,6 +204,7 @@ export function AuthSignUpForm(props: {
             maxLength={254}
             placeholder="Your email"
             className="block w-full h-12 px-4 py-2 text-neutral-700 rounded-lg appearance-none bg-neutral-200 placeholder-neutral-400 outline-hidden focus:ring-1 focus:ring-neutral-400 ring-offset-0 text-sm transition duration-150"
+            autoComplete="email"
             {...register('email', { setValueAs: (value: string) => value.trim() })}
           />
           {errors?.email && (
@@ -267,6 +268,7 @@ export function AuthSignUpForm(props: {
               id="password"
               maxLength={255}
               type={isPasswordVisible ? 'text' : 'password'}
+              autoComplete="new-password"
               {...register('password', { onChange: handlePasswordFieldChange })}
             />
             <button
