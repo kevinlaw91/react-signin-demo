@@ -1,6 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
-import { Helmet } from 'react-helmet-async';
 import { AuthSignUpForm, SignUpSuccessResponse } from '@/features/account/signup/AuthSignUpForm';
 import { SessionContext } from '@/contexts/SessionContext';
 import AlertDialog from '@/components/AlertDialog';
@@ -58,20 +57,13 @@ export function Component() {
 
   if (searchParams.get('complete') === 'true') {
     return (
-      <>
-        <Helmet>
-          <title>Sign Up Success!</title>
-        </Helmet>
-        <SignUpSuccess />
-      </>
+      <SignUpSuccess />
     );
   }
 
   return (
     <>
-      <Helmet>
-        <title>Sign Up</title>
-      </Helmet>
+      <title>Sign Up</title>
       <div className="grid grid-cols-[repeat(5,1fr)] min-h-svh min-w-full isolate">
         <div className="row-span-full col-span-full md:col-span-3 md:col-start-2 lg:col-start-1  lg:col-span-2 flex place-items-center px-4 py-6 z-10 bg-neutral-100 lg:border-r">
           <div className="w-full max-w-md mx-auto px-4">

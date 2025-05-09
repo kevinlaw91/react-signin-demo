@@ -5,6 +5,7 @@ import { ButtonPrimary } from '@/components/Button.tsx';
 export function SignUpSuccess() {
   return (
     <div className="flex h-full min-h-svh flex-col items-center justify-center py-12 gap-12">
+      <title>Sign Up Success!</title>
       <div className="flex flex-col items-center justify-center text-center">
         <div className="grid items-center justify-items-center h-[160px]">
           <Player
@@ -24,7 +25,7 @@ export function SignUpSuccess() {
         </p>
       </div>
       <div>
-        <ButtonPrimary to="/setup" reloadDocument>Go to Home</ButtonPrimary>
+        <ButtonPrimary to="/setup" reloadDocument>Setup Profile</ButtonPrimary>
       </div>
     </div>
   );

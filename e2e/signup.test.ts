@@ -57,7 +57,7 @@ test.describe('sign up', () => {
 
     // Go to home (redirects to profile setup)
     await page
-      .getByText(/go to home/i)
+      .getByText(/setup profile/i)
       .click();
     await expect(page).toHaveURL('setup');
   });
