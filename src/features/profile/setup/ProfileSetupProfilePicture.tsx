@@ -212,6 +212,8 @@ export default function ProfileSetupProfilePicture() {
   const dbRef = useRef<IDBDatabase>(null);
 
   const loadAvatar = useCallback((event: Event) => {
+    dbRef.current = (event.target as IDBOpenDBRequest).result;
+
     loadSavedAvatar(event)
       .then((blob) => {
         // If avatar was saved previously, load it to preview
