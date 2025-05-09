@@ -1,15 +1,15 @@
+import 'fake-indexeddb/auto';
 import { describe, it, expect, vi, beforeAll, beforeEach, afterAll, afterEach } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { cleanup, render, waitForElementToBeRemoved } from '@testing-library/react/pure';
 import * as exifRotate from 'exif-rotate-js';
-import { HelmetProvider } from 'react-helmet-async';
 import ProfileSetupProfilePicture from '@/features/profile/setup/ProfileSetupProfilePicture.tsx';
 import * as imageUtils from '@/utils/image.ts';
 import * as Profile from '@/services/profile.ts';
 
-const useSwiper = vi.hoisted(() => vi.fn());
-
 const fakeImageDataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII';
+
+const nextStepFn = vi.hoisted(() => vi.fn());
 
 URL.revokeObjectURL = vi.fn();
 
@@ -17,13 +17,12 @@ describe('ProfileSetupProfilePicture', () => {
   let testProfileImageBlob, testProfileImageFile;
 
   beforeAll(() => {
-    vi.mock(import('swiper/react'), async (importOriginal) => {
-      const mod = await importOriginal();
-      return {
-        ...mod,
-        useSwiper,
-      };
-    });
+    vi.mock('react-use-wizard', async importOriginal => ({
+      ...(await importOriginal()),
+      useWizard: vi.fn().mockReturnValue({
+        nextStep: nextStepFn,
+      }),
+    }));
 
     return new Promise((resolve) => {
       const canvas = document.createElement('canvas');
@@ -39,10 +38,6 @@ describe('ProfileSetupProfilePicture', () => {
     });
   });
 
-  afterAll(() => {
-    vi.restoreAllMocks();
-  });
-
   describe('File picker', () => {
     let user;
     let container;
@@ -53,9 +48,7 @@ describe('ProfileSetupProfilePicture', () => {
       user = userEvent.setup();
 
       container = render(
-        <HelmetProvider>
-          <ProfileSetupProfilePicture />
-        </HelmetProvider>,
+        <ProfileSetupProfilePicture />,
       );
 
       onClickSpy = vi.fn();
@@ -93,15 +86,9 @@ describe('ProfileSetupProfilePicture', () => {
       URL.createObjectURL = vi.fn().mockReturnValue(fakeImageDataUrl);
     });
 
-    afterAll(() => {
-      vi.restoreAllMocks();
-    });
-
     beforeEach(() => {
       container = render(
-        <HelmetProvider>
-          <ProfileSetupProfilePicture />
-        </HelmetProvider>,
+        <ProfileSetupProfilePicture />,
       );
     });
 
@@ -132,20 +119,14 @@ describe('ProfileSetupProfilePicture', () => {
     let apiCall;
     let user;
     let container;
-    let nextStepFn;
 
     beforeAll(async () => {
+      nextStepFn.mockClear();
+
       user = userEvent.setup();
 
-      nextStepFn = vi.fn();
-      useSwiper.mockReturnValue({
-        slideNext: nextStepFn,
-      });
-
       container = render(
-        <HelmetProvider>
-          <ProfileSetupProfilePicture />
-        </HelmetProvider>,
+        <ProfileSetupProfilePicture />,
       );
 
       vi.spyOn(exifRotate, 'getBase64Strings').mockReturnValue([fakeImageDataUrl]);
@@ -155,7 +136,6 @@ describe('ProfileSetupProfilePicture', () => {
     });
 
     afterAll(() => {
-      vi.restoreAllMocks();
       cleanup();
     });
 

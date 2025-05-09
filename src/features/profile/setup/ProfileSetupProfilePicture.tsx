@@ -1,4 +1,3 @@
-import { Helmet } from 'react-helmet-async';
 import { twMerge } from 'tailwind-merge';
 import fetchMock from 'fetch-mock';
 import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from 'react';
@@ -12,11 +11,11 @@ import { DropEvent, useDropzone } from 'react-dropzone';
 import AlertDialog from '@/components/AlertDialog';
 import { useDialogManager } from '@/hooks/useDialogManager';
 import { SessionContext } from '@/contexts/SessionContext';
-import { useSwiper } from 'swiper/react';
 import { IndeterminateProgressBar } from '@/components/IndeterminateProgressBar.tsx';
 import { handleDbUpgrade, INDEXEDDB_DBNAME, INDEXEDDB_VERSION } from '@/services/indexeddb.ts';
 import { loadSavedAvatar } from '@/features/profile/avatar.ts';
 import srcBlankProfileImage from '/assets/images/profile-picture-blank.jpg';
+import { useWizard } from 'react-use-wizard';
 
 function ProfilePictureEditor({ src, onApply, onCancel }: {
   // Image source url
@@ -55,7 +54,7 @@ function ProfilePictureEditor({ src, onApply, onCancel }: {
   const handleSliderChange = (_evt: Event, val: number | number[]) => setZoom(val as number);
 
   return (
-    <section className="flex flex-col gap-8 items-center justify-center w-full h-full overflow-hidden">
+    <section className="flex flex-col gap-8 items-center justify-center w-full min-h-dvh">
       <div className="relative h-full min-h-[384px] max-h-[512px] w-full overflow-visible" data-testid="cropper-container">
         <Cropper
           image={src}
@@ -196,6 +195,8 @@ export function ProfileSetupProfilePictureForm(props: {
 }
 
 export default function ProfileSetupProfilePicture() {
+  const { nextStep } = useWizard();
+
   // Avatar preview
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string>();
   const croppedImage = useRef<Blob>(null);
@@ -242,9 +243,6 @@ export default function ProfileSetupProfilePicture() {
       dbRef.current?.close();
     };
   }, []);
-
-  // Swiper handle
-  const swiper = useSwiper();
 
   const [isLoading, setIsLoading] = useState(false);
   const [imageFileSrc, setImageFileSrc] = useState<string>();
@@ -301,8 +299,8 @@ export default function ProfileSetupProfilePicture() {
     }
 
     // Move to next step
-    swiper.slideNext();
-  }, [swiper]);
+    void nextStep();
+  }, [nextStep]);
 
   const handleSubmitResponse = useCallback(() => {
     setIsLoading(true);
@@ -380,12 +378,10 @@ export default function ProfileSetupProfilePicture() {
 
   return (
     <>
-      <Helmet>
-        <title>Profile Picture</title>
-      </Helmet>
+      <title>Profile Picture</title>
       {
         isLoading && (
-          <section className="flex justify-center items-center min-h-svh mx-auto md:w-96 max-w-md md:max-w-sm">
+          <section className="flex justify-center items-center h-dvh mx-auto md:w-96 max-w-md md:max-w-sm">
             <IndeterminateProgressBar className="h-[4px] w-[400px] max-w-[40svw]" />
           </section>
         )
@@ -401,7 +397,7 @@ export default function ProfileSetupProfilePicture() {
       }
       {
         !isCropEditorVisible && !isLoading && (
-          <section className="flex justify-center items-center min-h-svh mx-auto px-4 py-12 max-w-md md:max-w-sm md:px-0 md:w-96 sm:px-4">
+          <section className="flex justify-center items-center min-h-dvh mx-auto px-4 py-12 max-w-md md:max-w-sm md:px-0 md:w-96 sm:px-4">
             <section className="relative flex flex-col items-center justify-center w-full" {...getRootProps()}>
               {
                 isDragActive

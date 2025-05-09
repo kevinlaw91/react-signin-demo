@@ -1,20 +1,45 @@
-import { useContext, useEffect, useRef, useState } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import SwiperClass from 'swiper';
-import { Manipulation } from 'swiper/modules';
-import 'swiper/css';
-import ProfileSetupUsername from '@/features/profile/setup/ProfileSetupUsername.tsx';
+import { useContext, useEffect, useRef } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
+import { Wizard, useWizard } from 'react-use-wizard';
+import ProfileSetupUsername, { type ProfileSetupUsernameMethods } from '@/features/profile/setup/ProfileSetupUsername.tsx';
 import ProfileSetupProfilePicture from '@/features/profile/setup/ProfileSetupProfilePicture.tsx';
 import ProfileSetupComplete from '@/features/profile/setup/ProfileSetupComplete.tsx';
 import { IndeterminateProgressBar } from '@/components/IndeterminateProgressBar.tsx';
 import { SessionContext } from '@/contexts/SessionContext.tsx';
 import { useNavigate } from 'react-router';
 
+function WizardLoading() {
+  const { goToStep, nextStep } = useWizard();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // Username already set
+      if (localStorage.getItem('demo:username')) {
+        void goToStep(2);
+      } else {
+        void nextStep();
+      }
+    }, 2300);
+
+    return () => {
+      clearTimeout(timer);
+    };
+    // Simulate loading
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <section className="flex justify-center items-center min-h-svh mx-auto md:w-96 max-w-md md:max-w-sm">
+      <IndeterminateProgressBar className="h-[4px] w-[400px] max-w-[40svw]" />
+    </section>
+  );
+}
+
 export function Component() {
   const navigate = useNavigate();
-  const swiperRef = useRef<SwiperClass | null>(null);
-  const [hideLoader, setHideLoader] = useState(false);
   const { user } = useContext(SessionContext);
+
+  const stepUsernameRef = useRef<ProfileSetupUsernameMethods | null>(null);
 
   useEffect(() => {
     // If no session, redirect to home
@@ -23,65 +48,81 @@ export function Component() {
       return;
     }
 
-    let usernameStepCompleted = false;
-    if (localStorage.getItem('demo:username')) {
-      usernameStepCompleted = true;
-    }
-
-    // Username already set, skip this step
-    if (usernameStepCompleted) {
-      const stepUsernameIndex = swiperRef.current?.slides.findIndex((el, index) => {
-        if (el.getAttribute('data-slide-key') === 'username') return index;
-      });
-
-      if (typeof stepUsernameIndex !== 'undefined') {
-        swiperRef.current?.removeSlide(stepUsernameIndex);
-        swiperRef.current?.update();
-      }
-    }
-
-    const timer = setTimeout(() => {
-      setHideLoader(true);
-      swiperRef.current?.slideNext();
-    }, 2400);
-
-    return () => {
-      clearTimeout(timer);
-    };
-
     // Init wizard only when onmount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const animationVariants = {
+    initial: { x: '100%' },
+    visible: { x: 0, transition: { duration: 0.3, ease: 'easeOut' } },
+    hidden: { x: '-100%', opacity: 0, transition: { duration: 0.3, ease: 'easeOut' } },
+  };
+
+  useEffect(() => {
+    document.documentElement.style.scrollbarGutter = 'stable';
+    document.body.classList.add('bg-neutral-100', 'overflow-x-hidden');
+
+    return () => {
+      document.documentElement.style.removeProperty('scrollbar-gutter');
+      document.body.classList.remove('bg-neutral-100', 'overflow-x-hidden');
+    };
+  }, []);
+
   return (
-    <section className="isolate min-h-svh min-w-svw bg-neutral-100 bg-[url('/assets/images/bg-gradient-subtle-light.jpg')] bg-cover bg-no-repeat">
-      <Swiper
-        modules={[Manipulation]}
-        onSwiper={swiper => swiperRef.current = swiper}
-        spaceBetween={0}
-        slidesPerView={1}
-        allowTouchMove={false}
-        centeredSlides
-        centeredSlidesBounds
+    <section className="isolate min-h-dvh max-w-full">
+      <title>Profile Setup</title>
+      <Wizard
+        wrapper={(
+          <AnimatePresence
+            mode="popLayout"
+          />
+        )}
       >
-        <SwiperSlide>
-          <section className="flex justify-center items-center min-h-svh mx-auto md:w-96 max-w-md md:max-w-sm">
-            { !hideLoader && <IndeterminateProgressBar className="h-[4px] w-[400px] max-w-[40svw]" /> }
-          </section>
-        </SwiperSlide>
-        <SwiperSlide data-slide-key="username">
-          {/* STEP_USERNAME */}
-          <ProfileSetupUsername />
-        </SwiperSlide>
-        <SwiperSlide className="!h-dvh">
-          {/* STEP_PROFILE_PICTURE */}
+        <motion.section
+          key="step-loading"
+          variants={animationVariants}
+          initial={false}
+          animate="visible"
+          exit="hidden"
+        >
+          <WizardLoading />
+        </motion.section>
+        <motion.section
+          key="step-username"
+          variants={animationVariants}
+          initial="initial"
+          animate="visible"
+          exit="hidden"
+          onAnimationComplete={(latest) => {
+            if (latest === 'visible') {
+              void stepUsernameRef.current?.onEnter();
+            }
+          }}
+        >
+          <ProfileSetupUsername
+            ref={stepUsernameRef}
+          />
+        </motion.section>
+        <motion.section
+          key="step-avatar"
+          variants={animationVariants}
+          initial="initial"
+          animate="visible"
+          exit="hidden"
+          className="min-h-full"
+        >
           <ProfileSetupProfilePicture />
-        </SwiperSlide>
-        <SwiperSlide>
-          {/* STEP_COMPLETE */}
+        </motion.section>
+        <motion.section
+          key="step-complete"
+          variants={animationVariants}
+          initial="initial"
+          animate="visible"
+          exit="hidden"
+        >
           <ProfileSetupComplete />
-        </SwiperSlide>
-      </Swiper>
+        </motion.section>
+      </Wizard>
     </section>
   );
 }

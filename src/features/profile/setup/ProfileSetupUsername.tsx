@@ -1,8 +1,6 @@
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { type Ref, useCallback, useContext, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import fetchMock from 'fetch-mock';
-import { useSwiper, useSwiperSlide } from 'swiper/react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Helmet } from 'react-helmet-async';
 import { IMaskInput } from 'react-imask';
 import { z } from 'zod';
 import { type SubmitErrorHandler, type SubmitHandler, useForm } from 'react-hook-form';
@@ -13,10 +11,10 @@ import { ButtonBusy, ButtonPrimary } from '@/components/Button.tsx';
 import { LoaderPulsingDotsCircular } from '@/components/loaders/LoaderPulsingDots.tsx';
 import { checkUsernameAvailability, ProfileErrorCode, saveUsername } from '@/services/profile.ts';
 import { SessionContext } from '@/contexts/SessionContext';
-import Swiper from 'swiper';
 import useShakeAnimation from '@/hooks/useShakeAnimation';
 import { twMerge } from 'tailwind-merge';
 import srcBrandLogoSvg from '/assets/svg/logo.svg';
+import { useWizard } from 'react-use-wizard';
 
 // Username awaiting availability check
 const usernameSchema = z.object({
@@ -120,12 +118,31 @@ function UsernameCheckResultMessage({ isAvailable }: { isAvailable: boolean }) {
   );
 }
 
-export default function ProfileSetupUsername() {
+export type ProfileSetupUsernameMethods = {
+  onEnter: () => void;
+};
+
+export default function ProfileSetupUsername({ ref }: { ref: Ref<ProfileSetupUsernameMethods> }) {
   const dialog = useDialogManager();
 
-  // Wizard slide
-  const swiper = useSwiper();
-  const swiperSlide = useSwiperSlide();
+  const { nextStep } = useWizard();
+
+  useImperativeHandle(ref, () => ({
+    onEnter: () => {
+      // Autofocus input box
+      frmCheckUsername.setFocus('username');
+    },
+  }));
+
+  useEffect(() => {
+    // Step already completed
+    if (localStorage.getItem('demo:username')) {
+      void nextStep();
+    }
+
+    // check if step completed on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
 
@@ -136,8 +153,6 @@ export default function ProfileSetupUsername() {
   const [lastShakeId, setLastShakeId] = useState<string | undefined>();
 
   const { updateSessionUser } = useContext(SessionContext);
-
-  const goToNextStep = useCallback(() => swiper.slideNext(), [swiper]);
 
   const frmCheckUsername = useForm({
     resolver: zodResolver(usernameSchema),
@@ -288,13 +303,13 @@ export default function ProfileSetupUsername() {
       // Update session username
       updateSessionUser({ username: res.data.username });
       localStorage.setItem('demo:username', res.data.username);
-      goToNextStep();
+      void nextStep();
       return;
     } else {
       dialog.show('API_RESPONSE_ERROR');
       throw new Error(ProfileErrorCode.ERR_UNEXPECTED_ERROR);
     }
-  }, [dialog, goToNextStep, updateSessionUser]);
+  }, [dialog, nextStep, updateSessionUser]);
 
   const candidateValidationErrorHandler = useCallback<SubmitErrorHandler<UsernameFormData>>((errors) => {
     // Show error dialog if field is blank
@@ -307,28 +322,9 @@ export default function ProfileSetupUsername() {
     ? frmClaimUsername.handleSubmit(handleSubmitClaimUsername, candidateValidationErrorHandler)
     : frmCheckUsername.handleSubmit(handleSubmitCheckUsername, usernameValidationErrorHandler);
 
-  // Autofocus input for first time
-  const [focusedUsernameInputOnce, setFocusedUsernameInputOnce] = useState(false);
-  const focusUsernameInput = useCallback((evtSwiper: Swiper) => {
-    if (!swiperSlide.isActive) return;
-    if (focusedUsernameInputOnce) return;
-    frmCheckUsername.setFocus('username');
-    setFocusedUsernameInputOnce(true);
-    evtSwiper.off('slideChangeTransitionEnd', focusUsernameInput);
-  }, [focusedUsernameInputOnce, frmCheckUsername, swiperSlide.isActive]);
-
-  useEffect(() => {
-    swiper.on('slideChangeTransitionEnd', focusUsernameInput);
-    return () => {
-      swiper.off('slideChangeTransitionEnd', focusUsernameInput);
-    };
-  }, [swiper, focusUsernameInput]);
-
   return (
     <>
-      <Helmet>
-        <title>Set Username</title>
-      </Helmet>
+      <title>Pick Username</title>
       <section className="flex justify-center items-center min-h-svh mx-auto px-4 py-12 max-w-md md:max-w-sm md:px-0 md:w-96 sm:px-4">
         <div>
           <div className="py-6">

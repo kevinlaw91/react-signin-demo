@@ -1,31 +1,19 @@
-import { cleanup, render } from '@testing-library/react/pure';
-import { HelmetProvider } from 'react-helmet-async';
+import { cleanup, queryByText, render, waitForElementToBeRemoved } from '@testing-library/react/pure';
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import ProfileSetupUsername from '@/features/profile/setup/ProfileSetupUsername.tsx';
 import userEvent from '@testing-library/user-event';
 import * as Profile from '@/services/profile.ts';
 
-const useSwiper = vi.hoisted(() => vi.fn());
-const useSwiperSlide = vi.hoisted(() => vi.fn());
+const nextStepFn = vi.hoisted(() => vi.fn());
 
 describe('ProfileSetupUsername', () => {
   beforeAll(() => {
-    vi.mock(import('swiper/react'), async (importOriginal) => {
-      const mod = await importOriginal();
-      return {
-        ...mod,
-        useSwiper,
-        useSwiperSlide,
-      };
-    });
-
-    useSwiperSlide.mockReturnValue({
-      isActive: true,
-    });
-  });
-
-  afterAll(() => {
-    vi.restoreAllMocks();
+    vi.mock('react-use-wizard', async importOriginal => ({
+      ...(await importOriginal()),
+      useWizard: vi.fn().mockReturnValue({
+        nextStep: nextStepFn,
+      }),
+    }));
   });
 
   describe('username registered', () => {
@@ -35,15 +23,8 @@ describe('ProfileSetupUsername', () => {
     beforeAll(async () => {
       user = userEvent.setup();
 
-      useSwiper.mockReturnValue({
-        on: vi.fn(),
-        off: vi.fn(),
-      });
-
       container = render(
-        <HelmetProvider>
-          <ProfileSetupUsername />
-        </HelmetProvider>,
+        <ProfileSetupUsername />,
       );
 
       // Simulate form submission
@@ -56,6 +37,8 @@ describe('ProfileSetupUsername', () => {
     afterAll(cleanup);
 
     it('should show username taken', async () => {
+      await waitForElementToBeRemoved(() => queryByText(container.container, /checking availability/i), { timeout: 10000 });
+
       expect(await container.findByText(/already taken/i)).toBeInTheDocument();
     });
 
@@ -71,23 +54,13 @@ describe('ProfileSetupUsername', () => {
     let container;
     let apiCall;
 
-    // Wizard context
-    let nextStepFn;
-
     beforeAll(async () => {
+      nextStepFn.mockClear();
+
       user = userEvent.setup();
 
-      nextStepFn = vi.fn();
-      useSwiper.mockReturnValue({
-        on: vi.fn(),
-        off: vi.fn(),
-        slideNext: nextStepFn,
-      });
-
       container = render(
-        <HelmetProvider>
-          <ProfileSetupUsername />
-        </HelmetProvider>,
+        <ProfileSetupUsername />,
       );
 
       apiCall = vi.spyOn(Profile, 'saveUsername');
@@ -104,6 +77,8 @@ describe('ProfileSetupUsername', () => {
     });
 
     it('should show username available', async () => {
+      await waitForElementToBeRemoved(() => queryByText(container.container, /checking availability/i), { timeout: 10000 });
+
       expect(await container.findByText(/is available/i)).toBeInTheDocument();
     });
 
