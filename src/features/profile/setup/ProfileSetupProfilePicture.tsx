@@ -241,7 +241,6 @@ export default function ProfileSetupProfilePicture() {
     // Disconnect IndexedDB on unmount
     return () => {
       // Access to dbRef.current was intended to close active connection
-      // eslint-disable-next-line react-hooks/exhaustive-deps
       dbRef.current?.close();
     };
   }, []);
