@@ -1,6 +1,7 @@
 import { test, expect, Page } from '@playwright/test';
 import path from 'node:path';
 import { fileURLToPath } from 'url';
+import { mockLoggedIn } from './utils/session.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,7 +24,11 @@ async function saveUsername(page: Page) {
 
 test.describe('profile setup', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/setup');
+    await page.goto('');
+
+    // Mock active session
+    await page.evaluate(mockLoggedIn);
+    await page.goto('setup');
   });
 
   test('check username availability', async ({ page }) => {

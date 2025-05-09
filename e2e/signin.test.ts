@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/signin');
+  await page.goto('signin');
 });
 
 test('sign in by google', async ({ page }) => {
@@ -11,7 +11,7 @@ test('sign in by google', async ({ page }) => {
     .click();
 
   // Sign in success and redirect to homepage
-  await expect(page).toHaveURL('/');
+  await expect(page).toHaveURL('');
   await expect(page).toHaveTitle(/welcome/i);
 });
 
@@ -32,7 +32,7 @@ test('sign in by password', async ({ page }) => {
   await expect(page.getByText(/signing in/i)).toBeHidden();
 
   // Sign in success and redirect to homepage
-  await page.waitForURL('/');
+  await page.waitForURL('');
   await expect(page.getByText(/welcome,/i)).toBeVisible();
 });
 
@@ -53,7 +53,7 @@ test('sign in by password, incorrect credential', async ({ page }) => {
   await expect(page.getByText(/signing in/i)).toBeHidden();
 
   // Sign in failed
-  await expect(page).toHaveURL('/signin');
+  await expect(page).toHaveURL('signin');
 
   // Error message visible
   await expect(page.getByRole('dialog').getByText(/incorrect email or password/i)).toBeVisible({ timeout: 15000 });
