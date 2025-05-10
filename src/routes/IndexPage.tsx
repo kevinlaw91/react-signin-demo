@@ -1,6 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { Helmet } from 'react-helmet-async';
 import { SessionContext } from '@/contexts/SessionContext';
 import { Button } from '@/components/Button.tsx';
 import { Drawer, IconButton } from '@mui/material';
@@ -57,6 +56,9 @@ function UserWelcomeScreen() {
 
   return (
     <section className="min-h-svh min-w-[320px] bg-linear-to-b from-neutral-50 to-amber-50">
+      <title>
+        {`Welcome ${(user?.username || user?.id) ? `, ${user?.username || user?.id}` : ''}`}
+      </title>
       <section className="flex content-start flex-wrap justify-end bg-linear-to-r from-orange-800 via-orange-500 to-amber-500 rounded-b-2xl h-32">
         <IconButton aria-label="Menu" size="large" onClick={toggleDrawer(true)}>
           <Icon icon="solar:menu-dots-bold" className="text-white" />
@@ -161,15 +163,7 @@ export function Component() {
   if (!user) return null;
 
   return (
-    <>
-      <Helmet>
-        <title>
-          Welcome
-          { (user?.username || user?.id) ? `, ${user?.username || user?.id}` : '' }
-        </title>
-      </Helmet>
-      <UserWelcomeScreen />
-    </>
+    <UserWelcomeScreen />
   );
 }
 
