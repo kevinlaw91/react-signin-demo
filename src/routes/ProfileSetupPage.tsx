@@ -59,11 +59,9 @@ export function Component() {
   };
 
   useEffect(() => {
-    document.documentElement.style.scrollbarGutter = 'stable';
     document.body.classList.add('bg-neutral-100', 'overflow-x-hidden');
 
     return () => {
-      document.documentElement.style.removeProperty('scrollbar-gutter');
       document.body.classList.remove('bg-neutral-100', 'overflow-x-hidden');
     };
   }, []);
