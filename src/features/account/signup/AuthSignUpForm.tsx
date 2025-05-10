@@ -273,7 +273,7 @@ export function AuthSignUpForm(props: {
             />
             <button
               type="button"
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 rounded-lg outline-hidden focus:ring-1 ring-neutral-400"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 rounded-lg outline-hidden focus:ring-1 ring-neutral-400 cursor-pointer"
               onClick={togglePasswordVisibility}
               title={isPasswordVisible ? 'Hide password' : 'Show password'}
               aria-label={isPasswordVisible ? 'Hide password' : 'Show password'}
