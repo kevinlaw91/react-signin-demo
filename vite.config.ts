@@ -1,7 +1,7 @@
 /// <reference types="vitest" />
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { defineConfig } from 'vite';
+import { configDefaults, defineConfig } from 'vitest/config';
 import tailwindcss from '@tailwindcss/vite';
 import legacy from '@vitejs/plugin-legacy';
 import react from '@vitejs/plugin-react-swc';
@@ -39,6 +39,10 @@ export default defineConfig({
         resources: 'usable',
       },
     },
+    exclude: [
+      ...configDefaults.exclude,
+      '**/e2e/**',
+    ],
     setupFiles: [
       path.resolve(__dirname, './test/vitest-setup.ts'),
     ],
