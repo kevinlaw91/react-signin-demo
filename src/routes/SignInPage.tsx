@@ -1,6 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { Helmet } from 'react-helmet-async';
 import { AuthSignInForm, SignInSuccessResponse } from '@/features/account/signin/AuthSignInForm';
 import { SessionContext } from '@/contexts/SessionContext';
 import { GoogleSignInButton } from '@/features/account/signin/GoogleSignInButton';
@@ -62,9 +61,7 @@ export function Component() {
 
   return (
     <>
-      <Helmet>
-        <title>Sign In</title>
-      </Helmet>
+      <title>Sign In</title>
       <div className="grid grid-cols-[repeat(5,1fr)] min-h-svh min-w-full isolate">
         <div className="row-span-full col-span-full md:col-span-3 md:col-start-2 lg:col-start-1  lg:col-span-2 flex place-items-center px-4 py-6 z-10 bg-neutral-100 lg:border-r">
           <div className="w-full max-w-md mx-auto px-4">

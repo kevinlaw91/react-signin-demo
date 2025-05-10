@@ -1,4 +1,3 @@
-import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router';
 
 export function Component() {
@@ -15,9 +14,7 @@ export function Component() {
 
   return (
     <>
-      <Helmet>
-        <title>404 Not Found</title>
-      </Helmet>
+      <title>404 Not Found</title>
       <section className="flex justify-center items-center py-8 px-4 mx-auto max-w-(--breakpoint-xl) min-h-svh lg:py-16 lg:px-6">
         <div className="max-w-(--breakpoint-sm) text-center">
           <h1 className="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-neutral-600">404</h1>
